@@ -29,7 +29,7 @@ export const AppConstants = {
         right: 10,
         bottom: 10
     },
-    githubUrl: "https://github.com/VitorTz/yugioh-app",
+    githubUrl: "https://github.com/VitorTz/ygoapp",
     profileOptions: [
         {
           title: "Profile",

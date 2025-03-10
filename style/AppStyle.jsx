@@ -4,7 +4,7 @@ import { Colors } from '../constants/Colors'
 export const AppStyle = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: Colors.orange
+        backgroundColor: Colors.background
     },
     textRegular: {
         fontFamily: "LeagueSpartan_400Regular",

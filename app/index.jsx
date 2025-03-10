@@ -44,7 +44,9 @@ const index = () => {
   const initPage = async () => {
     const session = await supaGetSession()
     if (session == null) {
-      router.replace("(pages)/signin")
+      router.replace("(auth)/signin")
+    } else {
+      router.replace("(tabs)/database")
     }
   }
 
