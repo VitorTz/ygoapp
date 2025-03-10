@@ -2,9 +2,10 @@ import { useLinkBuilder } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import TabBarButton from './TabBarButton';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 
-const TabBar = ({ state, descriptors, navigation } ) => {
+const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps ) => {
     const [focusedColor, baseColor ] = [Colors.orange, Colors.white]
     const { buildHref } = useLinkBuilder();
   

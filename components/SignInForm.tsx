@@ -16,7 +16,9 @@ import { Colors } from '../constants/Colors';
 import { showToast, sleep } from '../helpers/util'
 import { useState } from 'react'
 import * as yup from 'yup';
+import { router } from 'expo-router';
 import React from 'react'
+
 
 const schema = yup.object().shape({  
     email: yup
@@ -29,8 +31,13 @@ const schema = yup.object().shape({
         .required('Password is required'),  
 });
 
+interface FormData {
+    email: string
+    password: string
+}
 
-const SignInForm = ({onSignIn}) => {
+
+const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
 
     const [isLoading, setLoading] = useState(false)
     
@@ -38,7 +45,7 @@ const SignInForm = ({onSignIn}) => {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {            
             email: '',
@@ -46,7 +53,7 @@ const SignInForm = ({onSignIn}) => {
         },
     });
     
-    const onSubmit = async (form_data) => {
+    const onSubmit = async (form_data: FormData) => {
         setLoading(true)        
         const {data, error} = await supabase.auth.signInWithPassword({
             email: form_data.email,

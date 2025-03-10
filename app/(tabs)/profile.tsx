@@ -9,9 +9,18 @@ import { Colors } from '../../constants/Colors'
 import { showToast } from '../../helpers/util'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
+import { Session } from '@supabase/supabase-js'
+import { UserDB } from '@/helpers/types'
 
 
-const Option = ({title, subTitle, iconName, onPress}) => {
+interface OptionProps {
+    title: string
+    subTitle: string
+    iconName: string
+    onPress: () => void
+}
+
+const Option = ({title, subTitle, iconName, onPress}: OptionProps) => {
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -42,10 +51,10 @@ const Option = ({title, subTitle, iconName, onPress}) => {
 
 const ProfileIcon = () => {
 
-    const [user, setUser] = useState({name: null, image_url: null})
+    const [user, setUser] = useState<UserDB | null>(null)
 
-    const update = async () => {        
-        await supaGetUser().then(item => setUser(item.user))
+    const update = async () => {
+        await supaGetUser().then(user => setUser(user))
     }
 
     useFocusEffect(
@@ -64,12 +73,12 @@ const ProfileIcon = () => {
     return (
         <>
             {
-                user.image_url == null ? 
+                user == null ? 
                 <ActivityIndicator size={32} color={Colors.white} /> :
                 <>
                 <View>
                     <Image 
-                        source={user.image_url} 
+                        source={user.image.image_url} 
                         style={styles.image} 
                         contentFit='cover' 
                         placeholder={AppConstants.blurhash}                    
@@ -88,7 +97,7 @@ const ProfileIcon = () => {
 
 const RandomTrivia = () => {
         
-    const [text, setText] = useState('')
+    const [text, setText] = useState<string | null>('')
 
     const update = async () => {
         const data = await supaRandomTrivia()
@@ -119,7 +128,7 @@ const RandomTrivia = () => {
 
 const Profile = () => {
     
-    const [session, setSession] = useState(null)    
+    const [session, setSession] = useState<Session | null>(null)    
 
     const initPage = async () => {        
         const s = await supaGetSession()

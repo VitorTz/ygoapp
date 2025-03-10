@@ -1,24 +1,14 @@
 import { 
   SafeAreaView, 
-  Pressable, 
-  ScrollView,
-  ActivityIndicator, 
+  Pressable,   
   StyleSheet, 
-  Text, 
-  TextInput, 
-  View, 
-  KeyboardAvoidingView  
+  Text,
+  View  
 } from 'react-native'
 import React from 'react'
-import { useState } from 'react'
 import { AppStyle } from '../../style/AppStyle'
 import { Colors } from '../../constants/Colors'
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { Link, router } from 'expo-router';
-import { supabase, supaGetSession } from '@/lib/supabase';
-import { showToast, sleep } from '../../helpers/util'
+import { router } from 'expo-router';
 import Logo from '../../components/Logo'
 import { AppConstants } from '../../constants/AppConstants'
 import SignInForm from '../../components/SignInForm'

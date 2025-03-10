@@ -11,7 +11,7 @@ import React, { useEffect } from 'react'
 import { icons } from '../helpers/icon'
   
   
-const TabBarButton = (props) => { 
+const TabBarButton = (props: any) => { 
     const {isFocused, label, routeName, color} = props
   
     const scale = useSharedValue(0)
