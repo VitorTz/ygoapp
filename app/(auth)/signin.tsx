@@ -1,34 +1,28 @@
-import { 
-  SafeAreaView, 
-  Pressable,   
-  StyleSheet, 
-  Text,
-  View  
-} from 'react-native'
+import { SafeAreaView, StyleSheet, View  } from 'react-native'
 import React from 'react'
 import { AppStyle } from '../../style/AppStyle'
-import { Colors } from '../../constants/Colors'
 import { router } from 'expo-router';
 import Logo from '../../components/Logo'
-import { AppConstants } from '../../constants/AppConstants'
 import SignInForm from '../../components/SignInForm'
-
+import SkipButton from '../../components/SkipButton'
 
 
 const SignIn = () => {
 
-  const onSign = async () => {
+  const onSign = () => {
     router.replace("/(tabs)/database")
+  }
+
+  const onSkip = () => {
+    router.replace("/(tabs)/database") 
   }
 
   return (
     <SafeAreaView style={AppStyle.safeArea} >
       <View style={{flex: 1, padding: 20, alignItems: "center"}}>
-        <View style={{width: '100%', marginTop: 20, marginBottom: 100, flexDirection: "row", alignItems: "center", justifyContent: "space-between"}} >
+        <View style={styles.container} >
           <Logo/>
-          <Pressable onPress={() => router.replace("(tabs)/database")} hitSlop={AppConstants.hitSlopLarge}>
-            <Text style={[AppStyle.textRegular, {color: Colors.orange, textDecorationLine: "underline"}]}>Skip</Text>
-          </Pressable>
+          <SkipButton onPress={onSkip} />
         </View>
         <SignInForm onSignIn={onSign} />
       </View>      
@@ -39,5 +33,12 @@ const SignIn = () => {
 export default SignIn
 
 const styles = StyleSheet.create({
-
+  container: {
+    width: '100%', 
+    marginTop: 20, 
+    marginBottom: 100, 
+    flexDirection: "row", 
+    alignItems: "center", 
+    justifyContent: "space-between"
+  }
 })

@@ -72,7 +72,7 @@ export function getItemGridDimensions(
     originalWidth: number,
     originalHeight: number
 ) {
-    const cardWidth = (wp(100) - horizontalPadding - (columns * gap)) / columns
+    const cardWidth = (wp(100) - (horizontalPadding * 2) - ((columns * gap) - gap)) / columns
     const cardHeight = cardWidth * (originalHeight / originalWidth)
     return {width: cardWidth, height: cardHeight}
 }

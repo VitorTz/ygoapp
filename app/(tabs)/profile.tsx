@@ -34,7 +34,7 @@ const Option = ({title, subTitle, iconName, onPress}: OptionProps) => {
         <Pressable onPress={handlePress} style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
             <View style={{flexDirection: 'row', gap: 20, alignItems: "center", justifyContent: "center"}} >
                 <Ionicons name={iconName} size={32} color={Colors.white} />
-                <View>
+                <View style={{alignItems: "flex-start", justifyContent: "center"}} >
                     <Text style={[AppStyle.textHeader, {color: Colors.white, fontSize: 20}]}>{title}</Text>
                     <Text style={[AppStyle.textRegular, {fontSize: 14}]}>{subTitle}</Text>
                 </View>
@@ -67,7 +67,7 @@ const ProfileIcon = () => {
     )
 
     const changeIcon = () => {
-        router.push("(pages)/changeProfileIcon")
+        router.push("/(pages)/changeProfileIcon")
     }
 
     return (
@@ -133,7 +133,7 @@ const Profile = () => {
     const initPage = async () => {        
         const s = await supaGetSession()
         if (s == null) {
-            router.replace("(auth)/signin")
+            router.replace("/(auth)/signin")
         } else {            
             setSession(s)
         }
@@ -167,7 +167,7 @@ const Profile = () => {
             showToast("Error", error.message, "error")
         } else {
             setSession(null)            
-            router.replace("(auth)/signin")
+            router.replace("/(auth)/signin")
         }
     }
 
