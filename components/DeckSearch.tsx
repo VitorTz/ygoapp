@@ -1,20 +1,25 @@
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { AppConstants } from '@/constants/AppConstants'
-import { supaFetchCards } from '@/lib/supabase'
-import { Colors } from '@/constants/Colors'
-import { Card } from '@/helpers/types'
-import { debounce } from "lodash";
-import { Image } from 'expo-image'
+import { StyleSheet, Platform, Pressable, KeyboardAvoidingView, TextInput, Keyboard, Text, View } from 'react-native'
 import CardGrid from './CardGrid'
+import { AppConstants } from '@/constants/AppConstants'
+import { Image } from 'expo-image'
+import DeckCard from './DeckCard'
+import { useState, useEffect, useCallback } from 'react'
+import { useRef } from 'react'
+import { supaFetchDecks } from '@/lib/supabase'
+import DeckPicker from './picker/DeckPicker'
+import { Deck } from '@/helpers/types'
 import { Ionicons } from '@expo/vector-icons'
-import CardPicker from './picker/CardPicker'
+import { Colors } from '@/constants/Colors'
+import { debounce } from 'lodash'
 import { router } from 'expo-router'
+import DeckGrid from './DeckGrid'
+import React from 'react'
 import CustomFooter from './CustomGridFooter'
 
 
+
 interface ItemProps {
-    card: Card
+    deck: Deck
     columns: number
     index: number
     width: number
@@ -22,65 +27,52 @@ interface ItemProps {
 }
 
 
-const Item = ({card, columns, index, width, height}: ItemProps) => {
-
-    const handlePress = () => {
-        Keyboard.dismiss()
-        router.navigate({pathname: "/(pages)/cardPage", params: card})
-    }
-    
-    return (
-        <Pressable onPress={handlePress} >
-            <Image 
-                source={card.image_url} 
-                contentFit='cover' 
-                style={{width, height, marginTop: index >= columns ? 10: 0}}
-                placeholder={AppConstants.blurhash}/>
-        </Pressable>
-    )
-}
 
 
-const GRID_COLUMNS = 3
+const GRID_COLUMNS = 2
 var optionsMap = new Map<string, any>()
 var searchText: string | null = null
 var loading = false
 var page = 0
 
 
-const CardSearch = () => {
-    
-    const [cards, setCards] = useState<Card[]>([])
+const DeckSearch = () => {
+
+    const [decks, setDecks] = useState<Deck[]>([])
     const [hasResults, setHasResults] = useState(true)    
     const [dropDownPickerIsOpen, setDropDownPickerIsOpen] = useState(false)
 
-    const fetch = async (append: boolean = false) => {        
+
+
+    const fetch = async (append: boolean = false) => {    
         loading = true
-        await supaFetchCards(
-            searchText,
-            optionsMap,
+        await supaFetchDecks(
+            searchText, 
+            optionsMap, 
             page
         ).then(
-            values => {
-                setHasResults(values.length > 0)
-                append 
-                ? setCards((prev) => [...prev, ...values]) 
-                : setCards([...values])
+            value => {
+                setHasResults(value.length > 0)        
+                append ? setDecks((prev) => [...prev, ...value]) : setDecks([...value])
             }
-        )        
+        )
         loading = false
     }
 
     const resetSearchOptions = () => {
         searchText = null
         page = 0
-        optionsMap = new Map([
-            ['sort', 'name'],
-            ['sortDirection', 'ASC']
+        optionsMap = new Map<string, any>([
+            ['archetypes', []],
+            ['attributes', []],
+            ['frametypes', []],
+            ['races', []],
+            ['types', []],
+            ['deckType', 'TCG']
         ])
     }
 
-    const init = async () => {  
+    const init = async () => {
         resetSearchOptions()
         await fetch()
     }
@@ -90,7 +82,7 @@ const CardSearch = () => {
         page = 0
         await fetch()
     }
-
+    
     const debounceSearch = useCallback(
         debounce(handleSearch, 400),
         []
@@ -101,22 +93,22 @@ const CardSearch = () => {
             page += 1
             await fetch(true)            
         }
-      }, []
+        }, []
     );
-
+  
     useEffect(
         useCallback(() => {
             init()
         }, []),
         []
     )
-
+    
     const toggleDropDownPicker = () => {
         Keyboard.dismiss()
         setDropDownPickerIsOpen(prev => !prev)
     }
 
-    const applyPicker = async () => {
+    const applyFilter = async () => {
         await debounceSearch(searchText)
     }
 
@@ -130,38 +122,38 @@ const CardSearch = () => {
                     placeholderTextColor={Colors.white}/>
                 <Pressable onPress={toggleDropDownPicker} style={{position: 'absolute', right: 10, alignItems: "center", justifyContent: "center", top: 0, bottom: 0}} hitSlop={AppConstants.hitSlopLarge} >
                     {
-                        dropDownPickerIsOpen ? 
+                        dropDownPickerIsOpen ?
                         <Ionicons name='caret-up-circle' size={28} color={Colors.orange} /> :
                         <Ionicons name='caret-down-circle' size={28} color={Colors.orange} />
                     }
                 </Pressable>
             </View>
             <View style={{display: dropDownPickerIsOpen ? 'flex' : 'none'}} >
-                <CardPicker options={optionsMap} applyPicker={applyPicker} />
+                <DeckPicker applyFilter={applyFilter} options={optionsMap}/>
             </View>
-            <CardGrid 
-                cards={cards} 
-                numColumns={GRID_COLUMNS} 
-                Footer={CustomFooter}
-                onEndReached={onEndReached} 
-                RenderItem={Item}
-                hasResults={hasResults}/>
-        </View>
+            <DeckGrid
+                columns={GRID_COLUMNS}
+                decks={decks}
+                hasResult={hasResults}
+                onEndReached={onEndReached}/>
+        </View>        
     )
 }
 
-export default CardSearch
+export default DeckSearch
 
 const styles = StyleSheet.create({
-    input: {
-        width: '100%', 
-        fontFamily: "LeagueSpartan_400Regular",
-        color: Colors.white,
-        fontSize: 16,
-        height: 50, 
+    input: {    
+        paddingHorizontal: 42,
         paddingLeft: 10,
         paddingRight: 40,
-        backgroundColor: Colors.gray, 
-        borderRadius: 4
+        height: 50,
+        borderWidth: 1,
+        color: Colors.white,
+        backgroundColor: Colors.gray,
+        borderCurve: "continuous",    
+        borderColor: Colors.orange,    
+        fontWeight: "bold",
+        fontFamily: "LeagueSpartan_400Regular"
     }
 })

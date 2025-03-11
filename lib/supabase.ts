@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CARD_FETCH_LIMIT } from '../constants/AppConstants';
-import { Card, ImageDB, UserDB } from '@/helpers/types';
+import { CARD_FETCH_LIMIT, DECK_TYPES, DECK_FETCH_LIMIT } from '../constants/AppConstants';
+import { Card, Deck, ImageDB, UserDB } from '@/helpers/types';
 
 
 
@@ -49,6 +49,44 @@ export async function supaUpdateUserIcon(image_id: number) {
       return error != null
     }
     return false
+}
+
+
+export async function supaAddCardToCollection(card_id: number, total: number): Promise<boolean> {
+  const {data: {session}, error: err} = await supabase.auth.getSession()
+  if (err) {
+    console.log(err.message)
+    return false    
+  }
+  const { error } = await supabase.rpc('insert_user_card', {
+    p_card_id: card_id,
+    p_user_id: session!.user.id,
+    p_quantity: total
+  })
+  if (error) {
+    console.log(error)
+    return false
+  }
+  return true
+}
+
+
+export async function supaRmvCardFromCollection(card_id: number, total: number): Promise<boolean> {
+  const {data: {session}, error: err} = await supabase.auth.getSession()
+  if (err) {
+    console.log(err.message)
+    return false    
+  }
+  const { error } = await supabase.rpc('remove_user_card', {
+    p_card_id: card_id,
+    p_user_id: session!.user.id,
+    p_quantity: total
+  })
+  if (error) {
+    console.log(error)
+    return false
+  }
+  return true
 }
   
 
@@ -126,4 +164,97 @@ export async function supaFetchCards(
     console.log(error)
   }
   return data ? data : []
+}
+
+
+export const supaFetchDecks = async (
+  searchTxt: string | null,
+  options: Map<any, any>, 
+  page: number
+): Promise<Deck[]> => {
+  let query = supabase.from("decks").select(`
+    deck_id,
+    name,
+    type,
+    descr,
+    image_url,    
+    num_cards,    
+    archetypes,
+    attributes,
+    frametypes,
+    races,
+    types,
+    created_by,
+    owner
+  `)  
+
+  query = query.eq("is_public", true)  
+
+  query = query.gte("num_cards", 1)
+
+  if (searchTxt) {
+    query = query.ilike("name", `%${searchTxt}%`)
+  }
+
+  if (options.has('archetypes')) {
+      options.get('archetypes').forEach(
+      (value: string) => {
+        query = query.contains('archetypes', [value])
+      }
+    )
+  }
+
+  if (options.has('attributes')) {
+      options.get('attributes').forEach(
+      (value: string) => {
+        query = query.contains('attributes', [value])
+      }
+    )
+  }
+
+  if (options.has('frametypes')) {
+      options.get('frametypes').forEach(
+      (value: string) => {
+        query = query.contains('frametypes', [value])
+      }
+    )
+  }
+
+  if (options.has('races')) {
+      options.get('races').forEach(
+      (value: string) => {        
+        query = query.contains('races', [value])
+      }
+    )
+  }
+
+  if (options.has('types')) {
+      options.get('types').forEach(
+      (value: string) => {
+        query = query.contains('types', [value])
+      }
+    )
+  }
+
+  if (options.has('deckType')) {
+    const t: string = options.get('deckType')
+    if (t != "Any" && DECK_TYPES.includes(t)) {
+      query = query.eq("type", t)
+    }
+  }
+
+  const {data, error} = await query.order(
+    'name', {ascending: true}
+  ).range(
+    page * DECK_FETCH_LIMIT, 
+    (page * DECK_FETCH_LIMIT) + DECK_FETCH_LIMIT - 1
+  ).overrideTypes<Deck[]>()
+
+  if (error) {
+    console.log(error)
+  }
+  data?.forEach(item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by)
+  console.log(data)
+  return data ? data : []  
+  
 }

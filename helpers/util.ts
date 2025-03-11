@@ -37,12 +37,12 @@ export const showToast = (title: string, message: string, toastType: ToastType) 
         keyboardOffset: 10,
         text1Style: {
             fontFamily: "LeagueSpartan_600SemiBold",
-            fontSize: 16,
+            fontSize: 14,
             color: Colors.background
         },
         text2Style: {
             fontFamily: "LeagueSpartan_400Regular",
-            fontSize: 16,
+            fontSize: 14,
             color: Colors.background
         },
         visibilityTime: 2000
@@ -72,9 +72,9 @@ export function getItemGridDimensions(
     originalWidth: number,
     originalHeight: number
 ) {
-    const cardWidth = (wp(100) - (horizontalPadding * 2) - ((columns * gap) - gap)) / columns
-    const cardHeight = cardWidth * (originalHeight / originalWidth)
-    return {width: cardWidth, height: cardHeight}
+    const width = (wp(100) - (horizontalPadding * 2) - ((columns * gap) - gap)) / columns
+    const height = width * (originalHeight / originalWidth)
+    return {width, height}
 }
 
 export const downloadImage = async (fileName: string, imageUrl: string) => {

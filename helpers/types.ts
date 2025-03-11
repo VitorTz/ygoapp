@@ -50,4 +50,5 @@ export interface Deck {
     is_public: boolean
     created_by: string
     owner: string
+    userIsOwner: boolean
 }
