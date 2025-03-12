@@ -60,7 +60,7 @@ const CardGrid = ({
                 keyExtractor={(card, index) => index.toString()}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
-                ListFooterComponent={() => <Footer hasResults={hasResults} />}
+                ListFooterComponent={Footer ? () => <Footer hasResults={hasResults} /> : null}
                 estimatedItemSize={height}
                 renderItem={({item, index}) => <Item card={item} index={index} width={width} height={height} columns={numColumns} ></Item>}
             />

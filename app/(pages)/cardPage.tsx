@@ -59,7 +59,6 @@ const CardPage = () => {
     return (
         <SafeAreaView style={[AppStyle.safeArea, {padding: 20}]} >
             <ScrollView>
-
                 <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
                     <View style={{flexDirection: 'row', gap: 20}} >                        
                         <ShareImageButton image_url={card.image_url} />
@@ -83,7 +82,6 @@ const CardPage = () => {
                     </View>
                     <AddCardToUserCollection card_id={card_id} />
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     )

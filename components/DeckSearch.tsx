@@ -144,16 +144,14 @@ export default DeckSearch
 
 const styles = StyleSheet.create({
     input: {    
-        paddingHorizontal: 42,
+        width: '100%', 
+        fontFamily: "LeagueSpartan_400Regular",
+        color: Colors.white,
+        fontSize: 16,
+        height: 50, 
         paddingLeft: 10,
         paddingRight: 40,
-        height: 50,
-        borderWidth: 1,
-        color: Colors.white,
-        backgroundColor: Colors.gray,
-        borderCurve: "continuous",    
-        borderColor: Colors.orange,    
-        fontWeight: "bold",
-        fontFamily: "LeagueSpartan_400Regular"
+        backgroundColor: Colors.gray, 
+        borderRadius: 4
     }
 })

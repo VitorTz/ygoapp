@@ -21,7 +21,7 @@ const DeckCard = ({deck, index, columns, width, height}: DeckCardProps) => {
     
     const handlePress = () => {
         Keyboard.dismiss()            
-        // router.push({pathname: "/(pages)/deckPage", params: deck})
+        router.push({pathname: "/(pages)/deckPage", params: deck})
     }
 
     return (        

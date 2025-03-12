@@ -186,11 +186,11 @@ export const supaFetchDecks = async (
     types,
     created_by,
     owner
-  `)  
+  `)
 
   query = query.eq("is_public", true)  
 
-  query = query.gte("num_cards", 1)
+  query = query.gte("num_cards", 20)
 
   if (searchTxt) {
     query = query.ilike("name", `%${searchTxt}%`)
@@ -253,8 +253,96 @@ export const supaFetchDecks = async (
   if (error) {
     console.log(error)
   }
-  data?.forEach(item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by)
-  console.log(data)
-  return data ? data : []  
-  
+  data?.forEach(item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by)  
+  return data ? data : []
+}
+
+export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
+  const {data, error} = await supabase.from("deck_cards").select(
+    `
+    num_cards,
+    cards (
+      card_id,
+      name,
+      descr,      
+      attack,
+      defence,
+      level,
+      attribute,
+      archetype,
+      frametype,
+      race,
+      type,
+      image_url,
+      cropped_image_url
+    )
+    `
+  ).eq("deck_id", deck_id).overrideTypes<Card[]>()  
+  let cards: Card[] = []
+  data?.forEach(item => {
+    for (let i = 0; i < item.num_cards; i++) {
+      cards.push(item.cards)
+    }
+  })
+  cards.sort((a, b) => {
+      if (a.name < b.name)
+        return -1
+      if (a.name == b.name)
+        return 0
+      return 1
+    }
+  )
+  return cards
+}
+
+
+export async function supaAddDeckToCollection(deck_id: number) {
+  const session = await supaGetSession()  
+  if (!session) {
+    return false
+  }
+
+  const { data: d1, error: e1 } = await supabase.rpc('copy_deck', {
+    original_deck_id: deck_id,
+    new_owner: session.user.id
+  });
+
+  if (e1 || !d1 || d1.lenght == 0) {
+    console.log(e1)
+    return false
+  }
+  console.log("new deck", d1[0].deck_id)
+
+  const { data, error } = await supabase.rpc('copy_deck_cards', {
+    source_deck_id: deck_id,
+    target_deck_id: d1[0].deck_id
+  });
+
+  if (error) {
+    console.log(error)
+    return false
+  }
+
+  return true
+}
+
+
+export async function supaRmvDeckFromCollection(deck_id: number) {
+  const session = await supaGetSession()  
+  if (!session) {
+    return false
+  }
+
+  // Supondo que a tabela user_decks tenha uma coluna user_id para identificar o dono
+  const { data, error } = await supabase
+    .from("user_decks")
+    .delete()
+    .match({ deck_id: deck_id, user_id: session.user.id });
+
+  if (error) {
+    console.error('Erro ao deletar deck:', error);
+    return false;
+  }
+
+  return true;
 }
