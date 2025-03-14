@@ -30,7 +30,8 @@ const DeckCard = ({deck, index, columns, width, height}: DeckCardProps) => {
             <View style={[styles.container, {width: width}]} >
                 <Text style={[AppStyle.textRegular, {color: Colors.orange}]}>{deck.name}</Text>
                 <Text style={AppStyle.textRegular}>{deck.type}</Text>
-                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>                
+                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>
+                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>
             </View>
         </Pressable>
     )

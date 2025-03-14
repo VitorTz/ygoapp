@@ -1,73 +1,79 @@
-import Animated, { 
-  FadeInLeft, 
-  FadeInRight, 
-  FadeOutLeft, 
-  FadeOutRight 
-} from 'react-native-reanimated'
-import { 
-  View, 
-  Text, 
-  SafeAreaView, 
-  StyleSheet, 
-  Pressable
-} from 'react-native'
-import CardSearch from '@/components/CardSearch'
-import { AppStyle } from '../../style/AppStyle'
-import DeckSearch from '@/components/DeckSearch'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { SafeAreaView } from 'react-native'
+import { AppStyle } from '@/style/AppStyle'
+import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
-import { useState } from 'react'
+import { Image } from 'expo-image'
+import Logo from '@/components/Logo'
+import { Ionicons } from '@expo/vector-icons'
+import Animated, { FadeInLeft } from 'react-native-reanimated'
+import { router } from 'expo-router'
+import LinkList, { ContainerData } from '@/components/LinkList'
+import { IMAGE_ICON } from '@/helpers/icon'
 
 
-
-const DeckOrCardFilter = ({
-  filter, 
-  setFilter
-}: {
-  filter: "Card" | "Deck", 
-  setFilter: React.Dispatch<React.SetStateAction<"Card" | "Deck">>
-}) => {
-  return (
-    <View style={{width: '100%', flexDirection: 'row', marginBottom: 10}} >
-      <Pressable onPress={() => setFilter("Card")} style={{flex: 1, alignItems: "center", height: 40}} >
-        <Text style={AppStyle.textHeader}>Card</Text>
-        {
-          filter == "Card" &&
-          <Animated.View entering={FadeInLeft.duration(500)} style={{width: '100%', height: 2, position: 'absolute', bottom: 0, backgroundColor: Colors.orange}}/>
-        }
-        {
-          filter == "Deck" &&
-          <Animated.View entering={FadeOutLeft.duration(500)} style={{width: '100%', height: 2, position: 'absolute', bottom: 0, backgroundColor: Colors.orange}}/>
-        }
-      </Pressable>
-      <Pressable onPress={() => setFilter("Deck")} style={{flex: 1, alignItems: "center", height: 40}} >
-        <Text style={AppStyle.textHeader}>Deck</Text>
-        {
-          filter == "Deck" &&
-          <Animated.View entering={FadeInRight.duration(500)} style={{width: '100%', height: 2, position: 'absolute', bottom: 0, backgroundColor: Colors.orange}}/>
-        }
-        {
-          filter == "Card" &&
-          <Animated.View entering={FadeOutRight.duration(500)} style={{width: '100%', height: 2, position: 'absolute', bottom: 0, backgroundColor: Colors.orange}}/>
-        }
-      </Pressable>
-    </View>
-  )
-}
-
+const DATA: ContainerData[] = [
+  {
+    onPress: () => router.navigate("/deckDatabase"),
+    color: Colors.purple,
+    title: "Decks",
+    imageKey: "UltimateSpirit"
+  },
+  {
+    onPress: () => router.navigate("/cardDatabase"),
+    color: Colors.red,
+    title: "Cards",
+    imageKey: "WingedDradonRa"
+  },
+  {
+    onPress: () => {},
+    color: Colors.orange,
+    title: "Packs",
+    imageKey: "Yubel"
+  }
+]
 
 const Database = () => {
-
-  const [filter, setFilter] = useState<"Card" | "Deck">("Card")
-
   return (
-    <SafeAreaView style={[AppStyle.safeArea, {padding: 10, alignItems: "center", justifyContent: "center", paddingBottom: 80}]} >
-      <DeckOrCardFilter filter={filter} setFilter={setFilter} />
-      {filter == "Card" && <CardSearch/>}
-      {filter == "Deck" && <DeckSearch/>}
+    <SafeAreaView style={AppStyle.safeArea}>
+      <View style={{flex: 1, gap: 30, alignItems: "center", padding: 20}} >
+        <View style={{width: '100%', flexDirection: 'row', marginBottom: 20, alignItems: "center", justifyContent: "space-between"}} >
+          <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Database</Text>
+          <Ionicons name='server-outline' size={40} color={Colors.orange} />
+        </View>
+              
+        <LinkList data={DATA}/>
+      </View>
     </SafeAreaView>
   )
 }
 
 export default Database
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  topContainer: {
+
+  },
+  container: {
+    width: '100%',
+    height: 140,
+    borderWidth: 1,
+    backgroundColor: Colors.gray,    
+    borderRadius: 4
+  },
+  image: {
+    width: 400, 
+    height: 180, 
+    position: 'absolute', 
+    top: -20
+  },
+  textBg: {
+    width: '100%', 
+    height: '40%', 
+    right: -10, 
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+  }
+})

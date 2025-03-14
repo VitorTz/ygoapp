@@ -16,6 +16,8 @@ const _layout = () => {
             <Stack.Screen name='(pages)/changeProfileIcon' options={{headerShown: false}} />
             <Stack.Screen name='(pages)/cardPage' options={{headerShown: false}} />
             <Stack.Screen name='(pages)/deckPage' options={{headerShown: false}} />
+            <Stack.Screen name='(pages)/deckDatabase' options={{headerShown: false}} />
+            <Stack.Screen name='(pages)/cardDatabase' options={{headerShown: false}} />
             <Stack.Screen name='(tabs)' options={{headerShown: false}} />
         </Stack>
         <Toast/>
