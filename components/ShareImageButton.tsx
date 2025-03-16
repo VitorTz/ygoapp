@@ -6,11 +6,12 @@ import { AppStyle } from '@/style/AppStyle'
 import * as Sharing from 'expo-sharing';
 import { downloadImage } from '@/helpers/util'
 import React, { useState } from 'react'
+import { Colors } from '@/constants/Colors'
 
 
-const ShareImageButton = ({image_url}: {image_url: string}) => {
+const ShareImageButton = ({image_url, color = Colors.orange}: {image_url: string, color?: string}) => {
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)    
 
     const handleShare = async () => {
         setIsLoading(true)
@@ -26,8 +27,8 @@ const ShareImageButton = ({image_url}: {image_url: string}) => {
         <Pressable onPress={handleShare} hitSlop={AppConstants.hitSlopLarge} >
             {
                 isLoading ?
-                <ActivityIndicator size={AppConstants.icon.size} color={AppConstants.icon.color} /> :
-                <Ionicons name='share-social-outline' size={AppConstants.icon.size} color={AppConstants.icon.color} />
+                <ActivityIndicator size={AppConstants.icon.size} color={color} /> :
+                <Ionicons name='share-social-outline' size={AppConstants.icon.size} color={color} />
             }
         </Pressable>
     )

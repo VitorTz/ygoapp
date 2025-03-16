@@ -74,7 +74,7 @@ const SortDropDownPicker = ({
         <DropDownPicker
             zIndex={zindex}                
             open={open}
-            style={{backgroundColor: Colors.gray, borderWidth: 1, borderRadius: 0, borderColor: Colors.orange}}
+            style={{backgroundColor: Colors.gray, borderWidth: 0}}
             disabledStyle={{opacity: 0.5}}                             
             items={items}
             setOpen={setOpen}

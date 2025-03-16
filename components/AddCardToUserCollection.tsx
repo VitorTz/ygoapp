@@ -67,9 +67,9 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         <View style={{width: '100%'}}>
             <Text style={AppStyle.textHeader} >Collection</Text>
             <Text style={AppStyle.textRegular} >Total: {total}</Text>
-            <View style={{width: '100%', marginTop: 10, flexDirection: 'row', alignItems: "center", justifyContent: "center", gap: 20}} >
+            <View style={{width: '100%', marginTop: 10, flexDirection: 'row', alignItems: "center", justifyContent: "center", gap: 10}} >
                 <TextInput
-                    style={{flex: 0.5, color: Colors.white, fontFamily: "LeagueSpartan_400Regular", fontSize: 16, paddingLeft: 10, backgroundColor: Colors.background, borderRadius: 4, height: height}}
+                    style={{flex: 0.3, color: Colors.white, fontFamily: "LeagueSpartan_400Regular", fontSize: 16, paddingLeft: 10, backgroundColor: Colors.background, borderRadius: 4, height: height}}
                     placeholder='0'
                     value={text}
                     onChangeText={text => setText(text)}
@@ -77,21 +77,23 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
                     keyboardType='numeric'
                     placeholderTextColor={Colors.white}
                 />
-                {
-                    isLoading ? 
-                    <View style={{flex: 1, height: height, alignItems: "center", justifyContent: "center"}} >
+                <View style={{flex: 1, height, flexDirection: 'row', alignItems: "center", justifyContent: "center"}} >
+                    {
+                        isLoading ?                         
                         <ActivityIndicator size={32} color={Colors.orange} />
-                    </View>
-                    :
-                    <>
-                        <Pressable onPress={async () => handlePress("Rmv")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
-                            <Ionicons name='remove-outline' size={32} color={Colors.white} />
-                        </Pressable>
-                        <Pressable onPress={async () => handlePress("Add")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
-                            <Ionicons name='add-outline' size={32} color={Colors.white} />
-                        </Pressable>
-                    </>
-                }
+                        :
+                        <>
+                        <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
+                            <Pressable onPress={async () => handlePress("Rmv")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
+                                <Ionicons name='remove-outline' size={32} color={Colors.white} />
+                            </Pressable>
+                            <Pressable onPress={async () => handlePress("Add")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
+                                <Ionicons name='add-outline' size={32} color={Colors.white} />
+                            </Pressable>
+                        </View>
+                        </>
+                    }
+                </View>
             </View>
         </View>
     )

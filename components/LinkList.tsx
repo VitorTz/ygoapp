@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
+import { wp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { IMAGE_ICON } from '@/helpers/icon'
@@ -54,9 +55,9 @@ const ContainerItem = ({
                 </View>
             </View>
             <Image
-            source={IMAGE_ICON.get(imageKey)} 
-            style={[styles.image, imageStyle]}
-            contentFit='contain'
+                source={IMAGE_ICON.get(imageKey)} 
+                style={[styles.image, imageStyle]}
+                contentFit='contain'
             />
         </Animated.View>
     </Pressable>
@@ -68,23 +69,26 @@ const ContainerItem = ({
 const LinkList = ({data}: {data: ContainerData[]}) => {
 
   return (
-    <View style={{width: '100%', gap: 30, alignItems: "center", justifyContent: "center"}} >
-      {data.map(
-        (item, index) => {
-            return (
-                <ContainerItem 
-                    key={index.toString()} 
-                    onPress={item.onPress} 
-                    title={item.title}
-                    color={item.color}
-                    imageKey={item.imageKey}
-                    side={(index + 1) % 2 != 0 ? "left" : "right"}
-                    index={index}
-                />
-            )
-        }
-      )}
-    </View>
+    <ScrollView style={{width: '100%', marginBottom: 60, padding: 20, paddingVertical: 30}} >
+        <View style={{width: '100%', gap: 30, alignItems: "center", justifyContent: "center"}} >
+        {data.map(
+            (item, index) => {
+                return (
+                    <ContainerItem 
+                        key={index.toString()} 
+                        onPress={item.onPress} 
+                        title={item.title}
+                        color={item.color}
+                        imageKey={item.imageKey}
+                        side={(index + 1) % 2 != 0 ? "left" : "right"}
+                        index={index}
+                    />
+                )
+            }
+        )}
+        </View>
+        <View style={{width: '100%', height: 80}} />
+    </ScrollView>
   )
 }
 
@@ -96,19 +100,20 @@ const styles = StyleSheet.create({
         height: 140,
         borderWidth: 1,
         backgroundColor: Colors.gray,    
-        borderRadius: 4
+        borderRadius: 20,
+        borderCurve: "continuous"
     },
     image: {
-        width: 400, 
-        height: 180, 
-        position: 'absolute', 
-        top: -20
+        width: 440,
+        height: 200, 
+        position: 'absolute',   
+        top: -30
     },
     textBg: {
         width: '100%', 
         height: '40%', 
-        right: -10, 
-        borderRadius: 4,
+        right: -20, 
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
     }

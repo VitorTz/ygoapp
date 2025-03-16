@@ -9,7 +9,7 @@ import { Colors } from '@/constants/Colors';
 import { showToast } from '@/helpers/util';
 
 
-const CopyStringButton = ({text}: {text:string }) => {
+const CopyStringButton = ({text, color = Colors.red}: { text:string, color?: string }) => {
     
     const [isCopyng, setCopyng] = useState(false)
 
@@ -22,7 +22,7 @@ const CopyStringButton = ({text}: {text:string }) => {
 
     return (        
         <Pressable onPress={handleShare} hitSlop={AppConstants.hitSlopLarge} >
-            <Ionicons name='copy-outline' size={AppConstants.icon.size} color={AppConstants.icon.color} />
+            <Ionicons name='copy-outline' size={AppConstants.icon.size} color={color} />
         </Pressable>                    
     )
 }

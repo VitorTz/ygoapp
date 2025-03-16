@@ -1,73 +1,20 @@
-import { Pressable, ActivityIndicator, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { 
+  Pressable, 
+  SafeAreaView, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  View 
+} from 'react-native'
 import { Colors } from '@/constants/Colors'
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { AppStyle } from '@/style/AppStyle'
-import { Image } from 'expo-image'
-import { AppConstants } from '@/constants/AppConstants'
-import { router } from 'expo-router'
-import { getImageHeightCropped, hp, wp } from '@/helpers/util'
 import { Deck } from '@/helpers/types'
-import { MasonryFlashList } from '@shopify/flash-list'
 import { supaFetchDecks } from '@/lib/supabase'
+import BackButton from '@/components/BackButton'
+import DeckGrid from '@/components/grid/DeckGrid'
 
-
-const GRID_COLUMNS = 1
-const DECK_WIDTH = wp(90)
-const DECK_HEIGHT = getImageHeightCropped(DECK_WIDTH)
-
-
-const RenderDeck = ({deck}: {deck: Deck}) => {
-  return (
-    <View style={{marginBottom: 20}}>
-      <Image source={deck.image_url} style={{width: DECK_WIDTH, height: DECK_HEIGHT}} contentFit='cover' />
-      <View style={{width: '100%', padding: 20, borderTopWidth: 2, borderColor: Colors.purple, backgroundColor: Colors.gray}} >
-        <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>{deck.name}</Text>
-        <Text style={[AppStyle.textRegular, {fontSize: hp(2)}]}>Type: {deck.type}</Text>
-        <Text style={[AppStyle.textRegular, {fontSize: hp(2)}]}>Cards: {deck.num_cards}</Text>
-      </View>
-    </View>
-
-  )
-}
-
-
-const Footer = ({loading}: {loading: boolean}) => {
-    return (
-        <>
-            {
-                loading &&
-                <View style={{width: '100%', padding: 20, alignItems: "center", justifyContent: "center"}} >
-                    <ActivityIndicator size={40} color={Colors.purple}/>
-                </View>
-            }
-        </>
-    )
-}
-
-const DeckGrid = ({decks, loading}: {decks: Deck[], loading: boolean}) => {
-
-  const onEndReached = async () => {
-
-  }
-  
-
-  return (
-    <View style={{width: '100%', flex: 1, height: hp(100)}} >
-      <MasonryFlashList
-        data={decks}
-        keyExtractor={(item, index) => index.toString()}
-        estimatedItemSize={DECK_HEIGHT}
-        keyboardShouldPersistTaps={"handled"}
-        numColumns={GRID_COLUMNS}          
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={<Footer loading={loading} />}
-        renderItem={({item}) => <RenderDeck deck={item} />}
-        />
-    </View>
-  )
-}
 
 
 var searchTerm: string | null = null
@@ -83,7 +30,7 @@ const resetOptions = () => {
       ['frametypes', []],
       ['races', []],
       ['types', []],
-      ['deckType', 'TCG']
+      ['deckType', 'Any']
   ])
 }
 
@@ -103,7 +50,7 @@ const DeckDatabase = () => {
       page
     ).then(value => setDecks([...value]))
     setLoading(false)
-  }
+  }  
 
   useEffect(() => {    
     init()
@@ -122,9 +69,7 @@ const DeckDatabase = () => {
         <View style={{flex: 1, gap: 30, alignItems: "center", padding: 20}} >
           <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
             <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Deck Database</Text>
-            <Pressable onPress={() => router.back()} hitSlop={AppConstants.hitSlopLarge} >
-              <Ionicons name='return-down-back-outline' size={40} color={Colors.purple} />
-            </Pressable>
+            <BackButton color={Colors.deckColor}/>            
           </View>
           <View style={{flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
             <TextInput
@@ -135,10 +80,15 @@ const DeckDatabase = () => {
               placeholderTextColor={Colors.white}
             />
             <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
-              <Ionicons name='options-outline' size={40} color={Colors.purple} />
+              <Ionicons name='options-outline' size={40} color={Colors.deckColor} />
             </Pressable>
           </View>
-          <DeckGrid decks={decks} loading={loading}/>
+          <DeckGrid 
+            decks={decks} 
+            hasResult={true} 
+            loading={loading} 
+            columns={2} 
+            gap={30}/>
         </View>
     </SafeAreaView>
   )

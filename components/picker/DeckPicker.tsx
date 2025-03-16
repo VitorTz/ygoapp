@@ -48,7 +48,7 @@ const DeckPicker = ({options, applyFilter}: CardCustomPickerProps) => {
                 </View>
 
                 <View style={{flex: 1}}>
-                    <UniqueDropDownPicker defaultValue='TCG' options={options} optionKey='deckType' applyPicker={applyFilter} title='Deck Type' data={DECK_TYPES} zindex={2}/>
+                    <UniqueDropDownPicker defaultValue='Any' options={options} optionKey='deckType' applyPicker={applyFilter} title='Deck Type' data={DECK_TYPES} zindex={2}/>
                 </View>
             </View>
         </View>

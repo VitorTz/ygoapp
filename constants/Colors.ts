@@ -10,6 +10,11 @@ export const Colors = {
     orange: "#FF6740",
     red: "#F24E4E",
     purple: "#8746A7",
-    yellow: "#F8D137"
+    yellow: "#F8D137",
+    deckColor: "#8746A7",
+    cardColor: "#F24E4E",
+    packColor: "#FF6740",
+    accentColor: "#FF6740",
+    limitedColor: "#C14853"
   };
   

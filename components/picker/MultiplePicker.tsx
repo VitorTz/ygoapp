@@ -15,7 +15,8 @@ const MultipleDropDownPicker = ({
     zindex,
     allowEmptyValues = true,
     defaultValue = [],
-    searchable = false    
+    searchable = false,
+    accentColor = Colors.orange
 }: {
     title: string,
     options: Map<string, any>,
@@ -25,7 +26,8 @@ const MultipleDropDownPicker = ({
     zindex: number,
     allowEmptyValues?: boolean,   
     searchable?: boolean,    
-    defaultValue?: string[]
+    defaultValue?: string[],
+    accentColor?: string
 }) => {
     const [open, setOpen] = useState(false);        
     const [value, setValue] = useState<string[]>(defaultValue)
@@ -40,7 +42,7 @@ const MultipleDropDownPicker = ({
         <DropDownPicker
             zIndex={zindex}                
             open={open}
-            style={{backgroundColor: Colors.gray, borderWidth: 1, borderRadius: 0, borderColor: Colors.orange}}
+            style={{backgroundColor: Colors.gray, borderWidth: 0}}
             disabledStyle={{opacity: 0.5}}                             
             items={items}
             setOpen={setOpen}

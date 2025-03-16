@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system'
 import { API_CARD_WIDTH, API_CARD_HEIGHT, API_CARD_CROPPED_HEIGHT, API_CARD_CROPPED_WIDTH } from "@/constants/AppConstants";
 import { Dimensions } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { Card } from "./types";
 
 
 export function sleep(ms: number) {
@@ -100,4 +101,55 @@ export function max(a: number, b: number) {
 
 export function min(a: number, b: number) {
     return a <= b ? a : b
+}
+
+export function compString(a: string, b: string): number {
+    if (a < b) {
+        return -1
+    }
+    else if (a == b) {
+        return 0
+    }
+    return 1
+}
+
+export function sortCards(cards: Card[]): Card[] {
+    return cards.sort((a, b) => {return compString(a.name, b.name)})
+}
+
+const SIDE_DECK_FRAMETYPES: string[] = ["Xyz", "Link", "Synchro", "Ritual", "Fusion"]
+
+export function sortSideDeck(cards: Card[]): Card[] {
+    return cards.sort((a, b) => {
+        return SIDE_DECK_FRAMETYPES.indexOf(a.frametype) - SIDE_DECK_FRAMETYPES.indexOf(b.frametype);
+    });
+}
+
+export function orderCards(cards: Card[]): Card[] {
+    let monsters: Card[] = []
+    let spells: Card[] = []
+    let traps: Card[] = []
+    let side: Card[] = []
+    cards.forEach(item => {
+        if (SIDE_DECK_FRAMETYPES.includes(item.frametype)) {
+            side.push(item)
+        }
+        else if (item.attribute != null) {
+            monsters.push(item)
+        }
+        else if (item.frametype == "Spell") {
+            spells.push(item)
+        }
+        else if (item.frametype == "Trap") {
+            traps.push(item)
+        }
+        else {
+            side.push(item)
+        }
+    })
+    monsters = sortCards(monsters)
+    spells = sortCards(spells)
+    traps = sortCards(traps)
+    side = sortSideDeck(sortCards(side))
+    return [...monsters, ...spells, ...traps, ...side]
 }

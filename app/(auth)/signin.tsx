@@ -3,7 +3,7 @@ import React from 'react'
 import { AppStyle } from '../../style/AppStyle'
 import { router } from 'expo-router';
 import Logo from '../../components/Logo'
-import SignInForm from '../../components/SignInForm'
+import SignInForm from '../../components/form/SignInForm'
 import SkipButton from '../../components/SkipButton'
 
 

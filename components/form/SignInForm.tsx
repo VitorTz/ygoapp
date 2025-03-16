@@ -12,8 +12,8 @@ import {
 import { supabase, supaGetSession } from '@/lib/supabase';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Colors } from '../constants/Colors';
-import { showToast, sleep } from '../helpers/util'
+import { Colors } from '../../constants/Colors';
+import { showToast, sleep } from '../../helpers/util'
 import { useState } from 'react'
 import * as yup from 'yup';
 import { router } from 'expo-router';

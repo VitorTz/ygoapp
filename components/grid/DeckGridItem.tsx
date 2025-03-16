@@ -17,7 +17,7 @@ interface DeckCardProps {
 }
 
 
-const DeckCard = ({deck, index, columns, width, height}: DeckCardProps) => {    
+const DeckGridItem = ({deck, index, columns, width, height}: DeckCardProps) => {    
     
     const handlePress = () => {
         Keyboard.dismiss()            
@@ -30,22 +30,20 @@ const DeckCard = ({deck, index, columns, width, height}: DeckCardProps) => {
             <View style={[styles.container, {width: width}]} >
                 <Text style={[AppStyle.textRegular, {color: Colors.orange}]}>{deck.name}</Text>
                 <Text style={AppStyle.textRegular}>{deck.type}</Text>
-                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>
-                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>
+                <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>                
             </View>
         </Pressable>
     )
 }
 
-export default DeckCard
+export default DeckGridItem
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10, 
-        backgroundColor: Colors.gray, 
-        paddingVertical: 20,         
+        padding: 20, 
+        backgroundColor: Colors.gray,         
         borderTopWidth: 4, 
-        borderColor: Colors.orange
+        borderColor: Colors.deckColor
     },    
     button: {
         flex: 1,

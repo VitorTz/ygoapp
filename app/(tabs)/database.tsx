@@ -1,48 +1,53 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { AppStyle } from '@/style/AppStyle'
-import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
-import { Image } from 'expo-image'
-import Logo from '@/components/Logo'
 import { Ionicons } from '@expo/vector-icons'
-import Animated, { FadeInLeft } from 'react-native-reanimated'
 import { router } from 'expo-router'
 import LinkList, { ContainerData } from '@/components/LinkList'
-import { IMAGE_ICON } from '@/helpers/icon'
 
 
 const DATA: ContainerData[] = [
   {
     onPress: () => router.navigate("/deckDatabase"),
-    color: Colors.purple,
+    color: Colors.deckColor,
     title: "Decks",
-    imageKey: "UltimateSpirit"
+    imageKey: "DeckMonsterView"
   },
   {
     onPress: () => router.navigate("/cardDatabase"),
-    color: Colors.red,
+    color: Colors.cardColor,
     title: "Cards",
-    imageKey: "WingedDradonRa"
+    imageKey: "CardMonsterView"
   },
   {
     onPress: () => {},
-    color: Colors.orange,
+    color: Colors.packColor,
     title: "Packs",
-    imageKey: "Yubel"
+    imageKey: "PackMonsterView"
+  },
+  {
+    onPress: () => {},
+    color: Colors.limitedColor,
+    title: "Limited & Forbidden List",
+    imageKey: "LimitedMonsterView"
+  },
+  {
+    onPress: () => {},
+    color: Colors.black,
+    title: "Manga",
+    imageKey: "MangaView"
   }
 ]
 
 const Database = () => {
   return (
     <SafeAreaView style={AppStyle.safeArea}>
-      <View style={{flex: 1, gap: 30, alignItems: "center", padding: 20}} >
-        <View style={{width: '100%', flexDirection: 'row', marginBottom: 20, alignItems: "center", justifyContent: "space-between"}} >
-          <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Database</Text>
-          <Ionicons name='server-outline' size={40} color={Colors.orange} />
+      <View style={{flex: 1, gap: 10, alignItems: "center"}} >
+        <View style={{width: '100%', paddingHorizontal: 20, paddingVertical: 10, alignItems: "flex-start"}} >
+          <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Database</Text>          
         </View>
-              
         <LinkList data={DATA}/>
       </View>
     </SafeAreaView>
@@ -52,28 +57,5 @@ const Database = () => {
 export default Database
 
 const styles = StyleSheet.create({
-  topContainer: {
 
-  },
-  container: {
-    width: '100%',
-    height: 140,
-    borderWidth: 1,
-    backgroundColor: Colors.gray,    
-    borderRadius: 4
-  },
-  image: {
-    width: 400, 
-    height: 180, 
-    position: 'absolute', 
-    top: -20
-  },
-  textBg: {
-    width: '100%', 
-    height: '40%', 
-    right: -10, 
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-  }
 })

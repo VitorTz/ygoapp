@@ -2,14 +2,16 @@
 export const icons = {
     database: "server-outline",
     stats: "pie-chart-outline",
-    collection: "document-outline",
+    collection: "layers-outline",
     news: "newspaper-outline",
     profile: "person-circle-outline"
 };
 
 
 export const IMAGE_ICON = new Map<string, any>([
-    ["UltimateSpirit", require("@/assets/bg/ultimate_spirit_dragon.png")],
-    ["WingedDradonRa", require("@/assets/bg/the_winged_dragon_of_ra.png")],
-    ["Yubel", require("@/assets/bg/yubel.png")],
+    ["DeckMonsterView", require("@/assets/bg/el_shaddoll_construct.png")],
+    ["CardMonsterView", require("@/assets/bg/the_winged_dragon_of_ra.png")],
+    ["PackMonsterView", require("@/assets/bg/yubel.png")],
+    ["LimitedMonsterView", require("@/assets/bg/exodia.png")],    
+    ["MangaView", require("@/assets/bg/blue_eyes-modified.png")]
 ])

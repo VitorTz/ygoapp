@@ -36,7 +36,7 @@ const UniqueDropDownPicker = ({
         <DropDownPicker
             zIndex={zindex}                
             open={open}
-            style={{backgroundColor: Colors.gray, borderWidth: 1, borderRadius: 0, borderColor: Colors.orange}}
+            style={{backgroundColor: Colors.gray}}
             disabledStyle={{opacity: 0.5}}                             
             items={items}
             setOpen={setOpen}

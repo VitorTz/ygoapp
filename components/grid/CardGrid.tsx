@@ -5,47 +5,34 @@ import React from 'react'
 import { getItemGridDimensions } from '@/helpers/util'
 import { API_CARD_HEIGHT, API_CARD_WIDTH } from '@/constants/AppConstants'
 import { Card } from '@/helpers/types'
-
-
-interface DefaultRenderItemProsp {
-    card: Card
-    columns: number
-    index: number
-    width: number
-    height: number
-}
-
-const DefaultRenderItem = ({card, index, columns, width, height}: DefaultRenderItemProsp) => {    
-    return (
-        <View>
-            <Image source={card.image_url} style={{width, height, marginTop: index >= columns ? 10: 0}} />
-        </View>
-    )
-}
+import CardGridItem from './CardGridItem'
+import CustomGridFooter from './CustomGridFooter'
 
 
 interface CardGridProps {
     cards: any[]
     numColumns: number
     onEndReached?: () => void
-    hasResults?: boolean
-    Footer?: any
-    RenderItem?: any
+    loading: boolean
+    hasResults: boolean
+    padding?: number
+    gap?: number
 }
+
 
 const CardGrid = ({
     cards, 
-    numColumns, 
-    Footer, 
-    RenderItem, 
+    numColumns,     
     onEndReached,
-    hasResults = true
+    loading,
+    hasResults,
+    padding = 10,
+    gap = 10
 }: CardGridProps) => {
-    const Item = RenderItem ? RenderItem : DefaultRenderItem    
     
     const {width, height} = getItemGridDimensions(
-        10, 
-        10, 
+        padding,
+        gap, 
         numColumns, 
         API_CARD_WIDTH, 
         API_CARD_HEIGHT
@@ -55,14 +42,15 @@ const CardGrid = ({
         <View style={{width: '100%', flex: 1, paddingLeft: 5}} >
             <FlashList                
                 data={cards}
+                nestedScrollEnabled={true}
                 keyboardShouldPersistTaps={"handled"}                
                 numColumns={numColumns}
                 keyExtractor={(card, index) => index.toString()}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
-                ListFooterComponent={Footer ? () => <Footer hasResults={hasResults} /> : null}
+                onEndReachedThreshold={0.5}                
                 estimatedItemSize={height}
-                renderItem={({item, index}) => <Item card={item} index={index} width={width} height={height} columns={numColumns} ></Item>}
+                ListFooterComponent={<CustomGridFooter loading={loading} hasResults={hasResults}/>}
+                renderItem={({item, index}) => <CardGridItem card={item} index={index} width={width} height={height} columns={numColumns}/>}
             />
         </View>
     )

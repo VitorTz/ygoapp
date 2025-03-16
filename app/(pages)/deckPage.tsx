@@ -1,61 +1,45 @@
-import { SafeAreaView, Keyboard, ScrollView, FlatList, StyleSheet, Text, View, Pressable } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import AddDeckToUserCollection from '@/components/AddDeckToUserCollection'
-import { Ionicons } from '@expo/vector-icons'
-import { AppStyle } from '@/style/AppStyle'
-import { API_CARD_CROPPED_WIDTH, API_CARD_HEIGHT, API_CARD_WIDTH, AppConstants } from '@/constants/AppConstants'
-import { router, useLocalSearchParams } from 'expo-router'
-import { Colors } from '@/constants/Colors' 
-import { Image } from 'expo-image'
-import React, { useEffect, useState } from 'react'
-import { getImageHeightCropped, getItemGridDimensions, hp, wp } from '@/helpers/util'
 import Animated, { FadeInUp } from 'react-native-reanimated'
-import { Card } from '@/helpers/types'
+import { getImageHeightCropped, hp, wp } from '@/helpers/util'
+import { AppConstants } from '@/constants/AppConstants'
 import { supaFetchCardsFromDeck } from '@/lib/supabase'
-import CardGrid from '@/components/CardGrid'
-import { FlashList } from '@shopify/flash-list'
+import { useLocalSearchParams } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import CardGrid from '@/components/grid/CardGrid'
+import BackButton from '@/components/BackButton'
+import { AppStyle } from '@/style/AppStyle'
+import { Colors } from '@/constants/Colors' 
+import { Card } from '@/helpers/types'
+import { Image } from 'expo-image'
 
 
-
-const {width: cardWidth, height: cardHeight} = getItemGridDimensions(wp(5), 20, 4, API_CARD_WIDTH, API_CARD_HEIGHT)
 const GRID_COLUMNS = 4
 
 
-const DeckInfo = ({title, info}: {title: string, info: string}) => {
+const DeckInfo = ({title, info}: {title: string, info: any}) => {
     return (
         <View>
-            <Text style={AppStyle.textHeader}>{title}</Text>
+            <Text style={[AppStyle.textHeader, {color: Colors.accentColor}]}>{title}</Text>
             <Text style={AppStyle.textRegular}>{info.replace(/,\s*/g, ', ')}</Text>
         </View>
     )
 }
 
-const CardItem = ({card, index}: {card: Card, index: number}) => {
-    
-    const handlePress = () => {
-        Keyboard.dismiss()
-        router.navigate({pathname: "/(pages)/cardPage", params: card})
-    }
-    
-    return (
-        <Pressable onPress={handlePress}>
-            <Image style={{width: cardWidth, height: cardHeight, marginTop: index >= GRID_COLUMNS ? 10 : 0}} source={card.image_url} />    
-        </Pressable>
-    )
-}
 
 const DeckPage = () => {
 
     const [cards, setCards] = useState<Card[]>([])
     const deck = useLocalSearchParams()
-    const deck_id: number = parseInt(deck.deck_id)
+    const deck_id: number = parseInt(deck.deck_id)    
 
     const deckWidth = wp(90)
     const deckHeight = getImageHeightCropped(deckWidth)
     
-    const init = async () => {
+    const init = async () => {        
         await supaFetchCardsFromDeck(deck_id).then(
-            values => {console.log(values.length); setCards([...values])}
-        )
+            values => setCards([...values])
+        )        
     }
 
     useEffect(
@@ -69,14 +53,14 @@ const DeckPage = () => {
         <SafeAreaView style={[AppStyle.safeArea, {padding: wp(5)}]} >
             <ScrollView>
                 <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-end"}} >
-                    <Ionicons onPress={() => router.back()} name='chevron-back-circle-outline' size={AppConstants.icon.size} color={Colors.orange} />
+                    <BackButton color={Colors.deckColor} />
                 </View>
 
                 <Animated.View entering={FadeInUp.delay(100).duration(600)} >
                     <Image 
                         source={deck.image_url} 
-                        style={{alignSelf: "center", width: deckWidth, height: deckHeight, marginVertical: 10, borderRadius: 4, borderWidth: 1, borderColor: Colors.orange}} 
-                        placeholder={AppConstants.blurhash}                        
+                        style={{alignSelf: "center", width: deckWidth, height: deckHeight, marginVertical: 10}} 
+                        placeholder={AppConstants.blurhash}
                         contentFit='cover' />
                 </Animated.View>
 
@@ -86,12 +70,20 @@ const DeckPage = () => {
                     <DeckInfo title='Attributes' info={deck.attributes} />
                     <DeckInfo title='Frametypes' info={deck.frametypes} />
                     <DeckInfo title='Races' info={deck.races} />
-                    <DeckInfo title='Types' info={deck.types} />
-                    <AddDeckToUserCollection deck_id={deck_id} />
+                    <DeckInfo title='Types' info={deck.types} />                    
+                    <Text style={AppStyle.textHeader}>Description</Text>
+                    <ScrollView style={{width: '100%', maxHeight: hp(30)}} nestedScrollEnabled={true} >                        
+                        <Text style={AppStyle.textRegular}>{deck.descr}</Text>
+                    </ScrollView>
+                    <AddDeckToUserCollection deck_id={deck_id}/>
                 </View>
 
-                <View style={[styles.container, {flexDirection: 'row', flexWrap: 'wrap', alignItems: "center", justifyContent: "center", marginTop: 10, padding: 10}]} >
-                    <CardGrid cards={cards} numColumns={GRID_COLUMNS} hasResults={true} RenderItem={CardItem} />
+                <View style={{marginTop: 10}} >
+                    <CardGrid 
+                        cards={cards} 
+                        numColumns={GRID_COLUMNS}
+                        hasResults={true}
+                        loading={false}/>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -106,9 +98,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.gray, 
         borderRadius: 4, 
         flex: 1, 
-        borderColor: Colors.orange, 
         gap: 10,
-        padding: wp(4),
-        borderWidth: 1
+        padding: wp(4)        
     }
 })

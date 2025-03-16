@@ -3,54 +3,61 @@ import {
     API_CARD_CROPPED_WIDTH, 
     API_CARD_CROPPED_HEIGHT 
 } from '@/constants/AppConstants'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { MasonryFlashList } from '@shopify/flash-list'
 import { Colors } from '@/constants/Colors'
 import { Deck } from '@/helpers/types'
+import { getItemGridDimensions } from '@/helpers/util'
 import { wp } from '@/helpers/util'
-import DeckCard from './DeckCard'
+import DeckGridItem from './DeckGridItem'
 import React from 'react'
+import CustomGridFooter from './CustomGridFooter'
 
 
-const GRID_GAP = 10
 
 interface DeckGridProps {
     decks: Deck[]
-    onEndReached: () => void
+    onEndReached?: () => void
     columns: number    
     hasResult: boolean
+    loading: boolean
+    padding?: number
+    gap?: number   
 }
 
-const DeckGrid = ({decks, onEndReached, columns, hasResult}: DeckGridProps) => {  
+const DeckGrid = ({
+  decks, 
+  onEndReached, 
+  columns, 
+  hasResult, 
+  loading, 
+  padding = 10, 
+  gap = 10
+}: DeckGridProps) => {
 
-  const Footer = () => {
-    return (
-      <>
-        {          
-          hasResult && 
-          <ActivityIndicator size={'large'} color={Colors.orange} />
-        }
-      </>
-    )
-  }
-
-  const deckWidth = (wp(100) - DEFAULT_HORIZONTAL_PADDING - (columns * GRID_GAP)) / columns
-  const deckHeight = deckWidth * (API_CARD_CROPPED_HEIGHT / API_CARD_CROPPED_WIDTH)
+  const {width, height} = getItemGridDimensions(
+      padding,
+      gap, 
+      columns, 
+      API_CARD_CROPPED_WIDTH, 
+      API_CARD_CROPPED_HEIGHT
+  )
 
   return (        
     <View style={styles.container}>
         <MasonryFlashList          
           data={decks}          
+          nestedScrollEnabled={true}
           keyboardShouldPersistTaps={"handled"}
           numColumns={columns}
           estimatedItemSize={80}
           onEndReached={onEndReached}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={<Footer/>}          
+          ListFooterComponent={<CustomGridFooter color={Colors.deckColor} hasResults={hasResult} loading={loading}/>}
           renderItem={
               ({item, index}) => {
                 return (
-                  <DeckCard columns={columns} width={deckWidth} height={deckHeight} key={index} index={index} deck={item}/>
+                  <DeckGridItem columns={columns} width={width} height={height} key={index} index={index} deck={item}/>
                 )
             }
           }
