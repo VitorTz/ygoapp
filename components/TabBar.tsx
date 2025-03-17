@@ -59,20 +59,22 @@ export default TabBar;
 
 
 const styles = StyleSheet.create({
-    container: {              
+    container: {           
+      borderTopWidth: 2,
+      borderColor: Colors.gray,   
       paddingVertical: 14, 
       width: '100%',      
       position: 'absolute',
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: Colors.gray,      
+      backgroundColor: Colors.background,      
       bottom: 0
     },
     tabBarItem: {
       flex: 1,      
       justifyContent: "center",      
-      alignItems: "center"
+      alignItems: "center"      
   }
     
 })

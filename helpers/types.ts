@@ -30,8 +30,8 @@ export interface Card {
     descr: string
     image_url: string
     cropped_image_url: string
+    num_copies: number | null
 }
-
 
 export type DeckType = "Structure" | "Community" | "Starter" | "Any" | "TCG"
 

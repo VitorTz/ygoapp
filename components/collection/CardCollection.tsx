@@ -17,6 +17,8 @@ const CardCollection = () => {
   const [loading, setLoading] = useState(false)
   const [cards, setCards] = useState<Card[]>([])
 
+  let num_cards = 0
+  cards.forEach(item => item.num_copies ? num_cards += item.num_copies : null)
   const showLoading = cards.length == 0 && loading
 
   const update = async () => {
@@ -36,7 +38,7 @@ const CardCollection = () => {
   return (
     <View style={[styles.container, {borderColor: Colors.cardColor, height: hp(50)}]} >
       <View style={[styles.textBg, {flexDirection: 'row', backgroundColor: Colors.cardColor, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10}]} >
-          <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Cards</Text>
+          <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Cards: {num_cards}</Text>
           <Pressable onPress={() => router.navigate("/(pages)/cardDatabase")} hitSlop={AppConstants.hitSlopLarge} >
             <Ionicons name='add' color={Colors.white} size={32} />
           </Pressable>
@@ -65,13 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,    
     borderRadius: 4
-  },
-  image: {
-    width: 400, 
-    height: 180, 
-    position: 'absolute', 
-    top: -20
-  },
+  },  
   textBg: {
     width: '100%', 
     height: hp(6),

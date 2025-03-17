@@ -90,9 +90,10 @@ export const downloadImage = async (fileName: string, imageUrl: string) => {
 }
 
 export function removeTrailingNewlines(str: string) {
-    return str.replace(/\n+$/, '')
+    return str
+      .replace(/^\n+/, '')  // Remove quebras do início
+      .replace(/\n+$/, ''); // Remove quebras do final
 }
-
 
 export function max(a: number, b: number) {
     return a >= b ? a : b

@@ -37,7 +37,7 @@ const DATA: ContainerData[] = [
   },
   {
     onPress: () => {},
-    color: Colors.black,
+    color: Colors.mediumGray,
     title: "Manga",
     imageKey: "MangaView"
   }

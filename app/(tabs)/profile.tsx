@@ -1,5 +1,5 @@
 import { ActivityIndicator, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { supabase, supaGetSession, supaGetUser, supaRandomTrivia } from '../../lib/supabase'
+import { supabase, supaGetSession, supaGetUser, fetchRandomTrivia } from '../../lib/supabase'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { AppConstants } from '../../constants/AppConstants'
@@ -100,7 +100,7 @@ const RandomTrivia = () => {
     const [text, setText] = useState<string | null>('')
 
     const update = async () => {
-        const data = await supaRandomTrivia()
+        const data = await fetchRandomTrivia()
         setText(data)
     }
 

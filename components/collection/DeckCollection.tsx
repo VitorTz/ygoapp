@@ -34,7 +34,7 @@ const DeckCollection = () => {
     return (
       <View style={[styles.container, {borderColor: Colors.purple}]} >
         <View style={[styles.textBg, {flexDirection: 'row', backgroundColor: Colors.purple, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10}]} >
-            <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Decks</Text>
+            <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Decks: {decks.length}</Text>
             <Pressable onPress={() => router.navigate("/(pages)/createDeck")} hitSlop={AppConstants.hitSlopLarge} >
                 <Ionicons name='add' color={Colors.white} size={32} />
             </Pressable>

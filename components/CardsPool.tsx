@@ -7,34 +7,35 @@ import { AppStyle } from '@/style/AppStyle'
 import CardGrid from './grid/CardGrid'
 
 
-const CardsPool = ({
-    cards, 
-    onPress,
-    color = Colors.orange
-}: {
-    cards: Card[], 
-    onPress: (card: Card) => void,
+interface CardPoolProps {
+    cardsOnPool: Card[]
+    onCardPress: (card: Card) => void,
     color?: string
-}) => {
+}
+
+const CardPool = ({
+    cardsOnPool,
+    onCardPress,
+    color = Colors.orange
+}: CardPoolProps) => {
     return (
         <View style={[styles.container, {borderColor: color}]} >
             <View style={[styles.header, {backgroundColor: color}]} >
                 <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]} >Cards</Text>
-                <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cards.length}</Text>
+                <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cardsOnPool.length}</Text>
             </View>
             <CardGrid
-                cards={cards}
+                cards={cardsOnPool}
                 hasResults={true}
                 loading={false}
                 numColumns={4}
-                onCardPress={onPress}
-                gap={20}                    
-            />
+                onCardPress={onCardPress}
+                gap={20}/>
         </View>
     )
 }
 
-export default CardsPool
+export default CardPool
 
 const styles = StyleSheet.create({
     container: {

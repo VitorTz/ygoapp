@@ -76,7 +76,7 @@ const CardPage = () => {
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                         renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
-                    />                        
+                    />
                     <View>
                         <Text style={AppStyle.textRegular} >{card.descr}</Text>
                     </View>

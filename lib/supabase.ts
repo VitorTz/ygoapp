@@ -6,7 +6,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card, Deck, ImageDB, UserDB } from '@/helpers/types';
 import { createClient } from '@supabase/supabase-js'
-import { orderCards } from '@/helpers/util';
+import { orderCards, removeTrailingNewlines, showToast, toTitleCase } from '@/helpers/util';
 
 
 
@@ -95,7 +95,109 @@ export async function supaRmvCardFromCollection(card_id: number, total: number):
 }
   
 
-export async function supaRandomTrivia(): Promise<string | null> {  
+export async function supaCreateDeck(
+  name: string, 
+  description: string, 
+  isPublic: boolean, 
+  cards: Card[]
+) {
+  const session = await supaGetSession()
+
+  if (!session) {
+    console.log("user has no session")
+    return false
+  }
+
+  const descr = removeTrailingNewlines(description.trim())
+  const archetypes = new Set<string>()
+  const attributes = new Set<string>()
+  const frametypes = new Set<string>()
+  const races = new Set<string>()
+  const types = new Set<string>()  
+
+  let cardMap = new Map<number, number>()
+  let attack = 0
+  let image_url = cards[0].cropped_image_url
+  
+  cards.forEach(item => {
+    if (item.attack && item.attack > attack) {
+      image_url = item.cropped_image_url
+    }
+    if (item.archetype) {
+      archetypes.add(item.archetype)
+    }
+
+    if (item.attribute) {
+      attributes.add(item.attribute)
+    }
+
+    if (item.frametype) {
+      frametypes.add(item.frametype)
+    }
+
+    if (item.race) {
+      races.add(item.race)
+    }
+
+    if (item.type) {
+      types.add(item.type)
+    }
+
+    if (cardMap.has(item.card_id)) {
+      cardMap.set(item.card_id, cardMap.get(item.card_id)! + 1)
+    } else {
+      cardMap.set(item.card_id, 1)
+    }
+  })  
+
+  const { data, error } = await supabase.from(
+    "decks"
+  ).insert(
+    [
+      {
+        name: toTitleCase(name.trimEnd()), 
+        descr: descr != '' ? descr : null,
+        type: "Community",
+        num_cards: cards.length,
+        is_public: isPublic,
+        created_by: session.user.id,
+        owner: session.user.id,
+        image_url: image_url,
+        archetypes: Array.from(archetypes),
+        attributes: Array.from(attributes),
+        frametypes: Array.from(frametypes),
+        races: Array.from(races),
+        types: Array.from(types)
+      }
+    ]
+  ).select("deck_id").single()
+
+  if (error) {
+    showToast("Error", error.message, "error")
+    return false
+  }
+
+  const deck_id = data.deck_id
+  const cardsToAdd: {deck_id: number, card_id: number, num_cards: number}[] = []
+
+  cardMap.forEach((value, key) => {
+    cardsToAdd.push({deck_id: deck_id, card_id: key, num_cards: value})
+  })
+
+  const {error: e1} = await supabase.from(
+    "deck_cards"
+  ).insert(cardsToAdd)
+
+  if (e1) {
+    const {data, error} = await supabase.from("decks").delete().eq("deck_id", deck_id)
+    return false
+  }
+
+  return true
+
+}
+
+export async function fetchRandomTrivia(): Promise<string | null> {  
   const { data, error } = await supabase.rpc('get_random_trivia_descr');
   if (error) {
     console.error('Erro ao obter trivia:', error);
@@ -122,7 +224,8 @@ export async function fetchUserCards(): Promise<Card[]> {
   const { data, error } = await supabase.from(
     "user_cards"
   ).select(
-    `
+    ` 
+      total,
       cards (
         card_id,
         name,
@@ -142,7 +245,7 @@ export async function fetchUserCards(): Promise<Card[]> {
   ).eq("user_id", session.user.id)
   if (error) { console.log(error) }
   let cards: Card[] = []
-  data?.forEach(item => cards.push(item.cards))
+  data?.forEach(item => cards.push({num_copies: item.total, ...item.cards}))
   return orderCards(cards)
 }
 

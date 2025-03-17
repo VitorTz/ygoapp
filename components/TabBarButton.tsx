@@ -64,11 +64,10 @@ const TabBarButton = (props: any) => {
       }
     )
   
-  
     return (
       <Pressable {...props} style={styles.container} hitSlop={AppConstants.hitSlop} >
         <Animated.View style={animatedIconStyle} >
-          <Ionicons name={icons[routeName]} size={22} color={color} />
+          <Ionicons name={icons[routeName]} size={20} color={color} />
         </Animated.View>
         <Animated.Text style={[styles.text, {color: color}, animatedTextStyle]}>
           {label}
@@ -84,7 +83,7 @@ const TabBarButton = (props: any) => {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      gap: 5    
+      gap: 5
     },
     text: {
       fontFamily: "LeagueSpartan_400Regular",

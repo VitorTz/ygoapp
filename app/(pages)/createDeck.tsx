@@ -1,16 +1,16 @@
-import { Pressable, ScrollView, TextInput, SafeAreaView, StyleSheet, Text, View, Switch, Keyboard } from 'react-native'
+import { Pressable, ScrollView, TextInput, SafeAreaView, StyleSheet, Text, View, Switch, Keyboard, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
-import { wp, hp, getImageHeight, showToast } from '@/helpers/util'
+import { wp, hp, getImageHeight, showToast, orderCards, sleep } from '@/helpers/util'
 import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import TopBar from '@/components/TopBar'
 import { Card } from '@/helpers/types'
-import CardsPool from '@/components/CardsPool'
-import { supaFetchCards } from '@/lib/supabase'
+import CardPool from '@/components/CardsPool'
+import { supaCreateDeck, supaFetchCards } from '@/lib/supabase'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated'
 import { Image } from 'expo-image'
 import { useCallback } from 'react'
@@ -21,6 +21,7 @@ import { Ionicons } from '@expo/vector-icons'
 import CardPicker from '@/components/picker/CardPicker'
 import Toast from 'react-native-toast-message'
 import CardGrid from '@/components/grid/CardGrid'
+import { router } from 'expo-router'
 
 
 
@@ -115,30 +116,33 @@ const CardComponent = ({
               </Pressable>
             </View>
             <Image style={{width: cardWidth, height: cardHeight}} source={card.image_url} />
+            <View style={{width: '100%', padding: wp(5), backgroundColor: Colors.gray, borderRadius: 4, borderWidth: 1, borderColor: Colors.accentColor, gap: 10}} >
 
-            <Text style={AppStyle.textHeader}>Copies on deck: {copiesOnDeck}</Text>            
-
-            <View style={{width: '100%', flexDirection: 'row', gap: 20}} >
-              <Pressable onPress={rmv} style={{flex: 1, height: 50, borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: Colors.cardColor}} >
-                <Ionicons name='remove-outline' size={32} color={Colors.white} />
-              </Pressable>
-              <Pressable onPress={add} style={{flex: 1, height: 50, borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: Colors.cardColor}} >
-                <Ionicons name='add-outline' size={32} color={Colors.white} />
-              </Pressable>
-            </View>
-
-            <FlatList
-              data={card_info}
-              keyExtractor={(item) => item.title}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}/>  
-            
-            <View style={{width: '100%', gap: 10}} >
-              <Text style={AppStyle.textHeader}>Description</Text>
-              <Text style={AppStyle.textRegular}>{card.descr}</Text>
-            </View>
+              <FlatList
+                  data={card_info}
+                  keyExtractor={(item) => item.title}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
+              />
+              
+              <View style={{width: '100%', gap: 10}} >
+                <Text style={AppStyle.textHeader}>Description</Text>
+                <Text style={AppStyle.textRegular}>{card.descr}</Text>
+              </View>
         
+              <Text style={AppStyle.textHeader}>Copies on deck: {copiesOnDeck}</Text>            
+
+              <View style={{width: '100%', flexDirection: 'row', gap: 20}} >
+                <Pressable onPress={rmv} style={{flex: 1, height: 50, borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: Colors.cardColor}} >
+                  <Ionicons name='remove-outline' size={32} color={Colors.white} />
+                </Pressable>
+                <Pressable onPress={add} style={{flex: 1, height: 50, borderRadius: 4, alignItems: "center", justifyContent: "center", backgroundColor: Colors.cardColor}} >
+                  <Ionicons name='add-outline' size={32} color={Colors.white} />
+                </Pressable>
+              </View>
+            </View>
+
           </View>
         </ScrollView>
     </Animated.View>
@@ -157,6 +161,11 @@ const resetOptions = () => {
         ['sort', 'name'],
         ['sortDirection', 'ASC']
     ])
+}
+
+interface SearchCardsProps {
+  onCardPress: (card: Card) => void
+  
 }
 
 const SearchCards = ({ openCardComponent }: {
@@ -184,14 +193,21 @@ const SearchCards = ({ openCardComponent }: {
     init()
   }, [])
 
-  const handleSearch = async (input: string | null) => {
+  const handleSearch = async (input: string | null, append: boolean = false) => {
+    setLoading(true)
     searchTerm = input ? input.trimEnd() : null
-    page = 0
+    page = append ? page + 1 : 0
     await supaFetchCards(
         searchTerm,
         options,
         page
-    ).then(value => setCards([...value]))    
+    ).then(value => append ? setCards(prev => [...prev, ...value]) : setCards([...value]))
+    setLoading(false)
+  }
+
+  const onEndReached = async () => {
+    console.log("end")    
+    debounceSearch(searchTerm, true)
   }
 
   const debounceSearch = useCallback(
@@ -203,8 +219,8 @@ const SearchCards = ({ openCardComponent }: {
     setFilterOpened(prev => !prev)
   }
   
-  const applyFilter = async () => {
-    await debounceSearch(searchTerm)
+  const applyFilter = async () => {    
+    debounceSearch(searchTerm)
   }
 
   return (
@@ -248,6 +264,7 @@ const SearchCards = ({ openCardComponent }: {
         loading={loading}
         numColumns={4}
         gap={20}
+        onEndReached={onEndReached}
         onCardPress={openCardComponent}/>
 
     </View>
@@ -296,7 +313,14 @@ const CreateDeck = () => {
       return
     }
     setLoading(true)
-    console.log(formData)
+    const success = await supaCreateDeck(formData.name, formData.description, isPublic, cardsOnDeck)
+    if (!success) {
+      showToast("Error", "Could not create deck", "error")
+    } else {
+      showToast("Success!", `Deck ${formData.name.trimEnd()} created!`, "success")
+      await sleep(400)
+      router.back()
+    }
     setLoading(false)
   }
 
@@ -311,7 +335,7 @@ const CreateDeck = () => {
       return
     }
     cardsMap.current.set(card.card_id, n + 1)    
-    setCardsOnDeck(prev => [...prev, ...[card]])
+    setCardsOnDeck(prev => orderCards([...prev, ...[card]]))
   }
 
   const rmvCardFromDeck = async (card: Card) => {
@@ -394,15 +418,20 @@ const CreateDeck = () => {
           </View>
 
           <Pressable onPress={handleSubmit(onSubmit)} style={{width: '100%', justifyContent: "center", alignItems: "center", height: 50, borderRadius: 4, backgroundColor: Colors.deckColor}} >
-            <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Create</Text>
+            {
+              loading ? 
+              <ActivityIndicator size={32} color={Colors.white} /> :
+              <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Create</Text>
+            }
           </Pressable>
 
-          <CardsPool 
-            cards={cardsOnDeck} 
-            onPress={openCardComponent}
+          <CardPool 
+            cardsOnPool={cardsOnDeck} 
+            onCardPress={openCardComponent}
             color={Colors.deckColor}/>
-          <SearchCards            
-            openCardComponent={openCardComponent}/>
+
+          <SearchCards openCardComponent={openCardComponent}/>
+
         </View>
       </ScrollView>
       {
@@ -438,5 +467,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between", 
     paddingHorizontal: wp(2),
     backgroundColor: Colors.deckColor
-}
+  }
 })

@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
-import { wp } from '@/helpers/util'
+import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { IMAGE_ICON } from '@/helpers/icon'
@@ -34,8 +34,8 @@ const ContainerItem = ({
     side,
     index
 }: ContainerItem) => {  
-  const txtBgStyle = side == "right" ? { left: -10 } : { right: -10 }
-  const imageStyle = side == "right" ? { left: 60 } : { left : -130 }
+  const txtBgStyle = side == "right" ? { left: -wp(2.6) } : { right: -wp(2.6) }
+  const imageStyle = side == "right" ? { left: wp(45) } : { left : -wp(5) }
 const fade = side == "left" ? 
     FadeInLeft.delay((index + 1)* 50).duration(600) : 
     FadeInRight.delay((index + 1)* 50).duration(600)
@@ -99,17 +99,17 @@ const styles = StyleSheet.create({
     container: {        
         width: '100%',
         overflow: "visible",
-        height: 140,
+        height: hp(16),
         borderWidth: 1,
-        backgroundColor: Colors.gray,    
+        backgroundColor: Colors.background,
         borderRadius: 20,
         borderCurve: "continuous"
     },
     image: {
-        width: 440,
-        height: 200, 
-        position: 'absolute',   
-        top: -30        
+        width: wp(50),
+        height: hp(40), 
+        position: 'absolute',
+        top: -wp(25)        
     },
     textBg: {
         width: '100%', 
