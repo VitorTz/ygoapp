@@ -11,15 +11,17 @@ interface CardPoolProps {
     cardsOnPool: Card[]
     onCardPress: (card: Card) => void,
     color?: string
+    height?: number
 }
 
 const CardPool = ({
     cardsOnPool,
     onCardPress,
-    color = Colors.orange
+    color = Colors.orange,
+    height = hp(54)
 }: CardPoolProps) => {
     return (
-        <View style={[styles.container, {borderColor: color}]} >
+        <View style={[styles.container, {borderColor: color, height}]} >
             <View style={[styles.header, {backgroundColor: color}]} >
                 <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]} >Cards</Text>
                 <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cardsOnPool.length}</Text>
@@ -39,8 +41,7 @@ export default CardPool
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: hp(54),
+        width: '100%',        
         gap: wp(2),
         borderRadius: 4,
         borderWidth: 1 

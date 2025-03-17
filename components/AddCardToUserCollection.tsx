@@ -65,7 +65,7 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         
     return (
         <View style={{width: '100%'}}>
-            <Text style={AppStyle.textHeader} >Collection</Text>
+            <Text style={[AppStyle.textHeader, {color: Colors.cardColor}]} >Collection</Text>
             <Text style={AppStyle.textRegular} >Total: {total}</Text>
             <View style={{width: '100%', marginTop: 10, flexDirection: 'row', alignItems: "center", justifyContent: "center", gap: 10}} >
                 <TextInput
@@ -84,10 +84,10 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
                         :
                         <>
                         <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
-                            <Pressable onPress={async () => handlePress("Rmv")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
+                            <Pressable onPress={async () => handlePress("Rmv")} style={styles.button} >
                                 <Ionicons name='remove-outline' size={32} color={Colors.white} />
                             </Pressable>
-                            <Pressable onPress={async () => handlePress("Add")} style={{flex: 1, alignItems: "center", justifyContent: "center", height: height, backgroundColor: Colors.orange, borderRadius: 4}} >
+                            <Pressable onPress={async () => handlePress("Add")} style={styles.button} >
                                 <Ionicons name='add-outline' size={32} color={Colors.white} />
                             </Pressable>
                         </View>
@@ -101,4 +101,13 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
 
 export default AddCardToUserCollection
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    button: {
+        flex: 1, 
+        alignItems: "center", 
+        justifyContent: "center", 
+        height: 50, 
+        backgroundColor: Colors.red, 
+        borderRadius: 4
+    }
+})

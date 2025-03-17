@@ -6,6 +6,8 @@ import { Image } from 'expo-image'
 import React from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
+import { AppConstants } from '@/constants/AppConstants'
+import { Ionicons } from '@expo/vector-icons'
 
 
 interface DeckCardProps {
@@ -13,22 +15,24 @@ interface DeckCardProps {
     index: number
     columns: number
     width: number
-    height: number
+    height: number    
+    onDeckPress?: (deck: Deck) => void
 }
 
 
-const DeckGridItem = ({deck, index, columns, width, height}: DeckCardProps) => {    
-    
-    const handlePress = () => {
-        Keyboard.dismiss()            
-        router.push({pathname: "/(pages)/deckPage", params: deck})
-    }
-
-    return (        
-        <Pressable onPress={() => handlePress()} style={[styles.button, {marginTop: index >= columns ? 10 : 0}]}>
-            <Image contentFit='cover'  style={{width, height}} source={deck.image_url}/>
+const DeckGridItem = ({
+    deck, 
+    index, 
+    columns, 
+    width, 
+    height, 
+    onDeckPress
+}: DeckCardProps) => {
+    return (
+        <Pressable onPress={() => onDeckPress ? onDeckPress(deck) : null} style={[styles.button, {marginTop: index >= columns ? 10 : 0}]}>
+            <Image contentFit='cover' style={{width, height}} source={deck.image_url}/>
             <View style={[styles.container, {width: width}]} >
-                <Text style={[AppStyle.textRegular, {color: Colors.orange}]}>{deck.name}</Text>
+                <Text style={[AppStyle.textRegular, {color: Colors.white}]}>{deck.name}</Text>                
                 <Text style={AppStyle.textRegular}>{deck.type}</Text>
                 <Text style={AppStyle.textRegular}>{deck.num_cards} cards</Text>                
             </View>
@@ -40,10 +44,11 @@ export default DeckGridItem
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20, 
+        padding: 10, 
         backgroundColor: Colors.gray,         
         borderTopWidth: 4, 
-        borderColor: Colors.deckColor
+        borderColor: Colors.deckColor,
+        gap: 6
     },    
     button: {
         flex: 1,

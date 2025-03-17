@@ -52,3 +52,21 @@ export interface Deck {
     owner: string
     userIsOwner: boolean
 }
+
+export interface UserDeck {
+    name: string
+    deck_id: number
+    descr: string | null
+    num_cards: number
+    image_url: string | null
+    type: DeckType
+    archetypes: string[]
+    attributes: string[]
+    frametypes: string[]
+    races: string[]
+    types: string[]
+    is_public: boolean
+    created_by: string
+    owner: string
+    userIsOwner: boolean    
+}

@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { Session } from '@supabase/supabase-js'
 import { UserDB } from '@/helpers/types'
+import RandomTrivia from '@/components/RandomTrivia'
 
 
 interface OptionProps {
@@ -19,6 +20,7 @@ interface OptionProps {
     iconName: string
     onPress: () => void
 }
+
 
 const Option = ({title, subTitle, iconName, onPress}: OptionProps) => {
 
@@ -58,13 +60,9 @@ const ProfileIcon = () => {
     }
 
     useFocusEffect(
-        useCallback(
-            () => {
-                update()
-            },
-            []
-        )
-    )
+        useCallback(() => {
+            update()
+    },[]))
 
     const changeIcon = () => {
         router.push("/(pages)/changeProfileIcon")
@@ -94,37 +92,6 @@ const ProfileIcon = () => {
     )
 }
 
-
-const RandomTrivia = () => {
-        
-    const [text, setText] = useState<string | null>('')
-
-    const update = async () => {
-        const data = await fetchRandomTrivia()
-        setText(data)
-    }
-
-    useFocusEffect(
-        useCallback(
-            () => {
-                update()
-            },
-            []
-        )
-    )
-
-    return (
-        <View style={{width: '100%', gap: 4}} >
-            {
-                text != '' &&
-                <ScrollView style={{maxHeight: 100}} >
-                    <Text style={[AppStyle.textRegular, {color: Colors.orange}]} >Did you know?</Text>
-                    <Text style={AppStyle.textRegular} >{text}</Text>
-                </ScrollView>            
-            }
-        </View>
-    )
-}
 
 const Profile = () => {
     
@@ -180,10 +147,10 @@ const Profile = () => {
                     <ActivityIndicator size={64} color={Colors.orange} /> :
 
                     <View style={styles.container} >
-                        <View style={{alignItems: "center", marginBottom: 20}} >
+                        <View style={{alignItems: "center"}} >
                             <ProfileIcon/>
                         </View>
-                        <View style={{gap: 20, marginBottom: 10}} >
+                        <View style={{gap: 16}} >
                             <Option title='Profile' subTitle='Name, email, password...' iconName='person-circle-outline' onPress={() => console.log("profile")} />
                             <Option title='Settings' subTitle='color theme' iconName='settings-outline' onPress={() => console.log("settings")} />
                             <Option title='Github' subTitle='source code' iconName='logo-github' onPress={github} />
@@ -201,13 +168,13 @@ export default Profile
 
 const styles = StyleSheet.create({
     container: {
-        
         padding: 20, 
         borderRadius: 4, 
         backgroundColor: Colors.gray, 
-        alignItems: "center", 
+        alignItems: "center",
+        gap: 16,
         justifyContent: "center", 
-        marginHorizontal: 20
+        marginBottom: 60        
     },
     image: {
         width: 128, 

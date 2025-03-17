@@ -1,10 +1,10 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import AddDeckToUserCollection from '@/components/AddDeckToUserCollection'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { getImageHeightCropped, hp, wp } from '@/helpers/util'
 import { AppConstants } from '@/constants/AppConstants'
 import { supaFetchCardsFromDeck } from '@/lib/supabase'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import CardGrid from '@/components/grid/CardGrid'
 import BackButton from '@/components/BackButton'
@@ -12,19 +12,13 @@ import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors' 
 import { Card } from '@/helpers/types'
 import { Image } from 'expo-image'
+import TopBar from '@/components/TopBar'
+import CardPool from '@/components/CardsPool'
+import DeckInfo from '@/components/DeckInfo'
 
 
-const GRID_COLUMNS = 4
-
-
-const DeckInfo = ({title, info}: {title: string, info: any}) => {
-    return (
-        <View>
-            <Text style={[AppStyle.textHeader, {color: Colors.accentColor}]}>{title}</Text>
-            <Text style={AppStyle.textRegular}>{info.replace(/,\s*/g, ', ')}</Text>
-        </View>
-    )
-}
+const deckWidth = wp(90)
+const deckHeight = getImageHeightCropped(deckWidth)
 
 
 const DeckPage = () => {
@@ -33,9 +27,6 @@ const DeckPage = () => {
     const deck = useLocalSearchParams()
     const deck_id: number = parseInt(deck.deck_id)    
 
-    const deckWidth = wp(90)
-    const deckHeight = getImageHeightCropped(deckWidth)
-    
     const init = async () => {        
         await supaFetchCardsFromDeck(deck_id).then(
             values => setCards([...values])
@@ -49,13 +40,16 @@ const DeckPage = () => {
         []
     )
 
+    const openCardPage = (card: Card) => {
+        router.navigate({pathname: "/cardPage", params: card})
+    }
+
     return (
         <SafeAreaView style={[AppStyle.safeArea, {padding: wp(5)}]} >
+            <TopBar title='Deck' marginBottom={10} >
+                <BackButton color={Colors.deckColor} />
+            </TopBar>
             <ScrollView>
-                <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-end"}} >
-                    <BackButton color={Colors.deckColor} />
-                </View>
-
                 <Animated.View entering={FadeInUp.delay(100).duration(600)} >
                     <Image 
                         source={deck.image_url} 
@@ -65,25 +59,30 @@ const DeckPage = () => {
                 </Animated.View>
 
                 <View style={styles.container} >
-                    <Text style={AppStyle.textHeader}>{deck.name}</Text>                    
+                    <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>{deck.name}</Text>                    
                     <DeckInfo title='Archetypes' info={deck.archetypes} />
                     <DeckInfo title='Attributes' info={deck.attributes} />
                     <DeckInfo title='Frametypes' info={deck.frametypes} />
                     <DeckInfo title='Races' info={deck.races} />
-                    <DeckInfo title='Types' info={deck.types} />                    
-                    <Text style={AppStyle.textHeader}>Description</Text>
-                    <ScrollView style={{width: '100%', maxHeight: hp(30)}} nestedScrollEnabled={true} >                        
-                        <Text style={AppStyle.textRegular}>{deck.descr}</Text>
-                    </ScrollView>
+                    <DeckInfo title='Types' info={deck.types} />
+                    {
+                        deck.descr &&
+                        <>                        
+                            <Text style={[AppStyle.textRegular, {color: Colors.orange, fontSize: 28}]}>Description</Text>
+                            <ScrollView style={{width: '100%', maxHeight: hp(30)}} nestedScrollEnabled={true} >                        
+                                <Text style={AppStyle.textRegular}>{deck.descr}</Text>
+                            </ScrollView>
+                        </>
+                    }
                     <AddDeckToUserCollection deck_id={deck_id}/>
                 </View>
 
-                <View style={{marginTop: 10}} >
-                    <CardGrid 
-                        cards={cards} 
-                        numColumns={GRID_COLUMNS}
-                        hasResults={true}
-                        loading={false}/>
+                <View style={{width: '100%', marginTop: 10}} >
+                    <CardPool
+                        cardsOnPool={cards}
+                        color={Colors.deckColor}
+                        onCardPress={openCardPage}
+                        height={hp(100)}/>                    
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -94,9 +93,10 @@ export default DeckPage
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%', 
-        backgroundColor: Colors.gray, 
+        width: '100%',         
         borderRadius: 4, 
+        borderWidth: 1,
+        borderColor: Colors.deckColor,
         flex: 1, 
         gap: 10,
         padding: wp(4)        

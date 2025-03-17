@@ -84,7 +84,9 @@ const CardDatabase = () => {
 
     return (
         <SafeAreaView style={AppStyle.safeArea} >            
-            <TopBar title='Card Database' />
+            <TopBar title='Card Database'>
+                <BackButton color={Colors.red} />
+            </TopBar>
             <View style={{flexDirection: 'row', gap: 10, marginBottom: 10, alignItems: "center", justifyContent: "center"}} >
                 <TextInput
                 ref={inputRef}

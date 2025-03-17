@@ -47,7 +47,7 @@ const Database = () => {
   return (
     <SafeAreaView style={[AppStyle.safeArea, {paddingHorizontal: 0}]}>
       <View style={{width: '100%', paddingHorizontal: wp(5)}} >
-        <TopBar title='Database' showBackButton={false} />
+        <TopBar title='Database'/>
       </View>
       <LinkList data={DATA}/>
     </SafeAreaView>

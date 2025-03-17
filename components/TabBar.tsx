@@ -6,7 +6,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps ) => {
-    const [focusedColor, baseColor ] = [Colors.orange, Colors.white]
+    const [focusedColor, baseColor ] = [Colors.white, Colors.paleGrey]
     const { buildHref } = useLinkBuilder();
   
     return (

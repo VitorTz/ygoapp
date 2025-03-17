@@ -216,6 +216,64 @@ export async function fetchProfileIcons(): Promise<ImageDB[]> {
 }
 
 
+export async function fetchDeck(deck_id: number | string): Promise<Deck | null> {
+  const {data, error} = await supabase.from("decks").select(
+    `
+      deck_id,
+      name,
+      type,
+      descr,
+      image_url,    
+      num_cards,    
+      archetypes,
+      attributes,
+      frametypes,
+      races,
+      types,
+      created_by,
+      owner
+    ` 
+  ).eq("deck_id", deck_id).single().overrideTypes<Deck>()
+  if (error) {
+    console.log(error)
+    return null
+  }
+  return data
+}
+
+
+export async function fetchDeckCards(deck_id: number | string): Promise<Card[]> {
+  const {data, error} = await supabase.from("deck_cards").select(
+    `
+    num_cards,
+    cards (
+      card_id,
+      name,
+      descr,    
+      attack,
+      defence,
+      level,
+      attribute,
+      archetype,
+      frametype,
+      race,
+      type,
+      image_url,
+      cropped_image_url
+    )
+    `
+  ).eq("deck_id", deck_id)
+  let r: Card[] = []
+  data?.forEach(card => {
+    for (let i = 0; i < card.num_cards; i++) {
+      r.push(card.cards)
+    }
+  })
+  r = orderCards(r)
+  return r
+}
+
+
 export async function fetchUserCards(): Promise<Card[]> {
   const session = await supaGetSession()
   if (!session) {

@@ -9,6 +9,8 @@ import { fetchProfileIcons, supaGetUser, supaUpdateUserIcon } from '../../lib/su
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { ImageDB, UserDB } from '@/helpers/types'
+import TopBar from '@/components/TopBar'
+import BackButton from '@/components/BackButton'
 
 
 var profileIcons: ImageDB[] = []
@@ -51,23 +53,23 @@ const ChangeProfileIcon = () => {
   }
 
   return (
-    <SafeAreaView style={[AppStyle.safeArea]} >      
-      <View style={{flex: 1, paddingVertical: 20, gap: 40, paddingHorizontal: 10, alignItems: "center", justifyContent: "center", backgroundColor: Colors.gray, margin: 20, marginVertical: 40, borderRadius: 4}} >
+    <SafeAreaView style={AppStyle.safeArea} >
+      <TopBar title='Profile Icon' >
+        <BackButton/>
+      </TopBar>
+      <View style={{flex: 1, gap: 20, alignItems: "center", justifyContent: "center", backgroundColor: Colors.gray, padding: 20, borderRadius: 4}} >
         {
           loading ?
           <ActivityIndicator size={64} color={Colors.orange} /> :
           <>
 
-            <View style={{width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
-              {
-                isSaving ?
-                <ActivityIndicator size={32} color={Colors.orange} /> :
-                <Pressable onPress={saveChanges} hitSlop={AppConstants.hitSlopLarge} >
-                    <Ionicons name='checkmark-circle-outline' size={32} color={Colors.orange} />
-                </Pressable>
-              }
-              <Pressable onPress={() => router.back()} hitSlop={AppConstants.hitSlopLarge} >
-                <Ionicons name='chevron-back-circle-outline' size={32} color={Colors.orange} />
+            <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-end"}} >
+              <Pressable onPress={saveChanges} style={{width: 60, height: 40, alignItems: "center", justifyContent: "center", backgroundColor: Colors.accentColor, borderRadius: 4}} hitSlop={AppConstants.hitSlopLarge} >
+                {
+                  isSaving ?
+                  <ActivityIndicator size={20} color={Colors.white} /> :
+                  <Text style={AppStyle.textRegular}>save</Text>
+                }            
               </Pressable>
             </View>
 
@@ -109,7 +111,8 @@ const styles = StyleSheet.create({
   mainImage: {
     width: 128,
     height: 128,
-    borderRadius: 128
+    borderRadius: 128,
+    backgroundColor: Colors.background
   },
   image: {
     width: 64,

@@ -29,6 +29,10 @@ const DeckCollection = () => {
             update()
         }, [])
     )
+
+    const onDeckPress = (deck: Deck) => {
+      router.navigate({pathname: "/editDeck", params: deck})
+    }
   
   
     return (
@@ -42,13 +46,14 @@ const DeckCollection = () => {
         
         <View style={{width: '100%', flex: 1, padding: 10}} >
           <DeckGrid
+            allowEdit={true}
             decks={decks}
             columns={2}
             hasResult={true}
             loading={showLoading}
             padding={20}
             gap={30}
-          />      
+            onDeckPress={onDeckPress}/>
         </View>      
       </View>
     )

@@ -12,6 +12,7 @@ export const Colors = {
     purple: "#8746A7",
     yellow: "#F8D137",
     silver: "#C3C3C3",
+    paleGrey: "#E5E5E5",
     mediumGray: "#696969",
     deckColor: "#8746A7",
     cardColor: "#F24E4E",

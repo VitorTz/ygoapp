@@ -31,7 +31,7 @@ const CardInfo = ({title, value}: {title: string, value: any}) => {
             {
                 value &&                 
                 <View style={{marginRight: 10}} >
-                    <Text style={AppStyle.textHeader} >{title}</Text>
+                    <Text style={[AppStyle.textHeader, {color: Colors.red}]} >{title}</Text>
                     <Text style={AppStyle.textRegular} >{value}</Text>
                 </View>                
             }
@@ -78,7 +78,7 @@ const CardPage = () => {
                         renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
                     />
                     <View>
-                        <Text style={AppStyle.textRegular} >{card.descr}</Text>
+                        <Text style={[AppStyle.textRegular, {fontSize: 18}]} >{card.descr}</Text>
                     </View>
                     <AddCardToUserCollection card_id={card_id} />
                 </View>
@@ -91,8 +91,7 @@ export default CardPage
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%', 
-        backgroundColor: Colors.gray, 
+        width: '100%',         
         borderRadius: 4, 
         flex: 1, 
         borderColor: Colors.red, 

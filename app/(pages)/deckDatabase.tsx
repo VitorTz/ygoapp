@@ -1,4 +1,5 @@
 import { 
+  Keyboard,
   Pressable, 
   SafeAreaView, 
   StyleSheet, 
@@ -15,6 +16,7 @@ import { supaFetchDecks } from '@/lib/supabase'
 import BackButton from '@/components/BackButton'
 import DeckGrid from '@/components/grid/DeckGrid'
 import TopBar from '@/components/TopBar'
+import { router } from 'expo-router'
 
 
 
@@ -65,27 +67,35 @@ const DeckDatabase = () => {
 
   }
 
+  const onDeckPress = (deck: Deck) => {
+    Keyboard.dismiss()
+    router.navigate({pathname: "/deckPage", params: deck})
+  }
+
   return (
     <SafeAreaView style={AppStyle.safeArea} >        
-        <TopBar title='Deck Database' buttonColor={Colors.deckColor} />
-        <View style={{flexDirection: 'row', marginBottom: 10, gap: 10, alignItems: "center", justifyContent: "center"}} >
-          <TextInput
-            ref={inputRef}
-            style={styles.input}            
-            onChangeText={text => handleSearch(text)}
-            placeholder='search'
-            placeholderTextColor={Colors.white}
-          />
-          <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
-            <Ionicons name='options-outline' size={40} color={Colors.deckColor} />
-          </Pressable>
-        </View>
-        <DeckGrid 
-          decks={decks} 
-          hasResult={true} 
-          loading={loading} 
-          columns={2} 
-          gap={30}/>        
+      <TopBar title='Deck Database'>
+        <BackButton color={Colors.deckColor} />
+      </TopBar>
+      <View style={{flexDirection: 'row', marginBottom: 10, gap: 10, alignItems: "center", justifyContent: "center"}} >
+        <TextInput
+          ref={inputRef}
+          style={styles.input}            
+          onChangeText={text => handleSearch(text)}
+          placeholder='search'
+          placeholderTextColor={Colors.white}
+        />
+        <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
+          <Ionicons name='options-outline' size={40} color={Colors.deckColor} />
+        </Pressable>
+      </View>
+      <DeckGrid 
+        decks={decks} 
+        hasResult={true} 
+        loading={loading} 
+        columns={2}
+        gap={30}
+        onDeckPress={onDeckPress}/>
     </SafeAreaView>
   )
 }

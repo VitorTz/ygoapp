@@ -13,7 +13,7 @@ const Collection = () => {
 
   return (
     <SafeAreaView style={AppStyle.safeArea}>              
-      <TopBar title='Collection' showBackButton={false} />
+      <TopBar title='Collection' marginBottom={20}/>
       <ScrollView style={{width: '100%', marginBottom: 60}} >
         <View style={{width: '100%', gap: 20}} >
           <DeckCollection/>

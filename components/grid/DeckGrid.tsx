@@ -22,7 +22,9 @@ interface DeckGridProps {
     hasResult: boolean
     loading: boolean
     padding?: number
-    gap?: number   
+    gap?: number
+    allowEdit?: boolean
+    onDeckPress?: (deck: Deck) => void
 }
 
 const DeckGrid = ({
@@ -32,7 +34,8 @@ const DeckGrid = ({
   hasResult, 
   loading, 
   padding = 10, 
-  gap = 10
+  gap = 10,
+  onDeckPress 
 }: DeckGridProps) => {
 
   const {width, height} = getItemGridDimensions(
@@ -42,7 +45,7 @@ const DeckGrid = ({
       API_CARD_CROPPED_WIDTH, 
       API_CARD_CROPPED_HEIGHT
   )
-
+  
   return (        
     <View style={styles.container}>
         <MasonryFlashList          
@@ -57,7 +60,14 @@ const DeckGrid = ({
           renderItem={
               ({item, index}) => {
                 return (
-                  <DeckGridItem columns={columns} width={width} height={height} key={index} index={index} deck={item}/>
+                  <DeckGridItem 
+                    columns={columns} 
+                    width={width} 
+                    height={height} 
+                    key={index} 
+                    index={index} 
+                    deck={item}
+                    onDeckPress={onDeckPress}/>
                 )
             }
           }
