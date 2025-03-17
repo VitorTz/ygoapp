@@ -11,14 +11,17 @@ interface CardComponentProps {
     width: number
     height: number
     columns: number
+    onCardPress?: (card: Card) => void
 }
 
 
-const CardGridItem = ({card, index, width, height, columns}: CardComponentProps) => {
+const CardGridItem = ({card, index, width, height, columns, onCardPress}: CardComponentProps) => {
+
+    const p = onCardPress ? onCardPress : (card: Card) => router.navigate({pathname: "/(pages)/cardPage", params: card})
     
-    const handlePress = () => {
+    const handlePress = async () => {
         Keyboard.dismiss()
-        router.navigate({pathname: "/(pages)/cardPage", params: card})
+        await p(card)
     }
     
     return (

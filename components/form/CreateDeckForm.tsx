@@ -31,7 +31,7 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
 
     const [loading, setLoading] = useState(false)
     const [isPublic, setIsPublic] = useState(false)
-
+    
     const {
         control,
         handleSubmit,
@@ -56,7 +56,7 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
 
     return (
         <View style={{width: '100%', gap: 10}} >
-            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Deck name</Text>                    
+            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Name</Text>                    
                 <Controller
                     control={control}
                     name="name"
@@ -76,7 +76,7 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
                     name="description"
                     render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                        style={[styles.input, {height: hp(18), textAlignVertical: "top"}]}
+                        style={[styles.input, {height: hp(15), textAlignVertical: "top"}]}
                         onBlur={onBlur}
                         multiline={true}
                         onChangeText={onChange}
@@ -122,9 +122,9 @@ const styles = StyleSheet.create({
         fontFamily: "LeagueSpartan_400Regular"        
     },
     error: {
-        color: Colors.deckColor,
+        color: Colors.red,
         alignSelf: "flex-start",
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: "LeagueSpartan_200ExtraLight"
     },
 })

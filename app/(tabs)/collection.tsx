@@ -7,24 +7,19 @@ import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
 import CardCollection from '@/components/collection/CardCollection'
 import DeckCollection from '@/components/collection/DeckCollection'
+import TopBar from '@/components/TopBar'
 
 const Collection = () => {
 
   return (
-    <SafeAreaView style={AppStyle.safeArea}>
-      <View style={{flex: 1, gap: 30, alignItems: "center", padding: 20}} >
-        
-        <View style={{width: '100%', flexDirection: 'row', alignItems: "center"}} >
-          <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Collection</Text>          
+    <SafeAreaView style={AppStyle.safeArea}>              
+      <TopBar title='Collection' showBackButton={false} />
+      <ScrollView style={{width: '100%', marginBottom: 60}} >
+        <View style={{width: '100%', gap: 20}} >
+          <DeckCollection/>
+          <CardCollection/>
         </View>
-        <ScrollView style={{width: '100%', marginBottom: 60}} >
-          <View style={{width: '100%', gap: 20}} >
-            <DeckCollection/>
-            <CardCollection/>
-          </View>
-        </ScrollView>
-
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

@@ -4,6 +4,8 @@ import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { useState } from 'react'
 import React from 'react'
+import { wp } from '@/helpers/util'
+import { Ionicons } from '@expo/vector-icons'
 
 
 const MultipleDropDownPicker = ({
@@ -16,7 +18,8 @@ const MultipleDropDownPicker = ({
     allowEmptyValues = true,
     defaultValue = [],
     searchable = false,
-    accentColor = Colors.orange
+    accentColor = Colors.orange,
+    listMode = "FLATLIST"
 }: {
     title: string,
     options: Map<string, any>,
@@ -27,7 +30,8 @@ const MultipleDropDownPicker = ({
     allowEmptyValues?: boolean,   
     searchable?: boolean,    
     defaultValue?: string[],
-    accentColor?: string
+    accentColor?: string,
+    listMode?: "FLATLIST" | "MODAL" | "SCROLLVIEW"
 }) => {
     const [open, setOpen] = useState(false);        
     const [value, setValue] = useState<string[]>(defaultValue)
@@ -47,7 +51,9 @@ const MultipleDropDownPicker = ({
             items={items}
             setOpen={setOpen}
             theme='DARK'
-            listMode="FLATLIST"
+            listMode={listMode}
+            modalContentContainerStyle={{backgroundColor: Colors.background, padding: wp(5)}}            
+            modalAnimationType='slide'
             searchable={searchable}
             value={value}
             setValue={setValue}
@@ -58,7 +64,10 @@ const MultipleDropDownPicker = ({
             placeholder={title}
             badgeTextStyle={{color: Colors.background}}
             badgeColors={Colors.white} 
-            showBadgeDot={false}           
+            showBadgeDot={false}            
+            searchPlaceholderTextColor={Colors.white}
+            searchPlaceholder={`search ${title.toLocaleLowerCase()}...`}            
+            CloseIconComponent={() => <Ionicons name='close-circle-outline' size={32} color={Colors.white} />}
             textStyle={AppStyle.textRegular}
             min={allowEmptyValues ? 0 : 1}            
             onChangeValue={(value: any) => handlePress(value)}

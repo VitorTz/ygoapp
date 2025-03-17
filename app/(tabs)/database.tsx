@@ -5,7 +5,9 @@ import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import { wp } from '@/helpers/util'
 import LinkList, { ContainerData } from '@/components/LinkList'
+import TopBar from '@/components/TopBar'
 
 
 const DATA: ContainerData[] = [
@@ -43,13 +45,11 @@ const DATA: ContainerData[] = [
 
 const Database = () => {
   return (
-    <SafeAreaView style={AppStyle.safeArea}>
-      <View style={{flex: 1, gap: 10, alignItems: "center"}} >
-        <View style={{width: '100%', paddingHorizontal: 20, paddingVertical: 10, alignItems: "flex-start"}} >
-          <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Database</Text>          
-        </View>
-        <LinkList data={DATA}/>
+    <SafeAreaView style={[AppStyle.safeArea, {paddingHorizontal: 0}]}>
+      <View style={{width: '100%', paddingHorizontal: wp(5)}} >
+        <TopBar title='Database' showBackButton={false} />
       </View>
+      <LinkList data={DATA}/>
     </SafeAreaView>
   )
 }

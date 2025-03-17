@@ -8,11 +8,13 @@ import SortDropDownPicker from './SortPicker'
 const CardPicker = ({
     options, 
     applyPicker,
-    accentColor
+    accentColor,
+    listMode = "FLATLIST"
 }: {
     options: Map<string, any>, 
     applyPicker: () => void,
-    accentColor: string
+    accentColor: string,
+    listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
 }) => {
   return (
     <View style={{width: '100%', rowGap: 10}} >
@@ -20,6 +22,7 @@ const CardPicker = ({
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 
                     data={ARCHETYPES} 
+                    listMode={listMode}
                     options={options} 
                     optionKey='archetype' 
                     title='Archetype' 
@@ -31,7 +34,8 @@ const CardPicker = ({
             </View>
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 
-                    data={ATTRIBUTES} 
+                    data={ATTRIBUTES}
+                    listMode={listMode} 
                     options={options} 
                     optionKey='attribute' 
                     title='Attribute'
@@ -46,7 +50,8 @@ const CardPicker = ({
         <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 
-                    data={FRAMETYPES} 
+                    data={FRAMETYPES}
+                    listMode={listMode}
                     options={options} 
                     optionKey='frametype' 
                     title='Frametype' 
@@ -60,6 +65,7 @@ const CardPicker = ({
                 <MultipleDropDownPicker 
                     data={RACES} 
                     options={options} 
+                    listMode={listMode}
                     optionKey='race' 
                     title='Race'
                     applyPicker={applyPicker}
@@ -75,6 +81,7 @@ const CardPicker = ({
                 <MultipleDropDownPicker 
                     data={CARD_TYPES} 
                     options={options} 
+                    listMode={listMode}
                     optionKey='type' 
                     title='Type' 
                     applyPicker={applyPicker}
@@ -86,6 +93,7 @@ const CardPicker = ({
             <View style={{flex: 1}} >
                 <SortDropDownPicker
                     title='Sort'
+                    listMode={listMode}
                     options={options}
                     applyPicker={applyPicker}
                     zindex={1}/>                

@@ -18,6 +18,7 @@ import CardPicker from '@/components/picker/CardPicker'
 import BackButton from '@/components/BackButton'
 import CardGrid from '@/components/grid/CardGrid'
 import { AppConstants } from '@/constants/AppConstants'
+import TopBar from '@/components/TopBar'
 
 
 var searchTerm: string | null = null
@@ -82,13 +83,9 @@ const CardDatabase = () => {
     }
 
     return (
-        <SafeAreaView style={[AppStyle.safeArea]} >
-            <View style={{flex: 1, gap: 20, alignItems: "center", padding: 20}} >
-            <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
-                <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Card Database</Text>
-                <BackButton color={Colors.cardColor}/>
-            </View>
-            <View style={{flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
+        <SafeAreaView style={AppStyle.safeArea} >            
+            <TopBar title='Card Database' />
+            <View style={{flexDirection: 'row', gap: 10, marginBottom: 10, alignItems: "center", justifyContent: "center"}} >
                 <TextInput
                 ref={inputRef}
                 style={styles.input}            
@@ -106,16 +103,15 @@ const CardDatabase = () => {
                     }
                 </Pressable>
             </View>
-                <View style={{width: '100%', display: filterIsOpened ? "flex" : "none"}} >
-                    <CardPicker options={options} applyPicker={applyFilter} accentColor={Colors.cardColor}/>
-                </View>
-                <CardGrid 
-                    cards={cards} 
-                    hasResults={true} 
-                    loading={loading} 
-                    numColumns={4} 
-                    gap={20}/>
+            <View style={{width: '100%', display: filterIsOpened ? "flex" : "none"}} >
+                <CardPicker options={options} applyPicker={applyFilter} accentColor={Colors.cardColor}/>
             </View>
+            <CardGrid 
+                cards={cards} 
+                hasResults={true} 
+                loading={loading} 
+                numColumns={4} 
+                gap={20}/>            
         </SafeAreaView>
     )
 }

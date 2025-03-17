@@ -15,12 +15,14 @@ const SortDropDownPicker = ({
     title,
     options,    
     applyPicker,    
-    zindex    
+    zindex,
+    listMode = "FLATLIST"
 }: {
     title: string,
     options: Map<string, string | string[] | null>,    
     applyPicker: () => void,
-    zindex: number
+    zindex: number,
+    listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
 }) => {
     const [open, setOpen] = useState(false);        
     const [value, setValue] = useState<string[]>(["name", "ASC"])
@@ -79,7 +81,7 @@ const SortDropDownPicker = ({
             items={items}
             setOpen={setOpen}
             theme='DARK'
-            listMode="FLATLIST"            
+            listMode={listMode}            
             value={value}
             setValue={setValue}
             setItems={setItems}

@@ -36,10 +36,11 @@ const ContainerItem = ({
 }: ContainerItem) => {  
   const txtBgStyle = side == "right" ? { left: -10 } : { right: -10 }
   const imageStyle = side == "right" ? { left: 60 } : { left : -130 }
-    const fade = side == "left" ? 
-        FadeInLeft.delay((index + 1)* 50).duration(600) : 
-        FadeInRight.delay((index + 1)* 50).duration(600)
-  return (        
+const fade = side == "left" ? 
+    FadeInLeft.delay((index + 1)* 50).duration(600) : 
+    FadeInRight.delay((index + 1)* 50).duration(600)
+  
+    return (
     <Pressable onPress={onPress} style={[styles.container, {borderColor: color}]} >
         <Animated.View entering={fade}>
             <View 
@@ -48,7 +49,7 @@ const ContainerItem = ({
                 height: '100%', 
                 alignSelf: side == "right" ? "flex-start" : "flex-end", 
                 alignItems: "center", 
-                justifyContent: "center"
+                justifyContent: "center"                
             }}>
                 <View style={[styles.textBg, {backgroundColor: color}, txtBgStyle]} >
                 <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >{title}</Text>
@@ -69,25 +70,25 @@ const ContainerItem = ({
 const LinkList = ({data}: {data: ContainerData[]}) => {
 
   return (
-    <ScrollView style={{width: '100%', marginBottom: 60, padding: 20, paddingVertical: 30}} >
-        <View style={{width: '100%', gap: 30, alignItems: "center", justifyContent: "center"}} >
-        {data.map(
-            (item, index) => {
-                return (
-                    <ContainerItem 
-                        key={index.toString()} 
-                        onPress={item.onPress} 
-                        title={item.title}
-                        color={item.color}
-                        imageKey={item.imageKey}
-                        side={(index + 1) % 2 != 0 ? "left" : "right"}
-                        index={index}
-                    />
-                )
-            }
-        )}
+    <ScrollView style={{width: wp(100), paddingTop: 30}} >
+        <View style={{width: wp(90), left: wp(5), gap: 30, overflow: "visible", alignItems: "center", justifyContent: "center"}} >
+            {data.map(
+                (item, index) => {
+                    return (
+                        <ContainerItem 
+                            key={index.toString()} 
+                            onPress={item.onPress} 
+                            title={item.title}
+                            color={item.color}
+                            imageKey={item.imageKey}
+                            side={(index + 1) % 2 != 0 ? "left" : "right"}
+                            index={index}
+                        />
+                    )
+                }
+            )}
         </View>
-        <View style={{width: '100%', height: 80}} />
+        <View style={{width: '100%', height: 120}} />
     </ScrollView>
   )
 }
@@ -95,8 +96,9 @@ const LinkList = ({data}: {data: ContainerData[]}) => {
 export default LinkList
 
 const styles = StyleSheet.create({    
-    container: {
+    container: {        
         width: '100%',
+        overflow: "visible",
         height: 140,
         borderWidth: 1,
         backgroundColor: Colors.gray,    
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
         width: 440,
         height: 200, 
         position: 'absolute',   
-        top: -30
+        top: -30        
     },
     textBg: {
         width: '100%', 

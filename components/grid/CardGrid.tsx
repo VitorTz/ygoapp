@@ -17,6 +17,7 @@ interface CardGridProps {
     hasResults: boolean
     padding?: number
     gap?: number
+    onCardPress?: (card: Card) => void
 }
 
 
@@ -27,7 +28,8 @@ const CardGrid = ({
     loading,
     hasResults,
     padding = 10,
-    gap = 10
+    gap = 10,
+    onCardPress
 }: CardGridProps) => {
     
     const {width, height} = getItemGridDimensions(
@@ -50,7 +52,7 @@ const CardGrid = ({
                 onEndReachedThreshold={0.5}                
                 estimatedItemSize={height}
                 ListFooterComponent={<CustomGridFooter loading={loading} hasResults={hasResults}/>}
-                renderItem={({item, index}) => <CardGridItem card={item} index={index} width={width} height={height} columns={numColumns}/>}
+                renderItem={({item, index}) => <CardGridItem onCardPress={onCardPress} card={item} index={index} width={width} height={height} columns={numColumns}/>}
             />
         </View>
     )

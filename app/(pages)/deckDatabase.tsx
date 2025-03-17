@@ -14,6 +14,7 @@ import { Deck } from '@/helpers/types'
 import { supaFetchDecks } from '@/lib/supabase'
 import BackButton from '@/components/BackButton'
 import DeckGrid from '@/components/grid/DeckGrid'
+import TopBar from '@/components/TopBar'
 
 
 
@@ -65,31 +66,26 @@ const DeckDatabase = () => {
   }
 
   return (
-    <SafeAreaView style={[AppStyle.safeArea]} >
-        <View style={{flex: 1, gap: 30, alignItems: "center", padding: 20}} >
-          <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
-            <Text style={[AppStyle.textRegular, {fontSize: 32}]}>Deck Database</Text>
-            <BackButton color={Colors.deckColor}/>            
-          </View>
-          <View style={{flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
-            <TextInput
-              ref={inputRef}
-              style={styles.input}            
-              onChangeText={text => handleSearch(text)}
-              placeholder='search'
-              placeholderTextColor={Colors.white}
-            />
-            <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
-              <Ionicons name='options-outline' size={40} color={Colors.deckColor} />
-            </Pressable>
-          </View>
-          <DeckGrid 
-            decks={decks} 
-            hasResult={true} 
-            loading={loading} 
-            columns={2} 
-            gap={30}/>
+    <SafeAreaView style={AppStyle.safeArea} >        
+        <TopBar title='Deck Database' buttonColor={Colors.deckColor} />
+        <View style={{flexDirection: 'row', marginBottom: 10, gap: 10, alignItems: "center", justifyContent: "center"}} >
+          <TextInput
+            ref={inputRef}
+            style={styles.input}            
+            onChangeText={text => handleSearch(text)}
+            placeholder='search'
+            placeholderTextColor={Colors.white}
+          />
+          <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
+            <Ionicons name='options-outline' size={40} color={Colors.deckColor} />
+          </Pressable>
         </View>
+        <DeckGrid 
+          decks={decks} 
+          hasResult={true} 
+          loading={loading} 
+          columns={2} 
+          gap={30}/>        
     </SafeAreaView>
   )
 }
