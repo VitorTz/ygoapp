@@ -1,12 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import LinkList, { ContainerData } from '@/components/LinkList'
+import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
-import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { wp } from '@/helpers/util'
-import LinkList, { ContainerData } from '@/components/LinkList'
+import React from 'react'
 import TopBar from '@/components/TopBar'
 
 
@@ -45,11 +43,11 @@ const DATA: ContainerData[] = [
 
 const Database = () => {
   return (
-    <SafeAreaView style={[AppStyle.safeArea, {paddingHorizontal: 0}]}>
-      <View style={{width: '100%', paddingHorizontal: wp(5)}} >
+    <SafeAreaView style={AppStyle.safeArea}>
+      <View style={{flex: 1, alignItems: "center", justifyContent: "center"}} >
         <TopBar title='Database'/>
+        <LinkList data={DATA}/>
       </View>
-      <LinkList data={DATA}/>
     </SafeAreaView>
   )
 }

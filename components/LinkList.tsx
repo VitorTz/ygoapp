@@ -34,9 +34,9 @@ const ContainerItem = ({
     side,
     index
 }: ContainerItem) => {  
-  const txtBgStyle = side == "right" ? { left: -wp(2.6) } : { right: -wp(2.6) }
-  const imageStyle = side == "right" ? { left: wp(45) } : { left : -wp(5) }
-const fade = side == "left" ? 
+    const txtBgStyle = side == "right" ? { left: -wp(2.6) } : { right: -wp(2.6) }
+    const imageStyle = side == "right" ? { left: wp(45) } : { left : -wp(5) }
+    const fade = side == "left" ? 
     FadeInLeft.delay((index + 1)* 50).duration(600) : 
     FadeInRight.delay((index + 1)* 50).duration(600)
   

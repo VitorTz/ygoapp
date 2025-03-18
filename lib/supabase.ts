@@ -22,7 +22,7 @@ const EQ_COMP = [
 ]
 
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
+export const supabase = createClient(supabaseUrl, supabaseKey as any, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
@@ -42,7 +42,13 @@ export async function supaGetUser(): Promise<UserDB | null> {
     const session = await supaGetSession()
     const {data, error} = await supabase.from("users").select("name, image_id, images (image_url) ").eq("user_id", session.user.id).single()
     if (data) {
-        return {name: data.name, image: {image_id: data.image_id, image_url: data.images.image_url}}
+        return {
+          name: data.name, 
+          image: {
+            image_id: data.image_id, 
+            image_url: data.images.image_url
+          }
+        }
     }
     return null
 }
@@ -155,7 +161,7 @@ export async function supaCreateDeck(
   ).insert(
     [
       {
-        name: toTitleCase(name.trimEnd()), 
+        name: name.trimEnd(), 
         descr: descr != '' ? descr : null,
         type: "Community",
         num_cards: cards.length,
@@ -197,6 +203,99 @@ export async function supaCreateDeck(
 
 }
 
+export async function supaDeleteDeck(deck_id: number): Promise<boolean> {
+  const {data, error} = await supabase.from("decks").delete().eq("deck_id", deck_id)
+  if (error) {
+    console.log(error)
+    return false
+  }
+  return true
+}
+
+
+export async function supaUpdateDeck(
+  deck_id: number, 
+  deckName: string, 
+  deckDescr: string | null, 
+  isPublic: boolean,
+  cards: Card[]
+): Promise<boolean> {
+  
+  const descr = deckDescr ? removeTrailingNewlines(deckDescr.trim()) : null
+  const archetypes = new Set<string>()
+  const attributes = new Set<string>()
+  const frametypes = new Set<string>()
+  const races = new Set<string>()
+  const types = new Set<string>()  
+
+  let cardMap = new Map<number, number>()  
+  
+  cards.forEach(item => {    
+    if (item.archetype) {
+      archetypes.add(item.archetype)
+    }
+
+    if (item.attribute) {
+      attributes.add(item.attribute)
+    }
+
+    if (item.frametype) {
+      frametypes.add(item.frametype)
+    }
+
+    if (item.race) {
+      races.add(item.race)
+    }
+
+    if (item.type) {
+      types.add(item.type)
+    }
+
+    if (cardMap.has(item.card_id)) {
+      cardMap.set(item.card_id, cardMap.get(item.card_id)! + 1)
+    } else {
+      cardMap.set(item.card_id, 1)
+    }
+  })  
+
+  const { data, error } = await supabase.from(
+    "decks"
+  ).update(    
+      {
+        name: deckName.trimEnd(), 
+        descr: descr != '' ? descr : null,
+        type: "Community",
+        num_cards: cards.length,
+        is_public: isPublic,        
+        archetypes: Array.from(archetypes),
+        attributes: Array.from(attributes),
+        frametypes: Array.from(frametypes),
+        races: Array.from(races),
+        types: Array.from(types)
+      }    
+  ).eq('deck_id', deck_id)
+
+  if (error) {
+    showToast("Error", error.message, "error")
+    return false
+  }
+
+  const cardsToAdd: {deck_id: number, card_id: number, num_cards: number}[] = []
+
+  cardMap.forEach((value, key) => {
+    cardsToAdd.push({deck_id: deck_id, card_id: key, num_cards: value})
+  })
+
+  const {error: e1} = await supabase.from("deck_cards").upsert(cardsToAdd, {ignoreDuplicates: true})
+
+  if (e1) {
+    console.log("Error", e1)
+    return false
+  }
+
+  return true
+}
+
 export async function fetchRandomTrivia(): Promise<string | null> {  
   const { data, error } = await supabase.rpc('get_random_trivia_descr');
   if (error) {
@@ -209,8 +308,13 @@ export async function fetchRandomTrivia(): Promise<string | null> {
 
 export async function fetchProfileIcons(): Promise<ImageDB[]> {
   const { data } = await supabase.from("profile_icons").select("image_id, images (image_url)")
-  const r = data ? data.map(
-    item => {return {image_id: item.image_id, image_url: item.images.image_url}}
+  const r: ImageDB[] = data ? data.map(
+    item => {
+      return {
+        image_id: item.image_id, 
+        image_url: item.images.image_url 
+      }
+    }
   ) : []
   return r
 }
@@ -230,6 +334,7 @@ export async function fetchDeck(deck_id: number | string): Promise<Deck | null> 
       frametypes,
       races,
       types,
+      is_public,
       created_by,
       owner
     ` 
@@ -238,7 +343,7 @@ export async function fetchDeck(deck_id: number | string): Promise<Deck | null> 
     console.log(error)
     return null
   }
-  return data
+  return data as Deck
 }
 
 
@@ -266,7 +371,7 @@ export async function fetchDeckCards(deck_id: number | string): Promise<Card[]> 
   let r: Card[] = []
   data?.forEach(card => {
     for (let i = 0; i < card.num_cards; i++) {
-      r.push(card.cards)
+      r.push(card.cards as any)
     }
   })
   r = orderCards(r)
@@ -303,7 +408,7 @@ export async function fetchUserCards(): Promise<Card[]> {
   ).eq("user_id", session.user.id)
   if (error) { console.log(error) }
   let cards: Card[] = []
-  data?.forEach(item => cards.push({num_copies: item.total, ...item.cards}))
+  data?.forEach(item => cards.push({num_copies: item.total, ...item.cards} as any))
   return orderCards(cards)
 }
 
@@ -328,15 +433,16 @@ export async function fetchUserDecks(): Promise<Deck[]> {
       attributes,
       frametypes,
       races,
+      is_public,
       types,
       created_by,
       owner
     `
-  ).eq("owner", session?.user.id).overrideTypes<Deck[]>()
+  ).eq("owner", session?.user.id).order("updated_at", {ascending: false}).overrideTypes<Deck[]>()
   data?.forEach(
     item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by
   )
-  return data ? data : []
+  return data ? data as Deck[] : []
   
 }
 
@@ -412,6 +518,7 @@ export const supaFetchDecks = async (
     frametypes,
     races,
     types,
+    is_public,
     created_by,
     owner
   `)
@@ -482,7 +589,20 @@ export const supaFetchDecks = async (
   data?.forEach(
     item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by
   )
-  return data ? data : []
+  return data ? data as Deck[] : []
+}
+
+
+export async function supaUserIsOwnerOfDeck(deck_id: number): Promise<boolean> {
+  const session = await supaGetSession()  
+  if (!session) {
+    return false
+  }
+  const { data, error } = await supabase.from("decks").select("deck_id").eq("deck_id", deck_id).eq("owner", session.user.id).single()
+  if (error) {
+    console.log(error)
+  }
+  return data ? true : false
 }
 
 export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
@@ -509,7 +629,7 @@ export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
   let cards: Card[] = []
   data?.forEach(item => {
     for (let i = 0; i < item.num_cards; i++) {
-      cards.push(item.cards)
+      cards.push(item.cards as any)
     }
   })
   return orderCards(cards)  

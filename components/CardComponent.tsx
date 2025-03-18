@@ -10,10 +10,12 @@ import { AppConstants } from '@/constants/AppConstants'
 import { AppStyle } from '@/style/AppStyle'
 import { getImageHeight } from '@/helpers/util'
 import { Card } from '@/helpers/types'
-import CardInfo from './CardInfo'
 import React from 'react'
 import TopBar from './TopBar'
-import BackButton from './BackButton'
+import CardInfoFlatList from './CardInfoFlatList'
+import AddCardToUserCollection from './AddCardToUserCollection'
+import CopyCardToDeck from './CopyCardToDeck'
+
 
 
 const CardComponent = ({
@@ -29,32 +31,10 @@ const CardComponent = ({
     rmvCard: (card: Card) => void,
     numCardsOnDeck: number
   }) => {
-  
-    const [copiesOnDeck, setCopiesOnDeck] = useState(numCardsOnDeck)
+      
     const cardWidth = wp(90)
     const cardHeight = getImageHeight(cardWidth)
     
-    const card_info = [
-        {value: card.attack, title: 'Attack'},
-        {value: card.defence, title: 'Defence'},
-        {value: card.level, title: 'Level'},
-        {value: card.attribute, title: 'Attribute'},
-        {value: card.archetype, title: 'Archetype'},
-        {value: card.frametype, title: 'Frametype'},
-        {value: card.race, title: 'Race'},
-        {value: card.type, title: 'Type'}
-    ]
-  
-    const add = async () => {
-      setCopiesOnDeck(prev => prev <= 2 ? prev + 1 : prev)
-      await addCard(card)
-    }
-  
-    const rmv = async () => {
-      setCopiesOnDeck(prev => prev > 0 ? prev - 1 : prev)
-      await rmvCard(card)
-    }
-  
     return (      
       <Animated.View 
         entering={FadeIn.duration(500)} 
@@ -70,28 +50,9 @@ const CardComponent = ({
               <Image style={{width: cardWidth, height: cardHeight}} source={card.image_url} />
               
               <View style={styles.infoContainer} >
-                <FlatList
-                    data={card_info}
-                    keyExtractor={(item) => item.title}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
-                />                
-                <View style={{width: '100%', gap: 10}} >
-                  <Text style={[AppStyle.textHeader, {color: Colors.red}]}>Description</Text>
-                  <Text style={[AppStyle.textRegular, {fontSize: 18}]}>{card.descr}</Text>
-                </View>          
-                <Text style={[AppStyle.textHeader, {color: Colors.red}]}>Copies on deck: {copiesOnDeck}</Text>              
-                
-                <View style={{width: '100%', flexDirection: 'row', gap: 20}} >
-                  <Pressable onPress={rmv} style={styles.button} >
-                    <Ionicons name='remove-outline' size={32} color={Colors.white} />
-                  </Pressable>
-                  <Pressable onPress={add} style={styles.button} >
-                    <Ionicons name='add-outline' size={32} color={Colors.white} />
-                  </Pressable>
-                </View>
-
+                <CardInfoFlatList card={card} />
+                <CopyCardToDeck add={addCard} rmv={rmvCard} card={card} numCardsOnDeck={numCardsOnDeck} />
+                <AddCardToUserCollection card_id={card.card_id}/>
               </View>
             </View>
           </ScrollView>
@@ -109,14 +70,6 @@ const styles = StyleSheet.create({
     height: hp(100),
     padding: wp(5), 
     backgroundColor: Colors.background
-  },
-  button: {
-    flex: 1, 
-    height: 50, 
-    borderRadius: 4, 
-    alignItems: "center", 
-    justifyContent: "center", 
-    backgroundColor: Colors.red
   },
   infoContainer: {
     width: '100%', 

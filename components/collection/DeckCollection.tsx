@@ -31,7 +31,7 @@ const DeckCollection = () => {
     )
 
     const onDeckPress = (deck: Deck) => {
-      router.navigate({pathname: "/editDeck", params: deck})
+      router.navigate({pathname: "/editDeck", params: deck as any})
     }
   
   

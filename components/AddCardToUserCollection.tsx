@@ -14,7 +14,9 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
     const [isLoading, setLoading] = useState(false)
 
     const updateTotal = async () => {
-        const {data, error} = await supabase.from("user_cards").select("total").eq("card_id", card_id).single()
+        const {data, error} = await supabase.from(
+            "user_cards"
+        ).select("total").eq("card_id", card_id).single()
         setTotal(data ? data.total : 0)
     }
 
@@ -59,17 +61,16 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         }
         setLoading(false)
         setText('')
-    }
-
-    const height = 50
+    }    
         
     return (
         <View style={{width: '100%'}}>
-            <Text style={[AppStyle.textHeader, {color: Colors.cardColor}]} >Collection</Text>
-            <Text style={AppStyle.textRegular} >Total: {total}</Text>
-            <View style={{width: '100%', marginTop: 10, flexDirection: 'row', alignItems: "center", justifyContent: "center", gap: 10}} >
+            <Text style={[AppStyle.textHeader, {color: Colors.cardColor}]} >
+                    Collection: {total}
+            </Text>            
+            <View style={styles.container} >
                 <TextInput
-                    style={{flex: 0.3, color: Colors.white, fontFamily: "LeagueSpartan_400Regular", fontSize: 16, paddingLeft: 10, backgroundColor: Colors.background, borderRadius: 4, height: height}}
+                    style={styles.input}
                     placeholder='0'
                     value={text}
                     onChangeText={text => setText(text)}
@@ -77,20 +78,20 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
                     keyboardType='numeric'
                     placeholderTextColor={Colors.white}
                 />
-                <View style={{flex: 1, height, flexDirection: 'row', alignItems: "center", justifyContent: "center"}} >
+                <View style={styles.buttonContainer} >
                     {
                         isLoading ?                         
                         <ActivityIndicator size={32} color={Colors.orange} />
                         :
                         <>
-                        <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
-                            <Pressable onPress={async () => handlePress("Rmv")} style={styles.button} >
-                                <Ionicons name='remove-outline' size={32} color={Colors.white} />
-                            </Pressable>
-                            <Pressable onPress={async () => handlePress("Add")} style={styles.button} >
-                                <Ionicons name='add-outline' size={32} color={Colors.white} />
-                            </Pressable>
-                        </View>
+                            <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
+                                <Pressable onPress={async () => handlePress("Rmv")} style={styles.button} >
+                                    <Ionicons name='remove-outline' size={32} color={Colors.white} />
+                                </Pressable>
+                                <Pressable onPress={async () => handlePress("Add")} style={styles.button} >
+                                    <Ionicons name='add-outline' size={32} color={Colors.white} />
+                                </Pressable>
+                            </View>
                         </>
                     }
                 </View>
@@ -102,6 +103,14 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
 export default AddCardToUserCollection
 
 const styles = StyleSheet.create({
+    container: {
+        width: '100%', 
+        marginTop: 10, 
+        flexDirection: 'row', 
+        alignItems: "center", 
+        justifyContent: "center", 
+        gap: 10
+    },
     button: {
         flex: 1, 
         alignItems: "center", 
@@ -109,5 +118,22 @@ const styles = StyleSheet.create({
         height: 50, 
         backgroundColor: Colors.red, 
         borderRadius: 4
+    },
+    buttonContainer: {
+        flex: 1, 
+        height: 50, 
+        flexDirection: 'row', 
+        alignItems: "center", 
+        justifyContent: "center"
+    },
+    input: {
+        flex: 0.3, 
+        color: Colors.white, 
+        fontFamily: "LeagueSpartan_400Regular", 
+        fontSize: 16, 
+        paddingLeft: 10, 
+        backgroundColor: Colors.background, 
+        borderRadius: 4, 
+        height: 50
     }
 })

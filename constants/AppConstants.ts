@@ -29,6 +29,7 @@ export const AppConstants = {
         right: 10,
         bottom: 10
     },
+    maxDeckDescrLenght: 5000,
     githubUrl: "https://github.com/VitorTz/ygoapp",
     profileOptions: [
         {

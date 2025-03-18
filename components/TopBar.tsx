@@ -17,7 +17,7 @@ const TopBar = ({
     title, 
     textColor = Colors.white, 
     children,
-    marginBottom = 20
+    marginBottom = 10
   }: TopBarProps) => {
     return (
       <View style={[styles.container, {marginBottom}]} >

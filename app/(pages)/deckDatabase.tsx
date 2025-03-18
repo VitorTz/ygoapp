@@ -69,7 +69,7 @@ const DeckDatabase = () => {
 
   const onDeckPress = (deck: Deck) => {
     Keyboard.dismiss()
-    router.navigate({pathname: "/deckPage", params: deck})
+    router.navigate({pathname: "/deckPage", params: deck as any})
   }
 
   return (

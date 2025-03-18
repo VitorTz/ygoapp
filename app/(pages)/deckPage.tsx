@@ -1,11 +1,11 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import AddDeckToUserCollection from '@/components/AddDeckToUserCollection'
 import Animated, { FadeInUp } from 'react-native-reanimated'
 import { getImageHeightCropped, hp, wp } from '@/helpers/util'
 import { AppConstants } from '@/constants/AppConstants'
-import { supaFetchCardsFromDeck } from '@/lib/supabase'
+import { supaFetchCardsFromDeck, supaUserIsOwnerOfDeck } from '@/lib/supabase'
 import { router, useLocalSearchParams } from 'expo-router'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CardGrid from '@/components/grid/CardGrid'
 import BackButton from '@/components/BackButton'
 import { AppStyle } from '@/style/AppStyle'
@@ -23,14 +23,19 @@ const deckHeight = getImageHeightCropped(deckWidth)
 
 const DeckPage = () => {
 
-    const [cards, setCards] = useState<Card[]>([])
     const deck = useLocalSearchParams()
-    const deck_id: number = parseInt(deck.deck_id)    
+    const [loading, setLoading] = useState(false)
+    const [cards, setCards] = useState<Card[]>([])    
+    const [userIsOwner, setUserIsOwner] = useState(false)
+    const deck_id: number = deck.deck_id as any
 
-    const init = async () => {        
+    const init = async () => {
+        setLoading(true)
         await supaFetchCardsFromDeck(deck_id).then(
             values => setCards([...values])
-        )        
+        )
+        await supaUserIsOwnerOfDeck(deck_id).then(value => setUserIsOwner(value))
+        setLoading(false)
     }
 
     useEffect(
@@ -41,7 +46,11 @@ const DeckPage = () => {
     )
 
     const openCardPage = (card: Card) => {
-        router.navigate({pathname: "/cardPage", params: card})
+        router.navigate({pathname: "/cardPage", params: card as any})
+    }
+
+    const navigateToEditDeck = () => {
+        router.navigate({pathname: "/editDeck", params: deck as any})
     }
 
     return (
@@ -74,7 +83,24 @@ const DeckPage = () => {
                             </ScrollView>
                         </>
                     }
-                    <AddDeckToUserCollection deck_id={deck_id}/>
+                    {
+                        !loading &&
+                        <>
+                        {
+                            userIsOwner ?
+                            <View style={{width: '100%', gap: 10}} >
+                                <Text style={[AppStyle.textRegular, {color: Colors.orange, fontSize: 20}]}>
+                                    You are the owner of this deck
+                                </Text>
+                                <Pressable onPress={navigateToEditDeck} hitSlop={AppConstants.hitSlopLarge} style={{width: '100%', height: 50, alignItems: "center", justifyContent: "center", backgroundColor: Colors.deckColor, borderRadius: 4}} >
+                                    <Text style={AppStyle.textRegular} >Edit Deck</Text>
+                                </Pressable>
+                            </View>
+                            :
+                            <AddDeckToUserCollection deck_id={deck_id}/>
+                        }
+                        </>
+                    }
                 </View>
 
                 <View style={{width: '100%', marginTop: 10}} >

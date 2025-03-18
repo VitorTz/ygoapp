@@ -35,7 +35,7 @@ const Option = ({title, subTitle, iconName, onPress}: OptionProps) => {
     return (
         <Pressable onPress={handlePress} style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
             <View style={{flexDirection: 'row', gap: 20, alignItems: "center", justifyContent: "center"}} >
-                <Ionicons name={iconName} size={32} color={Colors.white} />
+                <Ionicons name={iconName as any} size={32} color={Colors.white} />
                 <View style={{alignItems: "flex-start", justifyContent: "center"}} >
                     <Text style={[AppStyle.textHeader, {color: Colors.white, fontSize: 20}]}>{title}</Text>
                     <Text style={[AppStyle.textRegular, {fontSize: 14}]}>{subTitle}</Text>

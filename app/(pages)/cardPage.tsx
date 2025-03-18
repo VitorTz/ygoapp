@@ -1,61 +1,30 @@
 import { 
     SafeAreaView, 
-    FlatList, 
     ScrollView, 
-    StyleSheet, 
-    Text, 
+    StyleSheet,     
     View 
 } from 'react-native'
 import AddCardToUserCollection from '@/components/AddCardToUserCollection'
 import CopyStringButton from '@/components/CopyStringButton'
 import ShareImageButton from '@/components/ShareImageButton'
-import { AppConstants } from '@/constants/AppConstants'
 import { getImageHeight, wp } from '@/helpers/util'
 import { useLocalSearchParams } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
-import { router } from 'expo-router'
 import { Image } from 'expo-image'
 import React from 'react'
 import BackButton from '@/components/BackButton'
+import CardInfoFlatList from '@/components/CardInfoFlatList'
 
 
 const cardWidth = wp(80)
 const cardHeight = getImageHeight(cardWidth)
 
 
-const CardInfo = ({title, value}: {title: string, value: any}) => {
-    return (
-        <>
-            {
-                value &&                 
-                <View style={{marginRight: 10}} >
-                    <Text style={[AppStyle.textHeader, {color: Colors.red}]} >{title}</Text>
-                    <Text style={AppStyle.textRegular} >{value}</Text>
-                </View>                
-            }
-        </>
-    )
-}
-
-
 const CardPage = () => {
 
-    const card = useLocalSearchParams()
-    const card_id = parseInt(card.card_id)
-    
-    const card_info = [
-        {value: card.attack, title: 'Attack'},
-        {value: card.defence, title: 'Defence'},
-        {value: card.level, title: 'Level'},
-        {value: card.attribute, title: 'Attribute'},
-        {value: card.archetype, title: 'Archetype'},
-        {value: card.frametype, title: 'Frametype'},
-        {value: card.race, title: 'Race'},
-        {value: card.type, title: 'Type'}
-    ]
-    
+    const card: any = useLocalSearchParams()
+    const card_id: number = card.card_id as number
 
     return (
         <SafeAreaView style={[AppStyle.safeArea, {padding: 20}]} >
@@ -70,16 +39,7 @@ const CardPage = () => {
                 <Image source={card.image_url} style={{alignSelf: "center", width: cardWidth, height: cardHeight, marginVertical: 20}} contentFit='cover' />
 
                 <View style={styles.container} >
-                    <FlatList
-                        data={card_info}
-                        keyExtractor={(item) => item.title}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
-                    />
-                    <View>
-                        <Text style={[AppStyle.textRegular, {fontSize: 18}]} >{card.descr}</Text>
-                    </View>
+                    <CardInfoFlatList card={card} />
                     <AddCardToUserCollection card_id={card_id} />
                 </View>
             </ScrollView>
