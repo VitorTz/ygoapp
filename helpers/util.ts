@@ -1,8 +1,6 @@
-import Toast, { ToastType } from "react-native-toast-message";
 import * as FileSystem from 'expo-file-system'
 import { API_CARD_WIDTH, API_CARD_HEIGHT, API_CARD_CROPPED_HEIGHT, API_CARD_CROPPED_WIDTH } from "@/constants/AppConstants";
 import { Dimensions } from "react-native";
-import { Colors } from "@/constants/Colors";
 import { Card } from "./types";
 
 
@@ -25,29 +23,6 @@ export function wp(percentage: number) {
 export function hp(percentage: number) {
     const height = deviceHeight;
     return (percentage * height) / 100;
-}
-
-
-export const showToast = (title: string, message: string, toastType: ToastType) => {    
-    Toast.show({
-        type: toastType,
-        text1: title,
-        text2: message,
-        position: "bottom",
-        bottomOffset: 40,
-        keyboardOffset: 10,
-        text1Style: {
-            fontFamily: "LeagueSpartan_600SemiBold",
-            fontSize: 14,
-            color: Colors.background
-        },
-        text2Style: {
-            fontFamily: "LeagueSpartan_400Regular",
-            fontSize: 14,
-            color: Colors.background
-        },
-        visibilityTime: 2000
-    });
 }
 
 export function toTitleCase(str: string) {
@@ -91,8 +66,8 @@ export const downloadImage = async (fileName: string, imageUrl: string) => {
 
 export function removeTrailingNewlines(str: string) {
     return str
-      .replace(/^\n+/, '')  // Remove quebras do início
-      .replace(/\n+$/, ''); // Remove quebras do final
+      .replace(/^\n+/, '')
+      .replace(/\n+$/, '')
 }
 
 export function max(a: number, b: number) {
@@ -118,7 +93,7 @@ export function sortCards(cards: Card[]): Card[] {
     return cards.sort((a, b) => {return compString(a.name, b.name)})
 }
 
-const SIDE_DECK_FRAMETYPES: string[] = ["Xyz", "Link", "Synchro", "Ritual", "Fusion"]
+const SIDE_DECK_FRAMETYPES: (string | null)[] = ["Xyz", "Link", "Synchro", "Ritual", "Fusion"]
 
 export function sortSideDeck(cards: Card[]): Card[] {
     return cards.sort((a, b) => {

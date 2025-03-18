@@ -1,8 +1,10 @@
 import { View, Text, StatusBar } from 'react-native'
-import Toast from 'react-native-toast-message'
+import Toast from '@/components/Toast'
 import { Colors } from '../constants/Colors'
 import { Stack } from 'expo-router'
+
 import React from 'react'
+import DialogMessage from '../components/DialogMessage'
 
 
 const _layout = () => {
@@ -20,9 +22,12 @@ const _layout = () => {
             <Stack.Screen name='(pages)/cardDatabase' options={{headerShown: false}} />
             <Stack.Screen name='(pages)/createDeck' options={{headerShown: false}} />
             <Stack.Screen name='(pages)/editDeck' options={{headerShown: false}} />
+            <Stack.Screen name='(pages)/deckCollectionPage' options={{headerShown: false}} />
+            <Stack.Screen name='(pages)/cardCollectionPage' options={{headerShown: false}} />
             <Stack.Screen name='(tabs)' options={{headerShown: false}} />
         </Stack>
-        <Toast/>
+        <Toast.Component/>
+        <DialogMessage.Component/>
     </View>
   )
 }

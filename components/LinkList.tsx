@@ -43,23 +43,22 @@ const ContainerItem = ({
     return (
     <Pressable onPress={onPress} style={[styles.container, {borderColor: color}]} >
         <Animated.View entering={fade}>
-            <View 
-            style={{
-                width: '50%', 
-                height: '100%', 
-                alignSelf: side == "right" ? "flex-start" : "flex-end", 
-                alignItems: "center", 
-                justifyContent: "center"                
-            }}>
-                <View style={[styles.textBg, {backgroundColor: color}, txtBgStyle]} >
-                <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >{title}</Text>
-                </View>
-            </View>
             <Image
                 source={IMAGE_ICON.get(imageKey)} 
                 style={[styles.image, imageStyle]}
-                contentFit='contain'
+                contentFit='scale-down'
             />
+            <View              
+                style={{
+                    width: '50%', 
+                    height: '100%', 
+                    alignSelf: side == "right" ? "flex-start" : "flex-end", 
+                    alignItems: "center", 
+                    justifyContent: "center"}}>
+                <View style={[styles.textBg, {backgroundColor: color}, txtBgStyle]} >
+                    <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >{title}</Text>
+                </View>
+            </View>
         </Animated.View>
     </Pressable>
   )
@@ -97,8 +96,7 @@ export default LinkList
 
 const styles = StyleSheet.create({    
     container: {        
-        width: '100%',
-        overflow: "visible",
+        width: '100%',        
         height: hp(16),
         borderWidth: 1,
         backgroundColor: Colors.background,
@@ -106,10 +104,10 @@ const styles = StyleSheet.create({
         borderCurve: "continuous"
     },
     image: {
-        width: wp(50),
-        height: hp(40), 
-        position: 'absolute',
-        top: -wp(25)        
+        width: '50%',        
+        height: '130%',         
+        position: 'absolute',        
+        top: -wp(6),
     },
     textBg: {
         width: '100%', 

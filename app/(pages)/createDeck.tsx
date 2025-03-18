@@ -8,7 +8,7 @@ import {
 import React, { useRef } from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
-import { showToast, orderCards, sleep } from '@/helpers/util'
+import { orderCards, sleep } from '@/helpers/util'
 import { useState } from 'react'
 import TopBar from '@/components/TopBar'
 import { Card } from '@/helpers/types'
@@ -20,7 +20,7 @@ import SearchCard from '@/components/SearchCard'
 import { CreateDeckFormData } from '@/components/form/CreateDeckForm'
 import CreateDeckForm from '@/components/form/CreateDeckForm'
 import BackButton from '@/components/BackButton'
-
+import Toast from '@/components/Toast'
 
 const CreateDeck = () => {
   
@@ -30,7 +30,7 @@ const CreateDeck = () => {
 
   const onSubmit = async (formData: CreateDeckFormData) => {    
     if (cardsOnDeck.length == 0) {
-      showToast("Error", "Your deck has 0 cards", "error")
+      Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
       return
     }    
     const success = await supaCreateDeck(
@@ -40,7 +40,7 @@ const CreateDeck = () => {
       cardsOnDeck
     )
     if (!success) {
-      showToast("Error", "Could not create deck", "error")
+      Toast.show({title: "Error", message: "could not create deck", type: 'error'})      
       return
     }    
     router.replace("/(pages)/editDeck")
@@ -53,7 +53,7 @@ const CreateDeck = () => {
   const addCardToDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
     if (n >= 3) {
-      showToast("Warning", "Max 3 cards", "info")
+      Toast.show({title: "Warning", message: "Max 3 cards", type: 'info'})
       return
     }
     cardsMap.current.set(card.card_id, n + 1)    
@@ -63,7 +63,7 @@ const CreateDeck = () => {
   const rmvCardFromDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
     if (n == 0) {
-      showToast("Warning", "0 cards on deck", "info")
+      Toast.show({title: "Warning", message: "You already have 0 cards on deck", type: 'info'})
       return
     }
     cardsMap.current.set(card.card_id, n - 1)

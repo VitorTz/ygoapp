@@ -1,20 +1,26 @@
-import { StyleSheet, ScrollView, Text, View } from 'react-native'
+import { StyleSheet, ScrollView, Text, View, Pressable } from 'react-native'
 import { useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { fetchRandomTrivia } from '@/lib/supabase'
 import { Colors } from '@/constants/Colors'
 import { useCallback } from 'react'
 import { AppStyle } from '@/style/AppStyle'
+import { debounce } from 'lodash'
 import React from 'react'
 
 
 const RandomTrivia = () => {
-  const [text, setText] = useState<string | null>('')
+    const [text, setText] = useState<string | null>('')
   
-      const update = async () => {
-          const data = await fetchRandomTrivia()
-          setText(data)
-      }
+    const update = async () => {
+        const data = await fetchRandomTrivia()
+        setText(data)
+    }
+
+    const debounceUpdate = useCallback(
+        debounce(update, 400),
+        []
+    )
   
     useFocusEffect(
         useCallback(
@@ -30,8 +36,10 @@ const RandomTrivia = () => {
             {
                 text != '' &&
                 <ScrollView style={{maxHeight: 100}} >
-                    <Text style={[AppStyle.textRegular, {color: Colors.orange}]} >Did you know?</Text>
-                    <Text style={AppStyle.textRegular} >{text}</Text>
+                    <Pressable onPress={debounceUpdate} style={{width: '100%'}} >
+                        <Text style={[AppStyle.textRegular, {color: Colors.orange}]} >Did you know?</Text>
+                        <Text style={AppStyle.textRegular} >{text}</Text>
+                    </Pressable>
                 </ScrollView>            
             }
         </View>

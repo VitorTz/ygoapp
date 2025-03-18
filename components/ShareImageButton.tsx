@@ -2,7 +2,6 @@ import { StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import { AppConstants } from '@/constants/AppConstants'
 import { Ionicons } from '@expo/vector-icons'
 import * as FileSystem from 'expo-file-system'
-import { AppStyle } from '@/style/AppStyle'
 import * as Sharing from 'expo-sharing';
 import { downloadImage } from '@/helpers/util'
 import React, { useState } from 'react'

@@ -63,8 +63,7 @@ export default DeckCollection
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: hp(50),
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,    

@@ -30,9 +30,12 @@ const resetOptions = () => {
     ])
 }
 
-const SearchCard = ({ openCardComponent }: {
-    openCardComponent: (card: Card) => void  
-  }) => {
+interface SearchCardInterfaceProps {
+  openCardComponent: (card: Card) => void
+  color?: string
+}
+
+const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInterfaceProps) => {
     const [cards, setCards] = useState<Card[]>([])
     const [loading, setLoading] = useState(false)
     const [hasResult, setHasResults] = useState(true)
@@ -68,16 +71,15 @@ const SearchCard = ({ openCardComponent }: {
       setLoading(false)
     }
   
-    const onEndReached = async () => {
-      console.log("end")    
-      debounceSearch(searchTerm, true)
-    }
-  
     const debounceSearch = useCallback(
       debounce(handleSearch, 400),
       []
     )
-  
+    
+    const onEndReached = async () => {
+      debounceSearch(searchTerm, true)
+    }
+
     const toggleFilter = () => {
       setFilterOpened(prev => !prev)
     }
@@ -113,8 +115,8 @@ const SearchCard = ({ openCardComponent }: {
               hitSlop={AppConstants.hitSlopLarge}>
               {
                   filterIsOpened ?
-                  <Ionicons name='close-outline' size={32} color={Colors.white} /> :
-                  <Ionicons name='options-outline' size={32} color={Colors.white} />
+                  <Ionicons name='close-outline' size={32} color={color} /> :
+                  <Ionicons name='options-outline' size={32} color={color} />
               }
           </Pressable>
         </View>

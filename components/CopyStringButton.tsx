@@ -2,22 +2,16 @@ import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { AppConstants } from '@/constants/AppConstants'
 import { Ionicons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard';
-import { AppStyle } from '@/style/AppStyle';
 import React, { useState } from 'react'
-import { sleep } from '@/helpers/util';
 import { Colors } from '@/constants/Colors';
-import { showToast } from '@/helpers/util';
+import Toast from './Toast';
 
 
 const CopyStringButton = ({text, color = Colors.red}: { text:string, color?: string }) => {
-    
-    const [isCopyng, setCopyng] = useState(false)
-
-    const handleShare = async () => {
-        setCopyng(true)
+        
+    const handleShare = async () => {        
         await Clipboard.setStringAsync(text)
-        showToast("Content copied to clipboard", '', 'success')
-        setCopyng(false)
+        Toast.show({title: "Copied!", message: '', type: 'success', duration: 1000})
     }
 
     return (        

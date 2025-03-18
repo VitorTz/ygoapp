@@ -36,6 +36,8 @@ export interface Card {
 export type DeckType = "Structure" | "Community" | "Starter" | "Any" | "TCG"
 
 export interface Deck {
+    owner_name: string | null
+    owner_image_url: string | null
     name: string
     deck_id: number
     descr: string | null

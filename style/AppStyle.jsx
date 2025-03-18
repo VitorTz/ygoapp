@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
-import { wp } from '@/helpers/util'
 import { Colors } from '../constants/Colors'
+import { wp } from '@/helpers/util'
+
 
 export const AppStyle = StyleSheet.create({
     safeArea: {

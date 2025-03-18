@@ -36,7 +36,7 @@ const CardCollection = () => {
 
 
   return (
-    <View style={[styles.container, {borderColor: Colors.cardColor, height: hp(50)}]} >
+    <View style={styles.container} >
       <View style={[styles.textBg, {flexDirection: 'row', backgroundColor: Colors.cardColor, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10}]} >
           <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Cards: {num_cards}</Text>
           <Pressable onPress={() => router.navigate("/(pages)/cardDatabase")} hitSlop={AppConstants.hitSlopLarge} >
@@ -61,12 +61,12 @@ export default CardCollection;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: hp(50),
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,    
-    borderRadius: 4
+    borderRadius: 4,
+    borderColor: Colors.cardColor
   },  
   textBg: {
     width: '100%', 

@@ -21,7 +21,7 @@ interface CardCustomPickerProps {
 
 const DeckPicker = ({options, applyFilter}: CardCustomPickerProps) => {
     return (
-        <View style={{rowGap: 10, width: '100%'}} >
+        <View style={{rowGap: 10, width: '100%', marginBottom: 10}} >
             <View style={{width: '100%', flexDirection: "row", gap: 10}} >
                 <View style={{flex: 1}} >
                     <MultipleDropDownPicker options={options} optionKey='archetypes' applyPicker={applyFilter} title='Archetype' data={ARCHETYPES} zindex={7} searchable={true} />

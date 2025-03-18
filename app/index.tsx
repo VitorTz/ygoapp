@@ -15,6 +15,7 @@ import {
   LeagueSpartan_900Black,
 } from '@expo-google-fonts/league-spartan';
 import { router } from 'expo-router';
+import { AppStyle } from '@/style/AppStyle';
 
 
 
@@ -44,9 +45,9 @@ const index = () => {
   const initPage = async () => {
     const session = await supaGetSession()
     if (session == null) {
-      router.replace("(auth)/signin")
+      router.replace("/(auth)/signin")
     } else {
-      router.replace("(tabs)/database")
+      router.replace("/database")
     }
   }
 
@@ -60,9 +61,9 @@ const index = () => {
   )
 
   return (
-    <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: Colors.background}} >
+    <SafeAreaView style={[AppStyle.safeArea, {alignItems: "center", justifyContent: "center"}]}>
       <ActivityIndicator size={64} color={Colors.orange}/>
-    </SafeAreaView>
+    </SafeAreaView>    
   )
 }
 

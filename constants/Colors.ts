@@ -18,6 +18,9 @@ export const Colors = {
     cardColor: "#F24E4E",
     packColor: "#FF6740",
     accentColor: "#FF6740",
-    limitedColor: "#C14853"
+    limitedColor: "#C14853",
+    uglyBlue: "#4984A2",
+    matchHistoryColors: "#4984A2",
+    green: "#98C379"
   };
   

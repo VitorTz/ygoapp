@@ -1,17 +1,16 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import { supabase, supaAddCardToCollection, supaRmvCardFromCollection } from '@/lib/supabase'
-import React, { useEffect, useState } from 'react'
-import { showToast } from '@/helpers/util'
+import { supabase, supaAddCardToCollection, supaRmvCardFromCollection, supaGetSession } from '@/lib/supabase'
+import React, { useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { Ionicons } from '@expo/vector-icons'
+import Toast from './Toast'
 
 
 const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
 
-    const [total, setTotal] = useState(0)
-    const [text, setText] = useState('')
-    const [isLoading, setLoading] = useState(false)
+    const [total, setTotal] = useState(0)    
+    const userHasSession = useRef(false)
 
     const updateTotal = async () => {
         const {data, error} = await supabase.from(
@@ -20,48 +19,48 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         setTotal(data ? data.total : 0)
     }
 
+    const init = async () => {
+        const session = await supaGetSession()
+        userHasSession.current = session != null
+        await updateTotal()
+    }
+
     useEffect(
         () => {            
-            updateTotal()
+            init()
         },
         []
     )
 
-    const handleAddCardToCollection = async (num: number) => {        
-        const success = await supaAddCardToCollection(card_id, num)        
-        if (success) {            
-            setTotal(prev => prev + num)
+    const add = async () => {
+        if (userHasSession.current == false) {
+            Toast.show({title: "Error", message: "You are not logged!", type: "error"})
             return
+        }        
+        const success = await supaAddCardToCollection(card_id, 1)
+        if (!success) {
+            Toast.show({title: "Error", message: "Could not add this card to collection", type: "error"})
+            return            
         }
-    }
-    
-    const handleRmvCardFromCollection = async (num: number) => {
-        const success = await supaRmvCardFromCollection(card_id, num)
-        if (success) {            
-            setTotal(prev => prev - num >= 0 ? prev - num : 0)
-        }       
+        setTotal(prev => prev + 1)
     }
 
-    const handlePress = async (type: "Add" | "Rmv") => {
-        if (text == '0' || text == '') {
-            showToast("Invalid Input!", '', 'info')
+    const rmv = async () => {        
+        if (userHasSession.current == false) {
+            Toast.show({title: "Error", message: "You are not logged!", type: "error"})
             return
+        }        
+        if (total == 0) {
+            Toast.show({title: "Warning", message: "You dont have this card in your collection", type: "info"})
         }
-        const num: number = parseInt(text)
-        setLoading(true)
-        switch (type) {
-            case "Add":
-                await handleAddCardToCollection(num)
-                break
-            case "Rmv":
-                await handleRmvCardFromCollection(num)
-                break
-            default:
-                break
+        const success = await supaRmvCardFromCollection(card_id, 1)
+        if (!success) {
+            Toast.show({title: "Error", message: "Could not remove this card to collection", type: "error"})
+            return            
         }
-        setLoading(false)
-        setText('')
-    }    
+        setTotal(prev => prev > 0 ? prev - 1 : prev)
+    }
+  
         
     return (
         <View style={{width: '100%'}}>
@@ -69,32 +68,14 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
                     Collection: {total}
             </Text>            
             <View style={styles.container} >
-                <TextInput
-                    style={styles.input}
-                    placeholder='0'
-                    value={text}
-                    onChangeText={text => setText(text)}
-                    maxLength={4}
-                    keyboardType='numeric'
-                    placeholderTextColor={Colors.white}
-                />
-                <View style={styles.buttonContainer} >
-                    {
-                        isLoading ?                         
-                        <ActivityIndicator size={32} color={Colors.orange} />
-                        :
-                        <>
-                            <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
-                                <Pressable onPress={async () => handlePress("Rmv")} style={styles.button} >
-                                    <Ionicons name='remove-outline' size={32} color={Colors.white} />
-                                </Pressable>
-                                <Pressable onPress={async () => handlePress("Add")} style={styles.button} >
-                                    <Ionicons name='add-outline' size={32} color={Colors.white} />
-                                </Pressable>
-                            </View>
-                        </>
-                    }
-                </View>
+                <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
+                    <Pressable onPress={rmv} style={styles.button} >
+                        <Ionicons name='remove-outline' size={32} color={Colors.white} />
+                    </Pressable>
+                    <Pressable onPress={add} style={styles.button} >
+                        <Ionicons name='add-outline' size={32} color={Colors.white} />
+                    </Pressable>
+                </View>                
             </View>
         </View>
     )

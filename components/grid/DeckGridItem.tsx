@@ -48,7 +48,9 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.gray,         
         borderTopWidth: 4, 
         borderColor: Colors.deckColor,
-        gap: 6
+        gap: 6,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4
     },    
     button: {
         flex: 1,

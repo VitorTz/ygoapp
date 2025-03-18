@@ -17,7 +17,7 @@ const CardPicker = ({
     listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
 }) => {
   return (
-    <View style={{width: '100%', rowGap: 10}} >
+    <View style={{width: '100%', rowGap: 10, marginBottom: 10}} >
         <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 

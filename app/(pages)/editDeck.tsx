@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useRef } from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
-import { showToast, orderCards, wp, hp } from '@/helpers/util'
+import { orderCards, wp, hp } from '@/helpers/util'
 import { useState } from 'react'
 import TopBar from '@/components/TopBar'
 import { Card, Deck } from '@/helpers/types'
@@ -22,6 +22,7 @@ import EditDeckForm, { EditDeckFormData} from '@/components/form/EditDeckForm'
 import BackButton from '@/components/BackButton'
 import DeckInfo from '@/components/DeckInfo'
 import DeckCover from '@/components/DeckCover'
+import Toast from '@/components/Toast'
 
 
 const EditDeck = () => {
@@ -29,14 +30,11 @@ const EditDeck = () => {
   const deck: any = useLocalSearchParams()
   const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
   const [cardToDisplay, setCardToDisplay] = useState<Card | null>(null)
-  const [deckName, setDeckName] = useState<string>('')
-  const [deckDescription, setDeckDescription] = useState<string | null>('')
   const cardsMap = useRef<Map<number, number>>(new Map())
-  
-  
+    
   const init = async () => {
-    const cards = await fetchDeckCards(deck.deck_id as any)
     cardsMap.current.clear()
+    const cards = await fetchDeckCards(deck.deck_id as any)
     setCardsOnDeck([...cards])    
     cards.forEach(
       card => {
@@ -46,9 +44,7 @@ const EditDeck = () => {
           cardsMap.current.set(card.card_id, 1)
         }
       }
-    )
-    setDeckName(deck.name)    
-    setDeckDescription(deck.descr)
+    )    
   }
 
   useEffect(
@@ -60,7 +56,7 @@ const EditDeck = () => {
 
   const onSubmit = async (formData: EditDeckFormData) => {    
     if (cardsOnDeck.length == 0) {
-      showToast("Error", "Your deck has 0 cards", "error")
+      Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
       return
     }    
     const success = await supaUpdateDeck(
@@ -71,10 +67,10 @@ const EditDeck = () => {
       cardsOnDeck
     )
     if (!success) {
-      showToast("Error", "could not update deck", "error")
+      Toast.show({title: "Error", message: "couldnot update deck", type: 'error'})      
       return
     }
-    router.back()
+    Toast.show({title: "Success", message: "Deck updated", type: "success"})
   }
 
   const getNumCardsOnDeck = (card: Card) => {
@@ -84,7 +80,7 @@ const EditDeck = () => {
   const addCardToDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
     if (n >= 3) {
-      showToast("Warning", "Max 3 cards", "info")
+      Toast.show({title: "Warning", message: "Max 3 cards", type: 'info'})      
       return
     }
     cardsMap.current.set(card.card_id, n + 1)    
@@ -94,7 +90,7 @@ const EditDeck = () => {
   const rmvCardFromDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
     if (n == 0) {
-      showToast("Warning", "0 cards on deck", "info")
+      Toast.show({title: "Warning", message: "You have 0 cards on this deck", type: 'info'})
       return
     }
     cardsMap.current.set(card.card_id, n - 1)
@@ -135,39 +131,16 @@ const EditDeck = () => {
         </TopBar>
         
         <DeckCover deck={deck as any} cards={cardsOnDeck} />
-
-        <View style={styles.container} >
-              <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>{deckName}</Text>
-              <DeckInfo title='Archetypes' info={deck.archetypes} />
-              <DeckInfo title='Attributes' info={deck.attributes} />
-              <DeckInfo title='Frametypes' info={deck.frametypes} />
-              <DeckInfo title='Races' info={deck.races} />
-              <DeckInfo title='Types' info={deck.types} />
-              {
-                  deckDescription &&
-                  <>                        
-                      <Text style={[AppStyle.textRegular, {color: Colors.orange, fontSize: 28}]}>Description</Text>
-                      <ScrollView style={{width: '100%', maxHeight: hp(30)}} nestedScrollEnabled={true} >                        
-                          <Text style={AppStyle.textRegular}>{deckDescription}</Text>
-                      </ScrollView>
-                  </>
-              }                    
-        </View>
             
         <View style={{width: '100%', gap: 10}} >
           <EditDeckForm 
-            deck_id={deck.deck_id}
-            defaultName={deckName} 
-            defaultDescr={deckDescription} 
-            defaultIsPublic={deck.is_public as any} 
-            setName={setDeckName} 
-            setDescr={setDeckDescription} 
+            deck={deck}
             onSubmit={onSubmit} />
           <CardPool
             cardsOnPool={cardsOnDeck}
             onCardPress={openCardComponent}
             color={Colors.deckColor}/>
-          <SearchCard openCardComponent={openCardComponent}/>
+          <SearchCard openCardComponent={openCardComponent} color={Colors.deckColor}/>
         </View>
       </ScrollView>
       {

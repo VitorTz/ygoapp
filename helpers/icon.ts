@@ -13,5 +13,6 @@ export const IMAGE_ICON = new Map<string, any>([
     ["CardMonsterView", require("@/assets/bg/the_winged_dragon_of_ra.png")],
     ["PackMonsterView", require("@/assets/bg/yubel.png")],
     ["LimitedMonsterView", require("@/assets/bg/exodia.png")],    
-    ["MangaView", require("@/assets/bg/blue_eyes-modified.png")]
+    ["MangaView", require("@/assets/bg/blue_eyes-modified.png")],
+    ["MatchHistory", require("@/assets/bg/obelisk_the_tormentor.png")],
 ])

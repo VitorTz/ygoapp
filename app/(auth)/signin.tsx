@@ -19,7 +19,7 @@ const SignIn = () => {
 
   return (
     <SafeAreaView style={AppStyle.safeArea} >
-      <View style={{flex: 1, padding: 20, alignItems: "center"}}>
+      <View style={{flex: 1, alignItems: "center"}}>
         <View style={styles.container} >
           <Logo/>
           <SkipButton onPress={onSkip} />

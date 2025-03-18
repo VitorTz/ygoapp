@@ -8,7 +8,9 @@ import React from 'react'
 const SkipButton = ({onPress}: {onPress: () => void}) => {
   return (
     <Pressable onPress={onPress} hitSlop={AppConstants.hitSlopLarge}>
-        <Text style={[AppStyle.textRegular, {color: Colors.orange, textDecorationLine: "underline"}]}>Skip</Text>
+        <Text style={[AppStyle.textRegular, {color: Colors.orange, textDecorationLine: "underline"}]}>
+          Skip
+        </Text>
     </Pressable>
   )
 }

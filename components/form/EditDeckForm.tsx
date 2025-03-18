@@ -1,30 +1,16 @@
-import { StyleSheet, TextInput, Pressable, Text, Switch, ActivityIndicator, View } from 'react-native'
+import { StyleSheet, ScrollView, Text, View, TextInput, Pressable, ActivityIndicator } from 'react-native'
+import DeckInfo from '../DeckInfo';
 import React, { useEffect, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Deck } from '@/helpers/types';
 import { AppStyle } from '@/style/AppStyle';
 import { Colors } from '@/constants/Colors';
 import { wp, hp } from '@/helpers/util';
-import * as yup from 'yup';
-import { AppConstants } from '@/constants/AppConstants';
 import { supaDeleteDeck } from '@/lib/supabase';
 import { router } from 'expo-router';
+import DialogMessage from '../DialogMessage';
+import Toast from '../Toast';
+import CheckBox from '../CheckBox';
 
-
-
-const schema = yup.object().shape({  
-    name: yup
-        .string()
-        .min(3, 'Name must be at least 3 characters')
-        .required('Email is required'),
-    description: yup
-        .string()
-        .max(AppConstants.maxDeckDescrLenght, `Max ${AppConstants.maxDeckDescrLenght} characters`)
-        .default(''),
-    isPublic: yup
-        .boolean()
-        .default(false)
-});
 
 
 export interface EditDeckFormData {
@@ -35,121 +21,93 @@ export interface EditDeckFormData {
 
 
 interface EditDeckFormProps {
-    deck_id: number
-    defaultName: string
-    defaultDescr: string
-    defaultIsPublic: boolean
-    setName: React.Dispatch<React.SetStateAction<string>>
-    setDescr: React.Dispatch<React.SetStateAction<string | null>>
+    deck: Deck    
     onSubmit: (formData: EditDeckFormData) => void
 }
 
 const EditDeckForm = ({
-    deck_id,
-    defaultName,
-    defaultDescr,
-    defaultIsPublic,
-    setName,
-    setDescr,
+    deck,
     onSubmit
-}: EditDeckFormProps) => {
+}: EditDeckFormProps) => {    
 
     const [loading, setLoading] = useState(false)
-    const [isPublic, setIsPublic] = useState(true)    
+    const [name, setName] = useState('')
+    const [descr, setDescr] = useState<string>('')
+    const [isPublic, setIsPublic] = useState(false)
+    
+    const init = () => {
+        setName(deck.name)
+        setDescr(deck.descr as any)
+        setIsPublic(deck.is_public as any)
+    }
 
     useEffect(
         () => {
-            setIsPublic(defaultIsPublic)
+            init()
         },
         []
     )
 
-    const toggleSwitch = () => {
-        setIsPublic(prev => !prev)
-    }
-
-    const {
-        control,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<EditDeckFormData>({
-        resolver: yupResolver(schema),
-        defaultValues: {            
-            name: defaultName,
-            description: defaultDescr,
-            isPublic: defaultIsPublic
-        },
-    });
-
-    const onPress = async (formData: EditDeckFormData) => {
+    const saveDeck = async () => {
         setLoading(true)
-        formData.isPublic = isPublic
-        await onSubmit(formData)
+        await onSubmit({name: name, description: descr as any, isPublic: isPublic})
         setLoading(false)
-    }
+    }    
 
     const deleteDeck = async () => {
-        setLoading(true)
-        await supaDeleteDeck(deck_id)
-        setLoading(false)
-        router.back()
+        DialogMessage.show(
+            {                
+                message: `Delete ${deck.name} deck`,
+                type: "info",
+                okBtnTest: "Delete",
+                onPress: async () => {
+                    const success = await supaDeleteDeck(deck.deck_id)
+                    if (!success) {
+                        Toast.show({title: "Error", message: "Could not delete deck", type: "error"})
+                    } else {
+                        router.back()
+                    }
+                }
+            }
+        )
     }
 
     return (
-        <View style={{width: '100%', gap: 10}} >
-            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Name</Text>                    
-            <Controller
-                control={control}
-                name="name"
-                render={({ field: { onChange, onBlur, value } }) => (
+        <View style={{width: '100%', gap: 10}} >            
+            <View style={styles.container} >
+                <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Name</Text>
                 <TextInput
+                    value={name}
                     style={styles.input}
-                    onBlur={onBlur}                  
-                    onChangeText={text => { setName(text); onChange(text)}}
-                    value={value}/>
-                )}
-            />
-            {errors.name && (<Text style={AppStyle.errorMsg}>{errors.name.message}</Text>)}
-            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Description</Text>
-            <Controller
-                control={control}
-                name="description"
-                render={({ field: { onChange, onBlur, value } }) => (
+                    onChangeText={text => setName(text)}/>
+
+                <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Description</Text>
                 <TextInput
-                    style={[styles.input, {height: hp(18), textAlignVertical: "top"}]}
-                    onBlur={onBlur}
+                    value={descr}
+                    style={[styles.input, {height: 180, textAlignVertical: "top"}]}
                     multiline={true}
-                    onChangeText={text => {setDescr(text); onChange(text)}}
-                    value={value}/>
-                )}
-            />
-            {errors.description && (<Text style={AppStyle.errorMsg}>{errors.description.message}</Text>)}
-
-            <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-start"}} >
-                <Text style={AppStyle.textRegular}>Is public?</Text>
-                <Switch
-                        
-                    trackColor={{false: '#767577', true: Colors.gray1}}
-                    thumbColor={isPublic ? Colors.deckColor : '#f4f3f4'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleSwitch}
-                    value={isPublic}/>
+                    numberOfLines={10}
+                    onChangeText={text => setDescr(text)}/>
+                <View style={{width: '100%', gap: 10, flexDirection: 'row', alignItems: "center"}} >
+                    <Text style={AppStyle.textRegular}>Is public?</Text>
+                    <CheckBox color={Colors.deckColor} size={28} active={isPublic} setActive={setIsPublic}/>
+                </View>
+                <View style={{width: '100%', gap: 10, height: 50, alignItems: "center", justifyContent: "center", flexDirection: 'row'}} >
+                    {
+                        loading ? 
+                        <ActivityIndicator size={32} color={Colors.deckColor} />
+                        :
+                        <>
+                            <Pressable onPress={deleteDeck} style={styles.button} >
+                                <Text style={AppStyle.textRegular}>Delete</Text>
+                            </Pressable>
+                            <Pressable onPress={saveDeck} style={[styles.button, {backgroundColor: Colors.deckColor}]} >
+                                <Text style={AppStyle.textRegular}>Save</Text>
+                            </Pressable>
+                        </>
+                    }
+                </View>
             </View>
-
-            <View style={{width: '100%', height: 50, alignItems: "center", justifyContent: "center"}} >
-                {
-                    loading ?
-                    <ActivityIndicator size={32} color={Colors.deckColor} /> :
-                    <View style={{width: '100%', flexDirection: 'row', height: 50, gap: 10}} >
-                        <Pressable onPress={deleteDeck} style={{flex: 1, backgroundColor: Colors.red, borderRadius: 4, alignItems: "center", justifyContent: "center"}} >
-                            <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Delete</Text>
-                        </Pressable>
-                        <Pressable onPress={handleSubmit(onPress)} style={{flex: 1, backgroundColor: Colors.deckColor, borderRadius: 4, alignItems: "center", justifyContent: "center"}} >
-                            <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Save</Text>
-                        </Pressable>
-                    </View>
-                }
-            </View>            
         </View>
     )
 }
@@ -165,4 +123,21 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         backgroundColor: Colors.gray
     },
+    container: {
+        width: '100%',         
+        borderRadius: 4, 
+        borderWidth: 1,
+        borderColor: Colors.deckColor,
+        flex: 1, 
+        gap: 10,
+        padding: wp(4)        
+    },
+    button: {
+        flex: 1, 
+        height: 50,
+        backgroundColor: Colors.red, 
+        borderRadius: 4,
+        alignItems: "center",
+        justifyContent: "center"
+    }
 })

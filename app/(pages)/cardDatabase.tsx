@@ -1,8 +1,7 @@
 import {     
     Pressable, 
     SafeAreaView, 
-    StyleSheet, 
-    Text, 
+    StyleSheet,     
     TextInput, 
     View 
 } from 'react-native'
@@ -59,20 +58,26 @@ const CardDatabase = () => {
         init()
     }, [])
 
-    const handleSearch = async (input: string | null) => {        
+    const handleSearch = async (input: string | null, append: boolean = false) => {
+        setLoading(true)
         searchTerm = input ? input.trimEnd() : null
-        page = 0
+        page = append ? page + 1 : 0
         await supaFetchCards(
             searchTerm,
             options,
             page
-        ).then(value => setCards([...value]))    
+        ).then(value => append ? setCards(prev => [...prev, ...value]) : setCards([...value]))
+        setLoading(false)
     }
 
     const debounceSearch = useCallback(
         debounce(handleSearch, 400),
         []
     )
+
+    const onEndReached = async () => {        
+        debounceSearch(searchTerm, true)
+    }
 
     const toggleFilter = () => {
         setFilterOpened(prev => !prev)
@@ -90,7 +95,7 @@ const CardDatabase = () => {
             <View style={{flexDirection: 'row', gap: 10, marginBottom: 10, alignItems: "center", justifyContent: "center"}} >
                 <TextInput
                 ref={inputRef}
-                style={styles.input}            
+                style={styles.input}                
                 onChangeText={debounceSearch}
                 placeholder='search'
                 placeholderTextColor={Colors.white}/>
@@ -100,8 +105,8 @@ const CardDatabase = () => {
                     hitSlop={AppConstants.hitSlopLarge}>
                     {
                         filterIsOpened ?
-                        <Ionicons name='close-outline' size={32} color={Colors.cardColor} /> :
-                        <Ionicons name='options-outline' size={32} color={Colors.cardColor} />
+                        <Ionicons name='close-outline' size={28} color={Colors.cardColor} /> :
+                        <Ionicons name='options-outline' size={28} color={Colors.cardColor} />
                     }
                 </Pressable>
             </View>
@@ -113,7 +118,8 @@ const CardDatabase = () => {
                 hasResults={true} 
                 loading={loading} 
                 numColumns={4} 
-                gap={20}/>            
+                gap={20}
+                onEndReached={onEndReached}/>            
         </SafeAreaView>
     )
 }

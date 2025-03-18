@@ -6,7 +6,6 @@ import { AppConstants } from '@/constants/AppConstants'
 import { supaFetchCardsFromDeck, supaUserIsOwnerOfDeck } from '@/lib/supabase'
 import { router, useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useRef, useState } from 'react'
-import CardGrid from '@/components/grid/CardGrid'
 import BackButton from '@/components/BackButton'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors' 
@@ -27,9 +26,9 @@ const DeckPage = () => {
     const [loading, setLoading] = useState(false)
     const [cards, setCards] = useState<Card[]>([])    
     const [userIsOwner, setUserIsOwner] = useState(false)
-    const deck_id: number = deck.deck_id as any
+    const deck_id: number = deck.deck_id as any    
 
-    const init = async () => {
+    const init = async () => {        
         setLoading(true)
         await supaFetchCardsFromDeck(deck_id).then(
             values => setCards([...values])
@@ -67,8 +66,24 @@ const DeckPage = () => {
                         contentFit='cover' />
                 </Animated.View>
 
+                
                 <View style={styles.container} >
-                    <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>{deck.name}</Text>                    
+                    <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>
+                        {deck.name}
+                    </Text>
+                                        
+                    <View style={{paddingVertical: 8, paddingHorizontal: 10, borderRadius: 4, backgroundColor: Colors.gray, alignSelf: 'flex-start'}} >
+                        <Text style={AppStyle.textRegular}>{deck.type} Deck</Text>
+                    </View>
+                    
+                    {
+                        deck.owner_name &&
+                        <View style={{flexDirection: 'row', alignSelf: 'flex-start', gap: 6, alignItems: "center", backgroundColor: Colors.gray, borderRadius: 4, padding: 10, justifyContent: "center"}} >
+                            <Text style={[AppStyle.textRegular, {textAlign: "center", fontSize: 14}]}>Created by</Text>
+                            <Text style={AppStyle.textRegular}>{deck.owner_name}</Text>
+                            <Image style={{width: 56, height: 56, borderRadius: 56}} source={deck.owner_image_url} contentFit='cover' />
+                        </View>
+                    }
                     <DeckInfo title='Archetypes' info={deck.archetypes} />
                     <DeckInfo title='Attributes' info={deck.attributes} />
                     <DeckInfo title='Frametypes' info={deck.frametypes} />
@@ -119,11 +134,10 @@ export default DeckPage
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',         
+        
         borderRadius: 4, 
         borderWidth: 1,
-        borderColor: Colors.deckColor,
-        flex: 1, 
+        borderColor: Colors.deckColor,        
         gap: 10,
         padding: wp(4)        
     }

@@ -3,7 +3,7 @@ import { Colors } from '@/constants/Colors'
 import React, { useState } from 'react'
 import { supaAddDeckToCollection } from '@/lib/supabase'
 import { AppStyle } from '@/style/AppStyle'
-import { showToast } from '@/helpers/util'
+import Toast from './Toast'
 
 
 const AddDeckToUserCollection = ({deck_id}: {deck_id: number}) => {
@@ -13,9 +13,9 @@ const AddDeckToUserCollection = ({deck_id}: {deck_id: number}) => {
         setLoading(true)
         const success= await supaAddDeckToCollection(deck_id)
         if (success) {
-            showToast("Success!", "Deck copied to your collection", "success")
+            Toast.show({title: "Success", message: "Deck copied to your collection", type: "success"})            
         } else {
-            showToast("Error!", "Could not add to your collection", "error")
+            Toast.show({title: "Error", message: "Could not add to your collection", type: "error"})            
         }
         setLoading(false)
     }    

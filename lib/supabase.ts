@@ -438,10 +438,7 @@ export async function fetchUserDecks(): Promise<Deck[]> {
       created_by,
       owner
     `
-  ).eq("owner", session?.user.id).order("updated_at", {ascending: false}).overrideTypes<Deck[]>()
-  data?.forEach(
-    item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by
-  )
+  ).eq("owner", session?.user.id).order("updated_at", {ascending: false}).overrideTypes<Deck[]>()  
   return data ? data as Deck[] : []
   
 }
@@ -507,6 +504,11 @@ export const supaFetchDecks = async (
   page: number
 ): Promise<Deck[]> => {
   let query = supabase.from("decks").select(`
+    users!decks_owner_fkey (
+      name,
+      user_id,
+      images!users_image_id_fkey (image_url)
+    ),
     deck_id,
     name,
     type,
@@ -586,8 +588,12 @@ export const supaFetchDecks = async (
   if (error) {
     console.log(error)
   }
+
   data?.forEach(
-    item => item['userIsOwner'] = item.owner != null && item.owner == item.created_by
+    item => {      
+      item.owner_name = item.users ? item.users.name : null
+      item.owner_image_url = item.users ? item.users.images.image_url : null      
+    }
   )
   return data ? data as Deck[] : []
 }
@@ -598,8 +604,11 @@ export async function supaUserIsOwnerOfDeck(deck_id: number): Promise<boolean> {
   if (!session) {
     return false
   }
-  const { data, error } = await supabase.from("decks").select("deck_id").eq("deck_id", deck_id).eq("owner", session.user.id).single()
-  if (error) {
+  const { data, error } = await supabase.from(
+    "decks"
+  ).select("deck_id").eq("deck_id", deck_id).eq("owner", session.user.id).single()
+
+  if (error && error.code != "PGRST116") {
     console.log(error)
   }
   return data ? true : false

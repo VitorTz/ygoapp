@@ -19,9 +19,14 @@ import { useState } from 'react'
 import * as yup from 'yup';
 import { router } from 'expo-router';
 import React from 'react'
+import { capitalize } from 'lodash';
 
 
 const schema = yup.object().shape({  
+    name: yup
+        .string()
+        .min(3, 'Name must be at least 3 characters')        
+        .required('Name is required'),
     email: yup
         .string()
         .email('Please enter a valid email')
@@ -30,15 +35,21 @@ const schema = yup.object().shape({
         .string()
         .min(3, 'Password must be at least 3 characters')
         .required('Password is required'),  
+    confirmPassword: yup
+        .string()
+        .oneOf([yup.ref('password')], 'Password must be the same')
+        .required('Password is required')
 });
 
 interface FormData {
+    name: string
     email: string
     password: string
+    confirmPassword: string
 }
 
 
-const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
+const SignUpForm = ({onSignUp}: {onSignUp: () => void}) => {
 
     const [isLoading, setLoading] = useState(false)
     
@@ -49,16 +60,23 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {            
+            name: '',
             email: '',
-            password: '',            
+            password: '',
+            confirmPassword: ''
         },
     });
     
     const onSubmit = async (form_data: FormData) => {
         setLoading(true)        
-        const {data, error} = await supabase.auth.signInWithPassword({
-            email: form_data.email,
-            password: form_data.password
+        const {data, error} = await supabase.auth.signUp({
+            email: form_data.email.trimEnd(),
+            password: form_data.password,
+            options: {
+                data: {
+                    name: capitalize(form_data.name.trim())
+                }
+            }
         })
         setLoading(false)
         
@@ -69,7 +87,7 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
             
         const session = await supaGetSession()
         if (session) {                
-            await onSignIn()
+            await onSignUp()
         } else {
             Toast.show({title: "Error", message: "could not retrive login session", type: "error"})
         }        
@@ -78,6 +96,22 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
   return (
     <KeyboardAvoidingView style={{width: '100%', gap: 20}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
         <ScrollView style={{width: '100%'}} >
+            {/* Name */}
+            <Text style={styles.inputHeaderText}>Name</Text>
+            <Controller
+                control={control}
+                name="name"
+                render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                    style={styles.input}                    
+                    autoComplete='name'
+                    autoCapitalize='words'                    
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}/>
+                )}
+            />
+            {errors.name && (<Text style={styles.error}>{errors.name.message}</Text>)}
             {/* Email */}
             <Text style={styles.inputHeaderText}>Email</Text>
             <Controller
@@ -88,7 +122,6 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
                     style={styles.input}                    
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    autoComplete='email'                    
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}/>
@@ -103,7 +136,7 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                    style={styles.input}                    
+                    style={styles.input}
                     secureTextEntry
                     autoCapitalize="none"
                     onBlur={onBlur}
@@ -112,19 +145,39 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
                 )}
             />
             {errors.password && (<Text style={styles.error}>{errors.password.message}</Text>)}
+
+            {/* Confirm Password */}
+            <Text style={styles.inputHeaderText}>Confirm password</Text>
+            <Controller
+                name="confirmPassword"
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}/>
+                )}
+            />
+            {errors.confirmPassword && (<Text style={styles.error}>{errors.confirmPassword.message}</Text>)}
     
             {/* Login Button */}
             <Pressable onPress={handleSubmit(onSubmit)} style={styles.formButton} >
                 {
                     isLoading ? 
                     <ActivityIndicator size={32} color={Colors.white} /> :
-                    <Text style={styles.formButtonText} >Login</Text>
+                    <Text style={styles.formButtonText} >Register</Text>
                 }
             </Pressable>
+
         <View style={{flexDirection: "row", marginTop: 20, gap: 4}} >
-            <Text style={{color: Colors.orange, fontSize: 14}} >Don't Have an Account?</Text> 
-            <Pressable onPress={() => router.replace("/(auth)/signup")}  hitSlop={{left: 10, top: 10, bottom: 10, right: 10}} >
-            <Text style={{textDecorationLine: "underline", fontWeight: "bold", color: Colors.orange, fontSize: 14}} >Sign Up</Text> 
+            <Text style={{color: Colors.orange, fontSize: 14}} >Already Have an Account?</Text> 
+            <Pressable onPress={() => router.replace("/(auth)/signin")}  hitSlop={{left: 10, top: 10, bottom: 10, right: 10}} >
+                <Text style={{textDecorationLine: "underline", fontWeight: "bold", color: Colors.orange, fontSize: 14}} >
+                    Sign In
+                </Text> 
             </Pressable>
         </View>
         </ScrollView>
@@ -132,7 +185,7 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
   )
 }
 
-export default SignInForm
+export default SignUpForm
 
 const styles = StyleSheet.create({
     input: {
