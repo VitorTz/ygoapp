@@ -64,8 +64,8 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         
     return (
         <View style={{width: '100%'}}>
-            <Text style={[AppStyle.textHeader, {color: Colors.cardColor}]} >
-                    Collection: {total}
+            <Text style={[AppStyle.textHeader, {fontSize: 24, color: Colors.cardColor}]} >
+                Copies in collection: {total}
             </Text>            
             <View style={styles.container} >
                 <View style={{width: '100%', flexDirection: 'row', gap: 10}} >

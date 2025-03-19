@@ -38,7 +38,7 @@ const EditDeckForm = ({
     const init = () => {
         setName(deck.name)
         setDescr(deck.descr as any)
-        setIsPublic(deck.is_public as any)
+        setIsPublic(deck.is_public == 'true' || deck.is_public == true)
     }
 
     useEffect(

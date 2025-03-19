@@ -8,6 +8,7 @@ import CardGrid from './grid/CardGrid'
 
 
 interface CardPoolProps {
+    title?: string
     cardsOnPool: Card[]
     onCardPress: (card: Card) => void,
     color?: string
@@ -15,6 +16,7 @@ interface CardPoolProps {
 }
 
 const CardPool = ({
+    title = "Cards",
     cardsOnPool,
     onCardPress,
     color = Colors.orange,
@@ -23,7 +25,7 @@ const CardPool = ({
     return (
         <View style={[styles.container, {borderColor: color, height}]} >
             <View style={[styles.header, {backgroundColor: color}]} >
-                <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]} >Cards</Text>
+                <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]} >{title}</Text>
                 <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cardsOnPool.length}</Text>
             </View>
             <CardGrid

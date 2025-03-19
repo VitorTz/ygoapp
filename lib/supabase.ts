@@ -614,6 +614,29 @@ export async function supaUserIsOwnerOfDeck(deck_id: number): Promise<boolean> {
   return data ? true : false
 }
 
+export async function fetchRelatedCards(archetype: string | null): Promise<Card[]> {
+  const { data, error } = await supabase.from(
+    "cards"
+  ).select(
+    `
+      card_id,
+      name,
+      descr,      
+      attack,
+      defence,
+      level,
+      attribute,
+      archetype,
+      frametype,
+      race,
+      type,
+      image_url,
+      cropped_image_url
+    `
+  ).eq("archetype", archetype).overrideTypes<Card[]>()
+  return data ? orderCards(data) : []
+}
+
 export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
   const { data } = await supabase.from("deck_cards").select(
     `

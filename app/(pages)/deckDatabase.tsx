@@ -20,6 +20,7 @@ import DeckGrid from '@/components/grid/DeckGrid'
 import TopBar from '@/components/TopBar'
 import { router } from 'expo-router'
 import DeckPicker from '@/components/picker/DeckPicker'
+import { AppConstants } from '@/constants/AppConstants'
 
 
 
@@ -111,7 +112,7 @@ const DeckDatabase = () => {
           placeholder='search'
           placeholderTextColor={Colors.white}
         />
-        <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}}>
+        <Pressable onPress={toggleFilter} style={{position: 'absolute', right: 10}} hitSlop={AppConstants.hitSlopLarge}>
           <Ionicons name='options-outline' size={28} color={Colors.deckColor} />
         </Pressable>
       </View>
