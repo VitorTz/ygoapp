@@ -38,10 +38,6 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
     const [loading, setLoading] = useState(false)
     const [isPublic, setIsPublic] = useState(false)
 
-    const toggleSwitch = () => {
-        setIsPublic(prev => !prev)
-    }
-
     const {
         control,
         handleSubmit,

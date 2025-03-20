@@ -4,9 +4,10 @@ import {
   DECK_FETCH_LIMIT 
 } from '../constants/AppConstants';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Card, Deck, ImageDB, LimitedCards, UserDB } from '@/helpers/types';
+import { Card, Deck, DeckComment, ImageDB, LimitedCards, UserDB } from '@/helpers/types';
 import { createClient, PostgrestError, Session } from '@supabase/supabase-js'
 import { orderCards, removeTrailingNewlines, } from '@/helpers/util';
+import Toast from '@/components/Toast';
 
 
 
@@ -604,7 +605,7 @@ export const supaFetchDecks = async (
   data?.forEach(
     item => {      
       item.owner_name = item.users ? (item.users as any).name : null
-      item.owner_image_url = item.users ? item.users.images.image_url : null
+      item.owner_image_url = item.users ? (item.users as any).images.image_url : null
     }
   )
   return data ? data as Deck[] : []
@@ -785,4 +786,59 @@ export async function supabaseUpdateDeckCoverImage(deck_id: number, image_url: s
     .update({image_url: image_url})
     .eq("deck_id", deck_id)  
   return { error }
+}
+
+export async function fetchDeckComments(deck_id: number): Promise<DeckComment[]> {
+  const { data, error } = await supabase
+    .from("deck_comments")
+    .select(
+      `
+        comment_id,
+        deck_id,
+        comment,
+        users (
+          name,
+          images (
+            image_url
+          )
+        )
+      `)
+    .eq("deck_id", deck_id)
+  
+    if (error) {
+      console.log(error)
+      return []
+    }
+    return data!.map(
+      item => {
+        return {
+          ...item,
+          username: (item.users as any).name,
+          user_image_url: (item.users as any).images.image_url
+        }
+      }
+    )
+}
+
+
+export async function createDeckComment(deck_id: number, comment: string): Promise<number | null> {
+    const session = await supaGetSession()
+    if (!session) {
+      Toast.show({title: "Error", message: "You are not logged", type: "error"})
+      return null
+    }
+
+    const { data, error } = await supabase
+      .from("deck_comments")
+      .insert({deck_id, comment, user_id: session.user.id})
+      .select("comment_id")
+      .single()
+  
+    if (error) {
+      Toast.show({title: "Error", message: "Could not create your comment", type: "error"})      
+      console.log(error)
+      return null
+    }
+
+    return data.comment_id
 }

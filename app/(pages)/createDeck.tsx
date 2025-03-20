@@ -25,6 +25,10 @@ import Toast from '@/components/Toast'
 
 const cardsMap = new Map<number, number>()
 
+const getNumCardsOnDeck = (card: Card) => {
+  return cardsMap.get(card.card_id) ? cardsMap.get(card.card_id)! : 0
+}
+
 const CreateDeck = () => {
   
   const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
@@ -53,11 +57,7 @@ const CreateDeck = () => {
       return
     }    
     router.replace("/(pages)/editDeck")
-  }
-
-  const getNumCardsOnDeck = (card: Card) => {
-    return cardsMap.get(card.card_id) ? cardsMap.get(card.card_id)! : 0
-  }
+  }  
 
   const addCardToDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
@@ -123,6 +123,7 @@ const CreateDeck = () => {
       {
         cardToDisplay && 
         <CardComponent
+          getNumCardsOnDeck={getNumCardsOnDeck}
           closeCardComponent={closeCardComponent} 
           card={cardToDisplay} 
           addCard={addCardToDeck} 

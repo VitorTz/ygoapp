@@ -21,7 +21,7 @@ const CardPool = ({
     title = "Cards",
     cards,
     onCardPress = (card: Card) => router.navigate({pathname: "/cardPage", params: card as any}),
-    color = Colors.orange,
+    color = Colors.cardColor,
     height = hp(50),
     showTotal = true
 }: CardPoolProps) => {    

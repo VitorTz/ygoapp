@@ -13,19 +13,19 @@ import { supabase, supaGetSession } from '@/lib/supabase';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Colors } from '../../constants/Colors';
-import { sleep } from '../../helpers/util'
-import Toast from '../Toast';
-import { useState } from 'react'
-import * as yup from 'yup';
 import { router } from 'expo-router';
-import React from 'react'
 import { capitalize } from 'lodash';
+import { useState } from 'react'
+import Toast from '../Toast';
+import * as yup from 'yup';
+import React from 'react'
 
 
 const schema = yup.object().shape({  
     name: yup
         .string()
         .min(3, 'Name must be at least 3 characters')        
+        .max(30, 'Max 30 characters')
         .required('Name is required'),
     email: yup
         .string()

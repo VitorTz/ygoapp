@@ -28,7 +28,7 @@ const CardGridItem = ({card, index, width, height, columns, onCardPress}: CardCo
     
     return (
         <Pressable onPress={handlePress}>
-            <Image style={{width, height, marginTop: index >= columns ? 10 : 0}} source={card.image_url} />
+            <Image style={{width, height, marginBottom: 10}} source={card.image_url} />
         </Pressable>
     )
 }

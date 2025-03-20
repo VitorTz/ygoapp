@@ -78,12 +78,9 @@ export default CardPage
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        borderRadius: 4,
-        flex: 1,
-        borderColor: Colors.red,
-        gap: 10,
-        padding: 20,
+        width: '100%',        
+        flex: 1,        
+        gap: 10,        
         borderWidth: 1,
         marginBottom: 10
     }

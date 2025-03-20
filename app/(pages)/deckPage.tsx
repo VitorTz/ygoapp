@@ -1,6 +1,6 @@
 import { FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import AddDeckToUserCollection from '@/components/AddDeckToUserCollection'
-import Animated, { FadeInUp } from 'react-native-reanimated'
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated'
 import { getImageHeightCropped, hp, wp } from '@/helpers/util'
 import { Deck } from '@/helpers/types'
 import { AppConstants } from '@/constants/AppConstants'
@@ -15,40 +15,13 @@ import { Image } from 'expo-image'
 import TopBar from '@/components/TopBar'
 import CardPool from '@/components/CardsPool'
 import DeckInfo from '@/components/DeckInfo'
+import DeckComments from '@/components/DeckComments'
 
 
 const deckWidth = wp(90)
 const deckHeight = getImageHeightCropped(deckWidth)
 
-const DeckCopyComponent = ({deck, userIsOwner, loading}: {deck: Deck, userIsOwner: boolean, loading: boolean}) => {
 
-    const navigateToEditDeck = () => {
-        router.navigate({pathname: "/editDeck", params: deck as any})
-    }
-
-    return (
-        <>
-            {
-                !loading &&
-                <>
-                {
-                    userIsOwner ?
-                    <View style={{width: '100%', gap: 10}} >
-                        <Text style={[AppStyle.textRegular, {color: Colors.orange, fontSize: 20}]}>
-                            You are the owner of this deck
-                        </Text>
-                        <Pressable onPress={navigateToEditDeck} hitSlop={AppConstants.hitSlopLarge} style={{width: '100%', height: 50, alignItems: "center", justifyContent: "center", backgroundColor: Colors.deckColor, borderRadius: 4}} >
-                            <Text style={AppStyle.textRegular} >Edit Deck</Text>
-                        </Pressable>
-                    </View>
-                    :
-                    <AddDeckToUserCollection deck_id={deck.deck_id}/>
-                }
-                </>
-            }
-        </>
-    )
-}
 
 const DeckOwnerComponent = ({deck}: {deck: Deck}) => {
     return (
@@ -88,18 +61,12 @@ const DeckInfoComp = ({deck}: {deck: Deck}) => {
 
 const DeckPage = () => {
 
-    const deck = useLocalSearchParams() as any
-    const [loading, setLoading] = useState(false)
-    const [cards, setCards] = useState<Card[]>([])    
-    const [userIsOwner, setUserIsOwner] = useState(false)    
+    const deck = useLocalSearchParams() as any    
+    const [cards, setCards] = useState<Card[]>([])        
 
-    const init = async () => {        
-        setLoading(true)
+    const init = async () => {                
         await supaFetchCardsFromDeck(deck.deck_id)
             .then(values => setCards([...values]))
-        await supaUserIsOwnerOfDeck(deck)
-            .then(value => setUserIsOwner(value))
-        setLoading(false)
     }
 
     useEffect(
@@ -107,49 +74,38 @@ const DeckPage = () => {
         []
     )
 
-    const openCardPage = (card: Card) => {
-        router.navigate({pathname: "/cardPage", params: card as any})
-    }
-
-    const navigateToEditDeck = () => {
-        router.navigate({pathname: "/editDeck", params: deck as any})
-    }
-
     return (
         <SafeAreaView style={[AppStyle.safeArea, {padding: wp(5)}]} >
             <TopBar title='Deck' marginBottom={10} >
                 <BackButton color={Colors.deckColor} />
             </TopBar>
             <ScrollView>
-                <Animated.View entering={FadeInUp.delay(100).duration(600)} >
-                    <Image 
-                        source={deck.image_url} 
-                        style={{alignSelf: "center", width: deckWidth, height: deckHeight, marginVertical: 10}} 
-                        placeholder={AppConstants.blurhash}
-                        contentFit='cover' />
-                </Animated.View>
+                <View style={{width: '100%', gap: 10}} >
+                    <Animated.View entering={FadeInUp.duration(600)} >
+                        <Image 
+                            source={deck.image_url} 
+                            style={{alignSelf: "center", width: deckWidth, height: deckHeight}} 
+                            placeholder={AppConstants.blurhash}
+                            contentFit='cover' />
+                    </Animated.View>
 
-                
-                <View style={styles.container} >
-                    <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>
-                        {deck.name}
-                    </Text>
-                                        
-                    <View style={styles.deckType} >
-                        <Text style={AppStyle.textRegular}>{deck.type} Deck</Text>
-                    </View>
+                    
+                    <Animated.View entering={FadeInDown.duration(600)} style={styles.container} >
+                        <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 28}]}>
+                            {deck.name}
+                        </Text>
+                                            
+                        <View style={styles.deckType} >
+                            <Text style={AppStyle.textRegular}>{deck.type} Deck</Text>
+                        </View>
 
-                    <DeckOwnerComponent deck={deck}/>
-                    <DeckInfoComp deck={deck} />
-                    <DeckCopyComponent deck={deck} userIsOwner={userIsOwner} loading={loading} />
-                </View>
+                        <DeckOwnerComponent deck={deck}/>
+                        <DeckInfoComp deck={deck} />
+                        <AddDeckToUserCollection deck={deck} />                    
+                    </Animated.View>
 
-                <View style={{width: '100%', marginTop: 10}} >
-                    <CardPool
-                        cards={cards}
-                        color={Colors.deckColor}
-                        onCardPress={openCardPage}
-                        height={hp(100)}/>                    
+                    <CardPool cards={cards} height={hp(100)}/>
+                    <DeckComments deck={deck} />
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -159,12 +115,8 @@ const DeckPage = () => {
 export default DeckPage
 
 const styles = StyleSheet.create({
-    container: {
-        borderRadius: 4, 
-        borderWidth: 1,
-        borderColor: Colors.deckColor,        
-        gap: 10,
-        padding: wp(4)        
+    container: {        
+        gap: 10        
     },
     deckType: {
         paddingVertical: 8, 

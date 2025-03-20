@@ -29,8 +29,7 @@ const _layout = () => {
               <Stack.Screen name='(pages)/deckPage' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/deckDatabase' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/cardDatabase' options={{headerShown: false}} />
-              <Stack.Screen name='(pages)/createDeck' options={{headerShown: false}} />
-              <Stack.Screen name='(pages)/createDeckAi' options={{headerShown: false}} />
+              <Stack.Screen name='(pages)/createDeck' options={{headerShown: false}} />              
               <Stack.Screen name='(pages)/editDeck' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/deckCollectionPage' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/cardCollectionPage' options={{headerShown: false}} />

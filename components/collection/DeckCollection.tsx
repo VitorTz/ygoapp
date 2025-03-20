@@ -38,15 +38,9 @@ const DeckCollection = () => {
       <View style={[styles.container, {borderColor: Colors.purple}]} >
         <View style={[styles.textBg, {flexDirection: 'row', backgroundColor: Colors.purple, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10}]} >
             <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >Decks: {decks.length}</Text>
-            <View style={{flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
-              <Pressable onPress={() => router.navigate("/createDeckAi")} style={{flexDirection: 'row', alignItems: "center"}} hitSlop={AppConstants.hitSlop} >
-                <Ionicons name="sparkles-outline" size={21} color={Colors.white} />
-              </Pressable>
-              <View style={{width: 2, height: 30, backgroundColor: Colors.white}}/>
-              <Pressable onPress={() => router.navigate("/(pages)/createDeck")} hitSlop={AppConstants.hitSlop} >
-                  <Ionicons name='add' color={Colors.white} size={32} />
-              </Pressable>
-            </View>
+            <Pressable onPress={() => router.navigate("/(pages)/createDeck")} hitSlop={AppConstants.hitSlop} >
+                <Ionicons name='add' color={Colors.white} size={32} />
+            </Pressable>            
         </View>
         
         <View style={{width: '100%', flex: 1, padding: 10}} >

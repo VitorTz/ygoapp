@@ -66,8 +66,9 @@ export const downloadImage = async (fileName: string, imageUrl: string) => {
 
 export function removeTrailingNewlines(str: string) {
     return str
-      .replace(/^\n+/, '')
-      .replace(/\n+$/, '')
+        .trim()
+        .replace(/^\n+/, '')
+        .replace(/\n+$/, '')
 }
 
 export function max(a: number, b: number) {

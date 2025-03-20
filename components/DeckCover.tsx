@@ -31,6 +31,28 @@ const {width, height} = getItemGridDimensions(
 var imageSet = new Set<string>()
 var images: string[] = []
 
+const ImageComponent = ({
+  item, 
+  index, 
+  setTempImageUrl
+}: {
+  item: string, 
+  index: number,
+  setTempImageUrl: (i: string) => void
+}) => {
+  const [loading, setLoading] = useState(true)
+  
+  return (    
+      <Pressable onPress={() => setTempImageUrl(item)} >
+        <Image 
+          source={item} 
+          style={{width, height, marginTop: index >= 2 ? 10 : 0, marginRight: 10}}
+          placeholder={AppConstants.blurhash}          
+          />
+      </Pressable>
+  )
+}
+
 const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
 
   const [imageUrl, setImageUrl] = useState(deck.image_url)
@@ -109,17 +131,13 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
               <View style={{width: '100%', marginBottom: 10}} >
                 <View style={{width: '100%', height: deckHeight - 100, borderRadius: 4, marginBottom: 10, borderWidth: 1, borderColor: Colors.deckColor}} >
                   <View style={{width: deckWidth, height: deckHeight - 100}} >
-                    <FlashList                        
+                    <FlashList                      
                       data={images}
                       nestedScrollEnabled={true}                        
                       keyExtractor={(item, index) => index.toString()}
                       numColumns={2}
                       estimatedItemSize={height}
-                      renderItem={({item, index}: {item: string, index: number}) => {
-                          return <Pressable onPress={() => setTempImageUrl(item)} >
-                            <Image source={item} style={{width: width, height: height, marginTop: index >= 2 ? 10 : 0, marginRight: 10}} />
-                          </Pressable>
-                      }}/>
+                      renderItem={({item, index}: {item: string, index: number}) => <ImageComponent item={item} index={index} setTempImageUrl={setTempImageUrl} />}/>
                   </View>                  
                 </View>
                 <View style={{width: '100%', height: 40, flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >

@@ -79,3 +79,11 @@ export interface LimitedCards {
     limitedOne: Card[]
     limitedTwo: Card[]
 }
+
+
+export type DeckComment = {
+    username: string
+    user_image_url: string    
+    comment_id: number
+    comment: string
+}

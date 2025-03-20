@@ -2,14 +2,15 @@ import {
     StyleSheet, 
     Pressable, 
     Text, 
-    View 
+    View, 
+    ActivityIndicator
 } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card } from '@/helpers/types'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
-import { GlobalContext } from '@/helpers/context'
+import { sleep } from '@/helpers/util'
 
 
 interface CopyCardToDeckProps {
@@ -26,9 +27,7 @@ const CopyCardToDeck = ({card, getNumCardsOnDeck, add, rmv}: CopyCardToDeckProps
     const [copiesOnDeck, setCopiesOnDeck] = useState(0)
     
     useEffect(
-        () => {
-            setCopiesOnDeck(getNumCardsOnDeck(card))
-        },
+        () => { setCopiesOnDeck(getNumCardsOnDeck(card)) },
         [card]
     )
 
@@ -36,7 +35,8 @@ const CopyCardToDeck = ({card, getNumCardsOnDeck, add, rmv}: CopyCardToDeckProps
         if (loading) { return }
         setLoading(true)        
         setCopiesOnDeck(prev => prev <= 2 ? prev + 1 : prev)
-        await add(card)        
+        await add(card)
+        await sleep(100)
         setLoading(false)
     }
 
@@ -44,7 +44,8 @@ const CopyCardToDeck = ({card, getNumCardsOnDeck, add, rmv}: CopyCardToDeckProps
         if (loading) { return }
         setLoading(true) 
         setCopiesOnDeck(prev => prev > 0 ? prev - 1 : prev)
-        await rmv(card)        
+        await rmv(card)
+        await sleep(100)       
         setLoading(false)
     }
 
@@ -54,14 +55,18 @@ const CopyCardToDeck = ({card, getNumCardsOnDeck, add, rmv}: CopyCardToDeckProps
                 Copies on deck: {copiesOnDeck}
             </Text>
             <View style={styles.buttonsContainer} >
-                <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
-                    <Pressable onPress={handleRmv} style={styles.button} >
-                        <Ionicons name='remove-outline' size={32} color={Colors.white} />
-                    </Pressable>
-                    <Pressable onPress={handleAdd} style={styles.button} >
-                        <Ionicons name='add-outline' size={32} color={Colors.white} />
-                    </Pressable>
-                </View>                    
+                {
+                    loading ?
+                    <ActivityIndicator size={32} color={Colors.cardColor} /> :
+                    <View style={{width: '100%', flexDirection: 'row', gap: 10}} >                    
+                        <Pressable onPress={handleRmv} style={styles.button} >
+                            <Ionicons name='remove-outline' size={32} color={Colors.white} />
+                        </Pressable>
+                        <Pressable onPress={handleAdd} style={styles.button} >
+                            <Ionicons name='add-outline' size={32} color={Colors.white} />
+                        </Pressable>
+                    </View>
+                }
             </View>            
         </View>
     )
