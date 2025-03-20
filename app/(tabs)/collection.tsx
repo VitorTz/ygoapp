@@ -1,10 +1,10 @@
-import { StyleSheet, View } from 'react-native'
-import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { AppStyle } from '@/style/AppStyle'
-import TopBar from '@/components/TopBar'
 import { Colors } from '@/constants/Colors'
+import TopBar from '@/components/TopBar'
 import { router } from 'expo-router'
+import { View } from 'react-native'
+import React from 'react'
 import LinkList, {ContainerData} from '@/components/LinkList'
 
 
@@ -38,12 +38,3 @@ const Collection = () => {
 
 
 export default Collection
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    gap: 20, 
-    alignItems: "center", 
-    justifyContent: "center"
-  }
-})

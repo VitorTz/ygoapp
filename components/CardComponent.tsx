@@ -2,7 +2,7 @@ import { StyleSheet, Pressable, ScrollView, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FadeIn } from 'react-native-reanimated'
 import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
@@ -16,6 +16,7 @@ import AddCardToUserCollection from './AddCardToUserCollection'
 import CopyCardToDeck from './CopyCardToDeck'
 import CardPool from './CardsPool'
 import { getRelatedCards } from '@/helpers/globals'
+import { GlobalContext } from '@/helpers/context'
 
 
 const cardWidth = wp(90)
@@ -23,21 +24,25 @@ const cardHeight = getImageHeight(cardWidth)
 
 const CardComponent = ({
     card, 
+    getNumCardsOnDeck,
     closeCardComponent,    
     addCard,
     rmvCard,
   }: {
     card: Card, 
     closeCardComponent: () => void,
+    getNumCardsOnDeck: (card: Card) => number,
     addCard: (card: Card) => void,
     rmvCard: (card: Card) => void    
   }) => {
 
+    const context = useContext(GlobalContext)
     const [relatedCards, setRelatedCards] = useState<Card[]>([])
     const [currentCard, setCurrentCard] = useState<Card>(card)
 
     const init = async () => {      
-      await getRelatedCards(currentCard.archetype).then(value => setRelatedCards([...value]))      
+      await getRelatedCards(currentCard.archetype, context.relatedCards)
+        .then(values => setRelatedCards([...values]))
     }
 
     useEffect(
@@ -65,7 +70,7 @@ const CardComponent = ({
               
               <View style={styles.infoContainer} >
                 <CardInfoFlatList card={currentCard} />
-                <CopyCardToDeck add={addCard} rmv={rmvCard} card={currentCard}/>
+                <CopyCardToDeck getNumCardsOnDeck={getNumCardsOnDeck} add={addCard} rmv={rmvCard} card={currentCard}/>
                 <AddCardToUserCollection card={currentCard}/>
               </View>
             </View>

@@ -6,12 +6,12 @@ import { AppConstants } from '../../constants/AppConstants'
 import { router } from 'expo-router'
 import { AppStyle } from '../../style/AppStyle'
 import { Colors } from '../../constants/Colors'
-import { showToast } from '../../helpers/util'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { Session } from '@supabase/supabase-js'
 import { UserDB } from '@/helpers/types'
 import RandomTrivia from '@/components/RandomTrivia'
+import Toast from '@/components/Toast'
 
 
 interface OptionProps {
@@ -131,7 +131,7 @@ const Profile = () => {
     const logout = async () => {
         const {error} = await supabase.auth.signOut()
         if (error) {
-            showToast("Error", error.message, "error")
+            Toast.show({title: "Error", message: error.message, type: "error"})            
         } else {
             setSession(null)            
             router.replace("/(auth)/signin")

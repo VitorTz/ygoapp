@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet } from 'react-native'
 import React from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import CardCollection from '@/components/collection/CardCollection'

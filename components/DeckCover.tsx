@@ -12,7 +12,7 @@ import Toast from './Toast'
 import Animated from 'react-native-reanimated'
 import { API_CARD_CROPPED_WIDTH, API_CARD_CROPPED_HEIGHT } from '@/constants/AppConstants'
 import { FlashList } from '@shopify/flash-list'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseUpdateDeckCoverImage } from '@/lib/supabase'
 import { Deck, Card } from '@/helpers/types'
 import React from 'react'
 
@@ -36,9 +36,8 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
   const [imageUrl, setImageUrl] = useState(deck.image_url)
   const [tempUrlImage, setTempImageUrl] = useState(deck.image_url)
   const [showGrid, setShowGrid] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)    
 
-  
   const init = () => {
     imageSet.clear()
     cards.forEach(item => imageSet.add(item.cropped_image_url))
@@ -49,7 +48,7 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
     () => {
       init()
     },
-    []
+    [cards]
   )
 
   const openGrid = async () => {
@@ -67,11 +66,7 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
 
   const saveChanges = async () => {
     setIsSaving(true)
-    const { error } = await supabase
-      .from("decks")
-      .update({image_url: tempUrlImage})
-      .eq("deck_id", deck.deck_id)
-      
+    const { error } = await supabaseUpdateDeckCoverImage(deck.deck_id, tempUrlImage!)
     if (error) {
       console.log(error)
       Toast.show({title: "Error", message: "could not update deck image", type: "error"})      
@@ -82,7 +77,6 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
     setImageUrl(tempUrlImage)
     closeGrid()
   }
-
 
   return (
     <Animated.View 

@@ -1,7 +1,7 @@
 import { ActivityIndicator, AppState, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Colors } from '../constants/Colors'
-import { supabase, supaGetSession } from '../lib/supabase';
+import { fetchProfileIcons, supabase, supaGetSession, supaGetUser } from '../lib/supabase';
 import {
   useFonts,
   LeagueSpartan_100Thin,
@@ -17,6 +17,8 @@ import {
 import { router } from 'expo-router';
 import { AppStyle } from '@/style/AppStyle';
 import { initUserCards } from '@/helpers/globals';
+import { GlobalContext } from '@/helpers/context';
+import { UserDB } from '@/helpers/types';
 
 
 
@@ -30,7 +32,8 @@ AppState.addEventListener('change', (state) => {
 
 
 const index = () => {
-
+  const globalContext = useContext(GlobalContext)
+  
   let [fontsLoaded] = useFonts({
     LeagueSpartan_100Thin,
     LeagueSpartan_200ExtraLight,
@@ -46,20 +49,20 @@ const index = () => {
   const initPage = async () => {
     const session = await supaGetSession()
     if (session) {
-      await initUserCards(session.user.id)
-    }
-    if (session == null) {
-      router.replace("/(auth)/signin")
-    } else {
+      await supaGetUser()
+        .then(value => globalContext.user = value)
+      globalContext.session = session      
+      await initUserCards(session.user.id, globalContext.userCards)
+      await fetchProfileIcons().then(values => globalContext.profileIcons = values)
       router.replace("/database")
+      return
     }
+    router.replace("/(auth)/signin")
   }
 
   useEffect(
     () => {
-      if (fontsLoaded) {
-        initPage()
-      }
+      if (fontsLoaded) { initPage() }
     },
     [fontsLoaded]
   )

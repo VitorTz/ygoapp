@@ -1,5 +1,5 @@
 import LinkList, { ContainerData } from '@/components/LinkList'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { SafeAreaView } from 'react-native'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
@@ -53,7 +53,3 @@ const Database = () => {
 }
 
 export default Database
-
-const styles = StyleSheet.create({
-
-})

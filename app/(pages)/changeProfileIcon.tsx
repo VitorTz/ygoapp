@@ -1,39 +1,36 @@
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { 
+  ActivityIndicator, 
+  Pressable, 
+  SafeAreaView, 
+  ScrollView, 
+  StyleSheet, 
+  Text, 
+  View 
+} from 'react-native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import Animated, { FadeInDown, FadeInUp} from 'react-native-reanimated'
 import { AppConstants } from '../../constants/AppConstants'
-import { AppStyle } from '../../style/AppStyle'
-import { Image } from 'expo-image'
-import Animated, { FadeInDown, FadeInUp, FadeOutDown } from 'react-native-reanimated'
-import { Colors } from '../../constants/Colors'
-import { fetchProfileIcons, supaGetUser, supaUpdateUserIcon } from '../../lib/supabase'
-import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { fetchProfileIcons, supaUpdateUserIcon } from '../../lib/supabase'
 import { ImageDB, UserDB } from '@/helpers/types'
-import TopBar from '@/components/TopBar'
+import { GlobalContext } from '@/helpers/context'
 import BackButton from '@/components/BackButton'
-
-
-var profileIcons: ImageDB[] = []
+import { AppStyle } from '../../style/AppStyle'
+import { Colors } from '../../constants/Colors'
+import TopBar from '@/components/TopBar'
+import { Image } from 'expo-image'
 
 
 const ChangeProfileIcon = () => {
   
+  const context = useContext(GlobalContext)
   const [user, setUser] = useState<UserDB | null>(null)
   const [isSaving, setIsSaving] = useState(false)
-  const [profileIcon, setProfileIcon] = useState<ImageDB | null>(null)
+  const [profileIcon, setProfileIcon] = useState<ImageDB | null | undefined>(null)
   const loading = user == null || profileIcon == null  
 
-  const init = async () => {
-    if (profileIcons.length == 0) {
-      console.log("detch")
-      profileIcons = await fetchProfileIcons()      
-    }
-
-    const usr = await supaGetUser()
-    if (usr) {
-      setUser(usr)
-      setProfileIcon(usr.image)
-    }    
+  const init = async () => {    
+    setUser(context.user)
+    setProfileIcon(context.user?.image)
   }
 
   useEffect(
@@ -83,7 +80,7 @@ const ChangeProfileIcon = () => {
             <ScrollView style={{width: '100%'}} >
               <View style={{flexDirection: 'row', gap: 10, flexWrap: 'wrap', alignItems: "center", justifyContent: "center"}} >
                 {
-                  profileIcons.map(
+                  context.profileIcons.map(
                     (item, index) => {
                       return (
                         <Animated.View key={index} entering={FadeInDown.delay(10 * index).duration(500)}  >

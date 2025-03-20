@@ -52,7 +52,7 @@ const EditDeckForm = ({deck, onSubmit}: EditDeckFormProps) => {
     const deleteDeck = async () => {
         DialogMessage.show(
             {                
-                message: `Delete ${deck.name} deck`,
+                message: `Delete ${deck.name} deck?`,
                 type: "info",
                 okBtnTest: "Delete",
                 onPress: async () => {

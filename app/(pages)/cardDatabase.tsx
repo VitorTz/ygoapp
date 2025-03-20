@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { Card } from '@/helpers/types'
-import { debounce, has } from 'lodash'
+import { debounce } from 'lodash'
 import CardPicker from '@/components/picker/CardPicker'
 import BackButton from '@/components/BackButton'
 import CardGrid from '@/components/grid/CardGrid'
@@ -47,14 +47,11 @@ const CardDatabase = () => {
         setLoading(true)
         inputRef.current?.clear()
         resetOptions()
-        await supaFetchCards(
-            searchTerm, 
-            options, 
-            page
-        ).then(value => {
-            setHasResults(value.length > 0)
-            setCards([...value])
-        })
+        await supaFetchCards(searchTerm, options, page)
+            .then(value => {
+                setHasResults(value.length > 0)
+                setCards([...value])
+            })
         setLoading(false)
     }
 
@@ -66,14 +63,11 @@ const CardDatabase = () => {
         setLoading(true)
         searchTerm = input ? input.trimEnd() : null
         page = append ? page + 1 : 0
-        await supaFetchCards(
-            searchTerm,
-            options,
-            page
-        ).then(value => {
-            setHasResults(value.length > 0)
-            append ? setCards(prev => [...prev, ...value]) : setCards([...value])
-        })
+        await supaFetchCards(searchTerm, options, page)
+            .then(value => {
+                setHasResults(value.length > 0)
+                append ? setCards(prev => [...prev, ...value]) : setCards([...value])
+            })
         setLoading(false)
     }
 
@@ -102,11 +96,11 @@ const CardDatabase = () => {
             </TopBar>
             <View style={{flexDirection: 'row', gap: 10, marginBottom: 10, alignItems: "center", justifyContent: "center"}} >
                 <TextInput
-                ref={inputRef}
-                style={styles.input}                
-                onChangeText={debounceSearch}
-                placeholder='search'
-                placeholderTextColor={Colors.white}/>
+                    ref={inputRef}
+                    style={styles.input}                
+                    onChangeText={debounceSearch}
+                    placeholder='search'
+                    placeholderTextColor={Colors.white}/>
                 <Pressable 
                     onPress={toggleFilter} 
                     style={{position: 'absolute', right: 10}} 

@@ -40,23 +40,25 @@ const EditDeck = () => {
     
   const init = async () => {
     cardsMap.clear()
-    const cards = await fetchDeckCards(deck.deck_id as any)
-    setCardsOnDeck([...cards])    
-    cards.forEach(
-      card => {
-        if (cardsMap.has(card.card_id)) {
-          cardsMap.set(card.card_id, cardsMap.get(card.card_id)! + 1)
-        } else {
-          cardsMap.set(card.card_id, 1)
+    await fetchDeckCards(deck.deck_id as any)
+      .then(
+        values => {
+            setCardsOnDeck([...values])
+            values.forEach(
+              card => {
+                if (cardsMap.has(card.card_id)) {
+                  cardsMap.set(card.card_id, cardsMap.get(card.card_id)! + 1)
+                } else {
+                  cardsMap.set(card.card_id, 1)
+                }
+              }
+            )    
         }
-      }
-    )    
+      )
   }
 
   useEffect(
-    () => {
-      init()
-    },
+    () => { init() },
     []
   )
 
@@ -65,6 +67,8 @@ const EditDeck = () => {
       Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
       return
     }    
+
+    console.log(formData.name)
     await supaUpdateDeck(
       deck.deck_id,
       formData.name,
@@ -149,7 +153,8 @@ const EditDeck = () => {
       {
         cardToDisplay && 
         <CardComponent          
-          closeCardComponent={closeCardComponent} 
+          closeCardComponent={closeCardComponent}
+          getNumCardsOnDeck={getNumCardsOnDeck}
           card={cardToDisplay} 
           addCard={addCardToDeck} 
           rmvCard={rmvCardFromDeck}/>

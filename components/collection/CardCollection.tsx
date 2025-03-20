@@ -1,15 +1,17 @@
 import { View, Pressable, Text, StyleSheet } from "react-native"
 import { router } from "expo-router"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useContext } from "react"
 import { useFocusEffect } from "expo-router"
 import { fetchUserCards } from "@/lib/supabase"
 import { Ionicons } from "@expo/vector-icons"
 import CardGrid from "../grid/CardGrid"
 import { Colors } from "@/constants/Colors"
 import { AppStyle } from "@/style/AppStyle"
-import { deckToString, hp } from "@/helpers/util"
+import { hp } from "@/helpers/util"
 import { AppConstants } from "@/constants/AppConstants"
 import { Card } from "@/helpers/types"
+import { getUserCards } from "@/helpers/globals"
+import { GlobalContext } from "@/helpers/context"
 
 
 interface CardCollectionProps {
@@ -18,17 +20,18 @@ interface CardCollectionProps {
 
 
 const CardCollection = ({height}: CardCollectionProps) => {
-
+  
+  const context = useContext(GlobalContext)  
   const [loading, setLoading] = useState(false)
   const [cards, setCards] = useState<Card[]>([])
 
-  let num_cards = 0
+  let num_cards = 0  
   cards.forEach(item => item.num_copies ? num_cards += item.num_copies : null)
   const showLoading = cards.length == 0 && loading
 
   const update = async () => {
-    setLoading(true)    
-    await fetchUserCards().then(values => setCards([...values]))
+    setLoading(true)
+    setCards([...getUserCards(context.userCards)])
     setLoading(false)
   }
 

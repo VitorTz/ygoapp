@@ -4,32 +4,30 @@ import { AppStyle } from '@/style/AppStyle'
 import TopBar from '@/components/TopBar'
 import BackButton from '@/components/BackButton'
 import { Colors } from '@/constants/Colors'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { LimitedCards } from '@/helpers/types'
 import { fetchLimitedCards } from '@/lib/supabase'
 import CardPool from '@/components/CardsPool'
 import { router } from 'expo-router'
+import { GlobalContext } from '@/helpers/context'
 
-
-var limitedCards: LimitedCards | null = null
 
 const LimitedCardsPage = () => {
 
+    const context = useContext(GlobalContext)
     const [loading, setLoading] = useState(false)    
     
     const init = async () => {
         setLoading(true)        
-        if (limitedCards == null) {            
+        if (context.limitedCards == null) {            
             await fetchLimitedCards()
-                .then(value => limitedCards = value)
+                .then(value => context.limitedCards = value)
         }
         setLoading(false)
     }
 
     useEffect(
-        () => {
-            init()
-        },
+        () => { init() },
         []
     )
 
@@ -51,19 +49,19 @@ const LimitedCardsPage = () => {
                     <View style={{width: '100%', gap: 10}} >
                         <CardPool
                             title='Forbidden'
-                            cards={limitedCards ? limitedCards.forbidden : []}
+                            cards={context.limitedCards ? context.limitedCards.forbidden : []}
                             onCardPress={onPress}
                             color={Colors.neonRed}
                         />
                         <CardPool
                             title='Limited 1'
-                            cards={limitedCards ? limitedCards.limitedOne : []}
+                            cards={context.limitedCards ? context.limitedCards.limitedOne : []}
                             onCardPress={onPress}
                             color={Colors.uglyBlue}                
                         />
                         <CardPool
                             title='Limited 2'
-                            cards={limitedCards ? limitedCards.limitedTwo : []}
+                            cards={context.limitedCards ? context.limitedCards.limitedTwo : []}
                             onCardPress={onPress}
                             color={Colors.uglyBlue}
                         />

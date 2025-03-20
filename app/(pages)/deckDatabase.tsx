@@ -1,10 +1,9 @@
 import { 
   Keyboard,
   Pressable, 
-  SafeAreaView, 
-  StyleSheet, 
-  Text, 
-  TextInput, 
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
   View 
 } from 'react-native'
 import { Colors } from '@/constants/Colors'
@@ -23,10 +22,10 @@ import DeckPicker from '@/components/picker/DeckPicker'
 import { AppConstants } from '@/constants/AppConstants'
 
 
-
 var searchTerm: string | null = null
 var options: Map<string, any>  = new Map()
 var page = 0
+
 
 const resetOptions = () => {
   searchTerm = null
@@ -68,16 +67,14 @@ const DeckDatabase = () => {
     setLoading(true)
     searchTerm = input ? input.trimEnd() : null
     page = append ? page + 1 : 0
-    await supaFetchDecks(
-        searchTerm,
-        options,
-        page
-    ).then(value => append ? setDecks(prev => [...prev, ...value]) : setDecks([...value]))
+    await supaFetchDecks(searchTerm, options, page)
+      .then(
+        value => append ? setDecks(prev => [...prev, ...value]) : setDecks([...value])
+    )
     setLoading(false)
   }
 
-  const onEndReached = async () => {
-    console.log("end")    
+  const onEndReached = async () => {    
     debounceSearch(searchTerm, true)
   }
 

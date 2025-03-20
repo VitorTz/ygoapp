@@ -5,7 +5,7 @@ import {
 } from '../constants/AppConstants';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card, Deck, ImageDB, LimitedCards, UserDB } from '@/helpers/types';
-import { createClient, PostgrestError } from '@supabase/supabase-js'
+import { createClient, PostgrestError, Session } from '@supabase/supabase-js'
 import { orderCards, removeTrailingNewlines, } from '@/helpers/util';
 
 
@@ -32,8 +32,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey as any, {
 });
 
 
-export async function supaGetSession() {
-    const {data: {session}, error} = await supabase.auth.getSession()
+export async function supaGetSession(): Promise<Session | null> {
+    const {data: {session} } = await supabase.auth.getSession()
     return session
 }
 
@@ -165,7 +165,7 @@ export async function supaCreateDeck(
     .insert(
     [
       {
-        name: name.trimEnd(), 
+        name: name.trim(), 
         descr: descr != '' ? descr : null,
         type: "Community",
         num_cards: cards.length,
@@ -273,7 +273,7 @@ export async function supaUpdateDeck(
     .from("decks")
     .update(    
       {
-        name: deckName.trimEnd(), 
+        name: deckName.trim(), 
         descr: descr != '' ? descr : null,
         type: "Community",
         num_cards: cards.length,
@@ -436,7 +436,7 @@ export async function fetchUserDecks(): Promise<Deck[]> {
   const session = await supaGetSession()
   if (!session) { return []}
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("decks")
     .select(`
       deck_id,
@@ -451,10 +451,9 @@ export async function fetchUserDecks(): Promise<Deck[]> {
       races,
       is_public,
       types,
-      created_by,
-      owner
+      created_by      
     `)
-    .eq("owner", session?.user.id)
+    .eq("created_by", session?.user.id)
     .order("updated_at", {ascending: false})    
   return data ? data as Deck[] : []
 }
@@ -520,9 +519,11 @@ export const supaFetchDecks = async (
   page: number
 ): Promise<Deck[]> => {
   let query = supabase.from("decks").select(`
-    users(
+    users (
       name,
-      image_url
+      images (
+        image_url
+      )
     ),
     deck_id,
     name,
@@ -536,8 +537,7 @@ export const supaFetchDecks = async (
     races,
     types,
     is_public,
-    created_by,
-    owner
+    created_by    
   `)
 
   query = query.eq("is_public", true)  
@@ -604,7 +604,7 @@ export const supaFetchDecks = async (
   data?.forEach(
     item => {      
       item.owner_name = item.users ? (item.users as any).name : null
-      item.owner_image_url = item.users ? (item.users as any).image_url : null
+      item.owner_image_url = item.users ? item.users.images.image_url : null
     }
   )
   return data ? data as Deck[] : []

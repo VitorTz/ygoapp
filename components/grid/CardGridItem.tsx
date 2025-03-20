@@ -17,7 +17,9 @@ interface CardComponentProps {
 
 const CardGridItem = ({card, index, width, height, columns, onCardPress}: CardComponentProps) => {
 
-    const p = onCardPress ? onCardPress : (card: Card) => router.navigate({pathname: "/(pages)/cardPage", params: card})
+    const p = onCardPress ? 
+        onCardPress : 
+        (card: Card) => router.navigate({pathname: "/(pages)/cardPage", params: card as any})
     
     const handlePress = async () => {
         Keyboard.dismiss()

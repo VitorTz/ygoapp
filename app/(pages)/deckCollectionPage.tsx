@@ -1,10 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { AppStyle } from '@/style/AppStyle'
 import DeckCollection from '@/components/collection/DeckCollection'
-import TopBar from '@/components/TopBar'
+import { SafeAreaView, StyleSheet } from 'react-native'
 import BackButton from '@/components/BackButton'
 import { Colors } from '@/constants/Colors'
+import { AppStyle } from '@/style/AppStyle'
+import TopBar from '@/components/TopBar'
+import React from 'react'
 
 
 const DeckCollectionPage = () => {
@@ -19,5 +19,3 @@ const DeckCollectionPage = () => {
 }
 
 export default DeckCollectionPage
-
-const styles = StyleSheet.create({})

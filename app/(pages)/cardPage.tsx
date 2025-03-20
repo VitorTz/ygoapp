@@ -1,5 +1,4 @@
-import { 
-    Pressable,
+import {     
     SafeAreaView, 
     ScrollView, 
     StyleSheet,     
@@ -13,15 +12,13 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
 import { Image } from 'expo-image'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import BackButton from '@/components/BackButton'
 import CardInfoFlatList from '@/components/CardInfoFlatList'
 import { Card } from '@/helpers/types'
-import { fetchRelatedCards } from '@/lib/supabase'
 import CardPool from '@/components/CardsPool'
-import { Ionicons } from '@expo/vector-icons'
-import { AppConstants } from '@/constants/AppConstants'
 import { getRelatedCards } from '@/helpers/globals'
+import { GlobalContext } from '@/helpers/context'
 
 
 const cardWidth = wp(80)
@@ -30,13 +27,14 @@ const cardHeight = getImageHeight(cardWidth)
 
 const CardPage = () => {
 
-    const card: any = useLocalSearchParams()    
+    const context = useContext(GlobalContext)
+    const card: any = useLocalSearchParams()  
 
     const [relatedCards, setRelatedCards] = useState<Card[]>([])
 
     const init = async () => {
-        await getRelatedCards(card.archetype)
-            .then(value => setRelatedCards(value))
+        await getRelatedCards(card.archetype, context.relatedCards)
+            .then(values => setRelatedCards(values))
     }
 
     useEffect(
@@ -67,8 +65,7 @@ const CardPage = () => {
                         cards={relatedCards}
                         color={Colors.cardColor}
                         onCardPress={
-                            (card: Card) => 
-                                    router.navigate({pathname: "/cardPage", params: card as any})
+                            (card: Card) => router.navigate({pathname: "/cardPage", params: card as any})
                         }
                     />
                 }
