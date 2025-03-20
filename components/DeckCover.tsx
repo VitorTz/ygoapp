@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, Pressable, Text, View } from 'react-native'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { sleep, wp, getImageHeightCropped, getItemGridDimensions } from '@/helpers/util'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
@@ -20,6 +20,16 @@ import React from 'react'
 const deckWidth = wp(90)
 const deckHeight = getImageHeightCropped(deckWidth)
 
+const {width, height} = getItemGridDimensions(
+  10,
+  30,
+  2,
+  API_CARD_CROPPED_WIDTH,
+  API_CARD_CROPPED_HEIGHT
+)  
+
+var imageSet = new Set<string>()
+var images: string[] = []
 
 const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
 
@@ -28,9 +38,19 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
   const [showGrid, setShowGrid] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
-  const imageSet = new Set<string>()
-  cards.forEach(item => imageSet.add(item.cropped_image_url))
-  const images: string[] = Array.from(imageSet)
+  
+  const init = () => {
+    imageSet.clear()
+    cards.forEach(item => imageSet.add(item.cropped_image_url))
+    images = Array.from(imageSet)
+  }
+
+  useEffect(
+    () => {
+      init()
+    },
+    []
+  )
 
   const openGrid = async () => {
     setShowGrid(true)    
@@ -45,12 +65,13 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
     setTempImageUrl(imageUrl)
   }
 
-
   const saveChanges = async () => {
     setIsSaving(true)
-    const { error } = await supabase.from(
-      "decks"
-    ).update({image_url: tempUrlImage}).eq("deck_id", deck.deck_id)
+    const { error } = await supabase
+      .from("decks")
+      .update({image_url: tempUrlImage})
+      .eq("deck_id", deck.deck_id)
+      
     if (error) {
       console.log(error)
       Toast.show({title: "Error", message: "could not update deck image", type: "error"})      
@@ -62,14 +83,7 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
     closeGrid()
   }
 
-  const {width, height} = getItemGridDimensions(
-    10,
-    30,
-    2,
-    API_CARD_CROPPED_WIDTH,
-    API_CARD_CROPPED_HEIGHT
-  )  
-  
+
   return (
     <Animated.View 
       entering={FadeInUp.delay(100).duration(600)} >

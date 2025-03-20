@@ -25,40 +25,38 @@ import Toast from '@/components/Toast'
 
 const cardsMap = new Map<number, number>()
 
-const CreateDeck = () => {
-  
-  const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
-  const [cardToDisplay, setCardToDisplay] = useState<Card | null>(null)
-
-  useEffect(
-    () => {
-      cardsMap.clear()
-    },
-    []
-  )
-
-  const onSubmit = async (formData: CreateDeckFormData) => {    
-    if (cardsOnDeck.length == 0) {
-      Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
-      return
-    }    
-    const success = await supaCreateDeck(
-      formData.name, 
-      formData.description, 
-      formData.isPublic, 
-      cardsOnDeck
-    )
-    if (!success) {
-      Toast.show({title: "Error", message: "could not create deck", type: 'error'})      
-      return
-    }    
-    router.replace("/(pages)/editDeck")
-  }
-
-  const getNumCardsOnDeck = (card: Card) => {
+const getNumCardsOnDeck = (card: Card) => {
     return cardsMap.get(card.card_id) ? cardsMap.get(card.card_id)! : 0
-  }
+}
 
+const CreateAiDeck = () => {
+  
+    const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
+    const [cardToDisplay, setCardToDisplay] = useState<Card | null>(null)
+
+    useEffect(
+        () => { cardsMap.clear() },
+        []
+    )
+
+    const onSubmit = async (formData: CreateDeckFormData) => {    
+        if (cardsOnDeck.length == 0) {
+            Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
+            return
+        }
+        await supaCreateDeck(
+            formData.name, 
+            formData.description, 
+            formData.isPublic, 
+            cardsOnDeck
+        ).then(
+            success =>
+                success ? 
+                    router.replace("/(pages)/editDeck") :
+                    Toast.show({title: "Error", message: "could not create deck", type: 'error'})
+        )
+  }
+  
   const addCardToDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
     if (n >= 3) {
@@ -122,7 +120,7 @@ const CreateDeck = () => {
       </ScrollView>
       {
         cardToDisplay && 
-        <CardComponent
+        <CardComponent          
           closeCardComponent={closeCardComponent} 
           card={cardToDisplay} 
           addCard={addCardToDeck} 
@@ -132,7 +130,7 @@ const CreateDeck = () => {
   )
 }
 
-export default CreateDeck
+export default CreateAiDeck
 
 const styles = StyleSheet.create({
 

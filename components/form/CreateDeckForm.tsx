@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors';
 import { AppConstants } from '@/constants/AppConstants';
 import { wp, hp } from '@/helpers/util';
 import * as yup from 'yup';
+import CheckBox from '../CheckBox';
 
 
 
@@ -91,14 +92,13 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
             />
             {errors.description && (<Text style={AppStyle.errorMsg}>{errors.description.message}</Text>)}
 
-            <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-start"}} >
+            <View style={{width: '100%', gap: 10, flexDirection: 'row', alignItems: "center", justifyContent: "flex-start"}} >
                 <Text style={AppStyle.textRegular}>Is public?</Text>
-                <Switch
-                trackColor={{false: '#767577', true: Colors.gray1}}
-                thumbColor={isPublic ? Colors.deckColor : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isPublic}/>
+                <CheckBox 
+                    active={isPublic} 
+                    setActive={setIsPublic} 
+                    size={28}
+                    color={Colors.deckColor}/>                
             </View>
 
             <Pressable onPress={handleSubmit(onPress)} style={{width: '100%', justifyContent: "center", alignItems: "center", height: 50, borderRadius: 4, backgroundColor: Colors.deckColor}} >

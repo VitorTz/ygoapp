@@ -28,7 +28,7 @@ const DATA: ContainerData[] = [
     imageKey: "PackMonsterView"
   },
   {
-    onPress: () => {},
+    onPress: () => router.navigate("/(pages)/limitedCards"),
     color: Colors.limitedColor,
     title: "Limited & Forbidden List",
     imageKey: "LimitedMonsterView"

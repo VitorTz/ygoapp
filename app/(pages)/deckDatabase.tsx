@@ -104,7 +104,7 @@ const DeckDatabase = () => {
       <TopBar title='Deck Database'>
         <BackButton color={Colors.deckColor} />
       </TopBar>
-      <View style={{flexDirection: 'row', marginBottom: 10, gap: 10, alignItems: "center", justifyContent: "center"}} >
+      <View style={styles.container} >
         <TextInput
           ref={inputRef}
           style={styles.input}            
@@ -117,7 +117,9 @@ const DeckDatabase = () => {
         </Pressable>
       </View>
       <View style={{width: '100%', display: filterIsOpened ? "flex" : "none"}} >
-        <DeckPicker applyFilter={applyFilter} options={options} />
+        <DeckPicker 
+          applyFilter={applyFilter} 
+          options={options} />
       </View>
       <DeckGrid 
         decks={decks} 
@@ -144,5 +146,12 @@ const styles = StyleSheet.create({
     color: Colors.white,
     flex: 1,
     fontSize: 18
+  },
+  container: {
+    flexDirection: 'row', 
+    marginBottom: 10, 
+    gap: 10, 
+    alignItems: "center", 
+    justifyContent: "center"
   }
 })

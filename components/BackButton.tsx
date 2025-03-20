@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, Text, View } from 'react-native'
+import { Pressable } from 'react-native'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { AppConstants } from '@/constants/AppConstants'
@@ -7,6 +7,7 @@ import React from 'react'
 
 
 const BackButton = ({color = Colors.orange}: {color?: string}) => {
+
   return (
     <Pressable onPress={() => router.back()} hitSlop={AppConstants.hitSlopLarge} >
         <Ionicons name='return-down-back-outline' size={40} color={color} />
@@ -15,5 +16,3 @@ const BackButton = ({color = Colors.orange}: {color?: string}) => {
 }
 
 export default BackButton
-
-const styles = StyleSheet.create({})

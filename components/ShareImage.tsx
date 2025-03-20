@@ -8,7 +8,12 @@ import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 
 
-const ShareImageButton = ({image_url, color = Colors.orange}: {image_url: string, color?: string}) => {
+interface ShareImageProps {
+    image_url: string
+    color?: string
+}
+
+const ShareImage = ({image_url, color = Colors.orange}: ShareImageProps) => {
 
     const [isLoading, setIsLoading] = useState(false)    
 
@@ -33,6 +38,6 @@ const ShareImageButton = ({image_url, color = Colors.orange}: {image_url: string
     )
 }
 
-export default ShareImageButton
+export default ShareImage
 
 const styles = StyleSheet.create({})

@@ -129,3 +129,72 @@ export function orderCards(cards: Card[]): Card[] {
     side = sortSideDeck(sortCards(side))
     return [...monsters, ...spells, ...traps, ...side]
 }
+
+
+export function cardToString(card: Card): string {
+    return `
+    #CARD
+    name: ${card.name}
+    card_id: ${card.card_id}
+    archetype: ${card.archetype}
+    attribute: ${card.attribute}
+    frametype: ${card.frametype}
+    race: ${card.race}    
+    attack: ${card.attack}
+    defence: ${card.defence}
+    level: ${card.level}
+    description: ${card.descr}
+    `
+}
+
+export function deckToString(cards: Card[]): string {
+    let monsters: string[] = []
+    let spells: string[] = []
+    let traps: string[] = []
+    let side: string[] = []
+    cards.forEach(item => {
+        const s = cardToString(item)
+        if (SIDE_DECK_FRAMETYPES.includes(item.frametype)) {
+            side.push(s)
+        }
+        else if (item.attribute != null) {
+            monsters.push(s)
+        }
+        else if (item.frametype == "Spell") {
+            spells.push(s)
+        }
+        else if (item.frametype == "Trap") {
+            traps.push(s)
+        }
+        else {
+            side.push(s)
+        }
+    })
+    let r = `
+        #OBJECTIVE
+        Build a Competitive Yu-Gi-Oh deck using a combination of this cards that
+        can be used in a oficial tournament.        
+
+        #LIMITED
+        Each card can have a maximum of 3 copies in the deck
+
+        #RETURN
+        A list of cards with the template
+        <num_copies> <card_name> <card_id>        
+        
+        #CARDS
+
+        #MONSTERS
+        ${monsters.join('\n')}
+
+        #SPELLS
+        ${spells.join('\n')}
+
+        #TRAPS
+        ${traps.join('\n')}
+
+        #SIDE DECK
+        ${side.join('\n')}
+    `
+    return r
+}

@@ -13,7 +13,9 @@ interface CheckBoxProps {
 const CheckBox = ({active, setActive, size, color = Colors.accentColor}: CheckBoxProps) => {        
     
     return (
-        <Pressable onPress={() => setActive(prev => !prev)} style={[styles.container, {width: size, height: size}]} >
+        <Pressable 
+            onPress={() => setActive(prev => !prev)} 
+            style={[styles.container, {width: size, height: size}]}>
             {
                 active &&
                 <Ionicons name='checkmark' size={size - 4} color={color} />

@@ -25,23 +25,29 @@ import DeckCover from '@/components/DeckCover'
 import Toast from '@/components/Toast'
 
 
+const cardsMap = new Map<number, number>()
+
+const getNumCardsOnDeck = (card: Card) => {        
+  return cardsMap.get(card.card_id) ? cardsMap.get(card.card_id)! : 0
+}
+
+
 const EditDeck = () => {
   
   const deck: any = useLocalSearchParams()
   const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
   const [cardToDisplay, setCardToDisplay] = useState<Card | null>(null)
-  const cardsMap = useRef<Map<number, number>>(new Map())
     
   const init = async () => {
-    cardsMap.current.clear()
+    cardsMap.clear()
     const cards = await fetchDeckCards(deck.deck_id as any)
     setCardsOnDeck([...cards])    
     cards.forEach(
       card => {
-        if (cardsMap.current.has(card.card_id)) {
-          cardsMap.current.set(card.card_id, cardsMap.current.get(card.card_id)! + 1)
+        if (cardsMap.has(card.card_id)) {
+          cardsMap.set(card.card_id, cardsMap.get(card.card_id)! + 1)
         } else {
-          cardsMap.current.set(card.card_id, 1)
+          cardsMap.set(card.card_id, 1)
         }
       }
     )    
@@ -59,23 +65,18 @@ const EditDeck = () => {
       Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
       return
     }    
-    const success = await supaUpdateDeck(
+    await supaUpdateDeck(
       deck.deck_id,
       formData.name,
       formData.description,
       formData.isPublic,
       cardsOnDeck
-    )
-    if (!success) {
-      Toast.show({title: "Error", message: "couldnot update deck", type: 'error'})      
-      return
-    }
-    Toast.show({title: "Success", message: "Deck updated", type: "success"})
-  }
-
-  const getNumCardsOnDeck = (card: Card) => {
-    return cardsMap.current.get(card.card_id) ? cardsMap.current.get(card.card_id)! : 0
-  }
+    ).then(success => {
+      success ?
+        Toast.show({title: "Success", message: "Deck updated", type: "success"}) :    
+        Toast.show({title: "Error", message: "couldnot update deck", type: 'error'})        
+    })
+  }  
 
   const addCardToDeck = async (card: Card) => {
     const n: number = getNumCardsOnDeck(card)
@@ -83,7 +84,7 @@ const EditDeck = () => {
       Toast.show({title: "Warning", message: "Max 3 cards", type: 'info'})      
       return
     }
-    cardsMap.current.set(card.card_id, n + 1)    
+    cardsMap.set(card.card_id, n + 1)    
     setCardsOnDeck(prev => orderCards([...prev, ...[card]]))
   }
 
@@ -93,7 +94,7 @@ const EditDeck = () => {
       Toast.show({title: "Warning", message: "You have 0 cards on this deck", type: 'info'})
       return
     }
-    cardsMap.current.set(card.card_id, n - 1)
+    cardsMap.set(card.card_id, n - 1)
     
     setCardsOnDeck(
       prev => {
@@ -135,18 +136,19 @@ const EditDeck = () => {
         <View style={{width: '100%', gap: 10}} >
           <EditDeckForm 
             deck={deck}
-            onSubmit={onSubmit} />
+            onSubmit={onSubmit}/>
           <CardPool
-            cardsOnPool={cardsOnDeck}
+            cards={cardsOnDeck}
             onCardPress={openCardComponent}
             color={Colors.deckColor}/>
-          <SearchCard openCardComponent={openCardComponent} color={Colors.deckColor}/>
+          <SearchCard 
+            onCardPress={openCardComponent} 
+            color={Colors.deckColor}/>
         </View>
       </ScrollView>
       {
         cardToDisplay && 
-        <CardComponent 
-          numCardsOnDeck={getNumCardsOnDeck(cardToDisplay)}
+        <CardComponent          
           closeCardComponent={closeCardComponent} 
           card={cardToDisplay} 
           addCard={addCardToDeck} 

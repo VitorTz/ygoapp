@@ -10,6 +10,13 @@ const P1 = ['name', 'attack', 'defence', 'level']
 const P2 = ['ASC', 'DESC']
 let previosValue: string[] = ['name', 'ASC']
 
+interface SortDropDownPickerProps {
+    title: string,
+    options: Map<string, string | string[] | null>,    
+    applyPicker: () => void,
+    zindex: number,
+    listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
+}
 
 const SortDropDownPicker = ({
     title,
@@ -17,13 +24,7 @@ const SortDropDownPicker = ({
     applyPicker,    
     zindex,
     listMode = "FLATLIST"
-}: {
-    title: string,
-    options: Map<string, string | string[] | null>,    
-    applyPicker: () => void,
-    zindex: number,
-    listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
-}) => {
+}: SortDropDownPickerProps) => {
     const [open, setOpen] = useState(false);        
     const [value, setValue] = useState<string[]>(["name", "ASC"])
     const [items, setItems] = useState([        
@@ -48,15 +49,12 @@ const SortDropDownPicker = ({
     
     
     const handlePress = async (v: any) => {
-
         if (v.length < 2 && previosValue.length == 2) {            
             setValue(previosValue)
             return
         }
 
-        if (v.length == 2) {
-            return
-        } 
+        if (v.length == 2) { return } 
         
         const diff = v.filter((item: string) => previosValue.includes(item) == false)[0]    
         if (P1.includes(diff)) {
@@ -96,8 +94,7 @@ const SortDropDownPicker = ({
             showBadgeDot={false}           
             textStyle={AppStyle.textRegular}            
             onChangeValue={(value: any) => handlePress(value)}
-            dropDownContainerStyle={{backgroundColor: Colors.gray}}
-        />
+            dropDownContainerStyle={{backgroundColor: Colors.gray}}/>
     );
 }
 

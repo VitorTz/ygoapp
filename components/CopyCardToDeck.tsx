@@ -4,35 +4,36 @@ import {
     Text, 
     View 
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card } from '@/helpers/types'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
+import { getCardCopiesOnUserCollection } from '@/helpers/globals'
 
 
 interface CopyCardToDeckProps {
-    card: Card
-    numCardsOnDeck: number
+    card: Card    
     add: (card: Card) => void
     rmv: (card: Card) => void
 }
   
   
-const CopyCardToDeck = ({
-    card, 
-    numCardsOnDeck, 
-    add, 
-    rmv
-}: CopyCardToDeckProps) => {
+const CopyCardToDeck = ({card, add, rmv}: CopyCardToDeckProps) => {
 
     const [loading, setLoading] = useState(false)    
-    const [copiesOnDeck, setCopiesOnDeck] = useState(numCardsOnDeck)
+    const [copiesOnDeck, setCopiesOnDeck] = useState(0)
     
+    useEffect(
+        () => {
+            setCopiesOnDeck(getCardCopiesOnUserCollection(card.card_id))
+        },
+        [card]
+    )
 
     const handleAdd = async () => {
         if (loading) { return }
-        setLoading(true)
+        setLoading(true)        
         setCopiesOnDeck(prev => prev <= 2 ? prev + 1 : prev)
         await add(card)        
         setLoading(false)

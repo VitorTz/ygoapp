@@ -8,6 +8,20 @@ import { wp } from '@/helpers/util'
 import { Ionicons } from '@expo/vector-icons'
 
 
+interface MultipleDropDownPickerProps {
+    title: string,
+    options: Map<string, any>,
+    optionKey: string,
+    applyPicker: () => void,
+    data: string[],    
+    zindex: number,
+    allowEmptyValues?: boolean,   
+    searchable?: boolean,    
+    defaultValue?: string[],    
+    listMode?: "FLATLIST" | "MODAL" | "SCROLLVIEW"
+}
+
+
 const MultipleDropDownPicker = ({
     title,
     options,
@@ -17,28 +31,16 @@ const MultipleDropDownPicker = ({
     zindex,
     allowEmptyValues = true,
     defaultValue = [],
-    searchable = false,
-    accentColor = Colors.orange,
+    searchable = false,    
     listMode = "FLATLIST"
-}: {
-    title: string,
-    options: Map<string, any>,
-    optionKey: string,
-    applyPicker: () => void,
-    data: string[],    
-    zindex: number,
-    allowEmptyValues?: boolean,   
-    searchable?: boolean,    
-    defaultValue?: string[],
-    accentColor?: string,
-    listMode?: "FLATLIST" | "MODAL" | "SCROLLVIEW"
-}) => {
+}: MultipleDropDownPickerProps) => {
     const [open, setOpen] = useState(false);        
     const [value, setValue] = useState<string[]>(defaultValue)
     const [items, setItems] = useState(data.map((v) => {return {label: v, value: v}}))
 
-    const handlePress = async (v: any) => {        
-        options.set(optionKey, v)        
+    const handlePress = async (v: any) => {
+        if (v.lenght === 0 && !allowEmptyValues) { return }
+        options.set(optionKey, v)
         await applyPicker()
     }        
 
@@ -71,8 +73,7 @@ const MultipleDropDownPicker = ({
             textStyle={AppStyle.textRegular}
             min={allowEmptyValues ? 0 : 1}            
             onChangeValue={(value: any) => handlePress(value)}
-            dropDownContainerStyle={{backgroundColor: Colors.gray}}
-        />        
+            dropDownContainerStyle={{backgroundColor: Colors.gray}}/>
     );
 }
 

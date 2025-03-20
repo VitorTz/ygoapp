@@ -7,16 +7,17 @@ import Toast from './Toast'
 
 
 const AddDeckToUserCollection = ({deck_id}: {deck_id: number}) => {
+    
     const [loading, setLoading] = useState(false)            
 
     const addDeck = async () => {
         setLoading(true)
-        const success= await supaAddDeckToCollection(deck_id)
-        if (success) {
-            Toast.show({title: "Success", message: "Deck copied to your collection", type: "success"})            
-        } else {
-            Toast.show({title: "Error", message: "Could not add to your collection", type: "error"})            
-        }
+        await supaAddDeckToCollection(deck_id)
+            .then(success => 
+                success ?
+                Toast.show({title: "Success", message: "Deck copied to your collection", type: "success"}) :        
+                Toast.show({title: "Error", message: "Could not add to your collection", type: "error"})
+            )        
         setLoading(false)
     }    
 

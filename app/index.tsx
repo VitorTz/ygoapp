@@ -16,6 +16,7 @@ import {
 } from '@expo-google-fonts/league-spartan';
 import { router } from 'expo-router';
 import { AppStyle } from '@/style/AppStyle';
+import { initUserCards } from '@/helpers/globals';
 
 
 
@@ -44,6 +45,9 @@ const index = () => {
 
   const initPage = async () => {
     const session = await supaGetSession()
+    if (session) {
+      await initUserCards(session.user.id)
+    }
     if (session == null) {
       router.replace("/(auth)/signin")
     } else {

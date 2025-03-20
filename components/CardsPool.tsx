@@ -5,31 +5,38 @@ import { Card } from '@/helpers/types'
 import { hp, wp } from '@/helpers/util'
 import { AppStyle } from '@/style/AppStyle'
 import CardGrid from './grid/CardGrid'
+import { router } from 'expo-router'
 
 
 interface CardPoolProps {
     title?: string
-    cardsOnPool: Card[]
-    onCardPress: (card: Card) => void,
+    cards: Card[]
+    onCardPress?: (card: Card) => void,
+    showTotal?: boolean
     color?: string
     height?: number
 }
 
 const CardPool = ({
     title = "Cards",
-    cardsOnPool,
-    onCardPress,
+    cards,
+    onCardPress = (card: Card) => router.navigate({pathname: "/cardPage", params: card as any}),
     color = Colors.orange,
-    height = hp(54)
-}: CardPoolProps) => {
+    height = hp(50),
+    showTotal = true
+}: CardPoolProps) => {    
+
     return (
         <View style={[styles.container, {borderColor: color, height}]} >
             <View style={[styles.header, {backgroundColor: color}]} >
                 <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]} >{title}</Text>
-                <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cardsOnPool.length}</Text>
+                {
+                    showTotal &&
+                    <Text style={[AppStyle.textRegular, {fontSize: hp(2.8)}]}>Total: {cards.length}</Text>
+                }
             </View>
             <CardGrid
-                cards={cardsOnPool}
+                cards={cards}
                 hasResults={true}
                 loading={false}
                 numColumns={4}

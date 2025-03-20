@@ -5,17 +5,14 @@ import { ARCHETYPES, ATTRIBUTES, CARD_TYPES, FRAMETYPES, RACES } from '@/constan
 import SortDropDownPicker from './SortPicker'
 
 
-const CardPicker = ({
-    options, 
-    applyPicker,
-    accentColor,
-    listMode = "FLATLIST"
-}: {
-    options: Map<string, any>, 
-    applyPicker: () => void,
-    accentColor: string,
+interface CardPickerProps {
+    options: Map<string, any>
+    applyPicker: () => void   
     listMode?: "FLATLIST" | "SCROLLVIEW" | "MODAL"
-}) => {
+}
+
+
+const CardPicker = ({ options, applyPicker, listMode = "FLATLIST"}: CardPickerProps) => {
   return (
     <View style={{width: '100%', rowGap: 10, marginBottom: 10}} >
         <View style={{width: '100%', flexDirection: 'row', gap: 10}} >
@@ -29,8 +26,7 @@ const CardPicker = ({
                     applyPicker={applyPicker}
                     searchable={true} 
                     allowEmptyValues={true} 
-                    zindex={6}
-                    accentColor={accentColor}/>
+                    zindex={6}/>
             </View>
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 
@@ -42,8 +38,7 @@ const CardPicker = ({
                     applyPicker={applyPicker}
                     searchable={false} 
                     allowEmptyValues={true} 
-                    zindex={5}
-                    accentColor={accentColor}/>
+                    zindex={5}/>
             </View>
         </View>
 
@@ -58,8 +53,7 @@ const CardPicker = ({
                     applyPicker={applyPicker}
                     searchable={true} 
                     allowEmptyValues={true} 
-                    zindex={4}
-                    accentColor={accentColor}/>
+                    zindex={4}/>
             </View>
             <View style={{flex: 1}} >
                 <MultipleDropDownPicker 
@@ -71,8 +65,7 @@ const CardPicker = ({
                     applyPicker={applyPicker}
                     searchable={true} 
                     allowEmptyValues={true} 
-                    zindex={3}
-                    accentColor={accentColor}/>
+                    zindex={3}/>
             </View>
         </View>
 
@@ -87,8 +80,7 @@ const CardPicker = ({
                     applyPicker={applyPicker}
                     searchable={true}
                     allowEmptyValues={true} 
-                    zindex={2}
-                    accentColor={accentColor}/>
+                    zindex={2}/>
             </View>
             <View style={{flex: 1}} >
                 <SortDropDownPicker

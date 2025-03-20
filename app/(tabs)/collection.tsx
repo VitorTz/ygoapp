@@ -1,11 +1,8 @@
-import { ScrollView, Text, StyleSheet, View, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import React from 'react'
 import { SafeAreaView } from 'react-native'
 import { AppStyle } from '@/style/AppStyle'
-import CardCollection from '@/components/collection/CardCollection'
-import DeckCollection from '@/components/collection/DeckCollection'
 import TopBar from '@/components/TopBar'
-import { supaGetSession } from '@/lib/supabase'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import LinkList, {ContainerData} from '@/components/LinkList'
@@ -28,20 +25,6 @@ const DATA: ContainerData[] = [
 
 
 const Collection = () => {
-
-  const [userHasSession, setUserHasSession] = useState(true)  
-
-  const init = async () => {
-    const session = await supaGetSession()
-    setUserHasSession(session != null)    
-  }
-
-  useEffect(
-    () => {
-        init()
-    },
-    []
-  )
 
   return (
     <SafeAreaView style={AppStyle.safeArea}>

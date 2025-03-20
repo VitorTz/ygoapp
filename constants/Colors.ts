@@ -21,6 +21,7 @@ export const Colors = {
     limitedColor: "#C14853",
     uglyBlue: "#4984A2",
     matchHistoryColors: "#4984A2",
-    green: "#98C379"
+    green: "#98C379",
+    neonRed: "#ef4069"
   };
   

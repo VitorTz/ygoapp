@@ -52,7 +52,16 @@ const CardGrid = ({
                 onEndReachedThreshold={0.5}                
                 estimatedItemSize={height}
                 ListFooterComponent={<CustomGridFooter loading={loading} hasResults={hasResults}/>}
-                renderItem={({item, index}) => <CardGridItem onCardPress={onCardPress} card={item} index={index} width={width} height={height} columns={numColumns}/>}
+                renderItem={
+                    ({item, index}) => 
+                        <CardGridItem 
+                            onCardPress={onCardPress} 
+                            card={item} 
+                            index={index}
+                            width={width} 
+                            height={height} 
+                            columns={numColumns}/>
+                }
             />
         </View>
     )

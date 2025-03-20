@@ -1,13 +1,12 @@
-import { StyleSheet, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
+import { StyleSheet, Pressable, ScrollView, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FadeIn } from 'react-native-reanimated'
 import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
 import { AppConstants } from '@/constants/AppConstants'
-import { AppStyle } from '@/style/AppStyle'
 import { getImageHeight } from '@/helpers/util'
 import { Card } from '@/helpers/types'
 import React from 'react'
@@ -15,46 +14,74 @@ import TopBar from './TopBar'
 import CardInfoFlatList from './CardInfoFlatList'
 import AddCardToUserCollection from './AddCardToUserCollection'
 import CopyCardToDeck from './CopyCardToDeck'
+import CardPool from './CardsPool'
+import { getRelatedCards } from '@/helpers/globals'
 
 
+const cardWidth = wp(90)
+const cardHeight = getImageHeight(cardWidth)
 
 const CardComponent = ({
     card, 
-    closeCardComponent,
-    numCardsOnDeck,
+    closeCardComponent,    
     addCard,
     rmvCard,
   }: {
     card: Card, 
     closeCardComponent: () => void,
     addCard: (card: Card) => void,
-    rmvCard: (card: Card) => void,
-    numCardsOnDeck: number
+    rmvCard: (card: Card) => void    
   }) => {
-      
-    const cardWidth = wp(90)
-    const cardHeight = getImageHeight(cardWidth)
-    
+
+    const [relatedCards, setRelatedCards] = useState<Card[]>([])
+    const [currentCard, setCurrentCard] = useState<Card>(card)
+
+    const init = async () => {      
+      await getRelatedCards(currentCard.archetype).then(value => setRelatedCards([...value]))      
+    }
+
+    useEffect(
+      () => { init() },
+      []
+    )
+
+    const changeCard = (card: Card) => {
+      setCurrentCard(card)
+    }
+
     return (      
-      <Animated.View 
-        entering={FadeIn.duration(500)} 
-        style={styles.container}>
+      <Animated.View entering={FadeIn.duration(500)} style={styles.container}>
           <TopBar title='Card'>
             <Pressable onPress={closeCardComponent} hitSlop={AppConstants.hitSlopLarge} >
               <Ionicons name='close-circle-outline' size={42} color={Colors.cardColor} />
             </Pressable>
           </TopBar>
+
           <ScrollView style={{flex: 1}} >    
-            <View style={{flex: 1, gap: 10}}>            
-              
-              <Image style={{width: cardWidth, height: cardHeight}} source={card.image_url} />
+            <View style={{flex: 1, gap: 10}}>
+              <Image 
+                style={{width: cardWidth, height: cardHeight}} 
+                source={currentCard.image_url}/>
               
               <View style={styles.infoContainer} >
-                <CardInfoFlatList card={card} />
-                <CopyCardToDeck add={addCard} rmv={rmvCard} card={card} numCardsOnDeck={numCardsOnDeck} />
-                <AddCardToUserCollection card_id={card.card_id}/>
+                <CardInfoFlatList card={currentCard} />
+                <CopyCardToDeck add={addCard} rmv={rmvCard} card={currentCard}/>
+                <AddCardToUserCollection card={currentCard}/>
               </View>
             </View>
+
+          {
+            currentCard.archetype &&            
+            <View style={{width: '100%', marginTop: 10}} >
+              <CardPool
+                title={currentCard.archetype}
+                cards={relatedCards}
+                onCardPress={changeCard}
+                color={Colors.cardColor}
+              />            
+            </View>
+          }
+
           </ScrollView>
       </Animated.View>
     )

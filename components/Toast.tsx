@@ -64,18 +64,7 @@ const ToastComponent = forwardRef((_, ref) => {
               </Text>
             }            
         </View>
-        <View style={{
-            width: '2%', 
-            height: '100%', 
-            backgroundColor: color, 
-            position: 'absolute', 
-            borderTopLeftRadius: 4,
-            borderBottomLeftRadius: 4,
-            left: 0,
-            top: 0
-        }} >
-
-        </View>
+        <View style={[styles.leftBar, {backgroundColor: color}]}/>
     </Animated.View>
   );
 });
@@ -100,6 +89,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: "flex-start"
   },  
+  leftBar: {
+    width: '2%', 
+    height: '100%',    
+    position: 'absolute', 
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
+    left: 0,
+    top: 0
+  }
 });
 
 export default Toast;

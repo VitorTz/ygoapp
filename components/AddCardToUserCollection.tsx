@@ -4,45 +4,34 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { Ionicons } from '@expo/vector-icons'
+import { Card } from '@/helpers/types'
 import Toast from './Toast'
+import { addCardToUser, getCardCopiesOnUserCollection, rmvCardFromUser } from '@/helpers/globals'
 
 
-const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
+const AddCardToUserCollection = ({card}: {card: Card}) => {
 
     const [total, setTotal] = useState(0)    
     const userHasSession = useRef(false)
-
-    const updateTotal = async () => {
-        const {data, error} = await supabase.from(
-            "user_cards"
-        ).select("total").eq("card_id", card_id).single()
-        setTotal(data ? data.total : 0)
-    }
-
+    
     const init = async () => {
-        const session = await supaGetSession()
-        userHasSession.current = session != null
-        await updateTotal()
+        await supaGetSession()
+            .then(value => userHasSession.current = value != null)        
+        setTotal(getCardCopiesOnUserCollection(card.card_id))
     }
 
     useEffect(
-        () => {            
-            init()
-        },
-        []
+        () => { init() },
+        [card]
     )
 
     const add = async () => {
         if (userHasSession.current == false) {
             Toast.show({title: "Error", message: "You are not logged!", type: "error"})
             return
-        }        
-        const success = await supaAddCardToCollection(card_id, 1)
-        if (!success) {
-            Toast.show({title: "Error", message: "Could not add this card to collection", type: "error"})
-            return            
         }
-        setTotal(prev => prev + 1)
+        await addCardToUser(card)
+            .then(success => success ? setTotal(prev => prev + 1) : null)        
     }
 
     const rmv = async () => {        
@@ -53,12 +42,8 @@ const AddCardToUserCollection = ({card_id}: {card_id: number}) => {
         if (total == 0) {
             Toast.show({title: "Warning", message: "You dont have this card in your collection", type: "info"})
         }
-        const success = await supaRmvCardFromCollection(card_id, 1)
-        if (!success) {
-            Toast.show({title: "Error", message: "Could not remove this card to collection", type: "error"})
-            return            
-        }
-        setTotal(prev => prev > 0 ? prev - 1 : prev)
+        await rmvCardFromUser(card)
+            .then(success => success ? setTotal(prev => prev > 0 ? prev - 1 : prev) : null)
     }
   
         

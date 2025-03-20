@@ -72,3 +72,10 @@ export interface UserDeck {
     owner: string
     userIsOwner: boolean    
 }
+
+
+export interface LimitedCards {
+    forbidden: Card[]
+    limitedOne: Card[]
+    limitedTwo: Card[]
+}

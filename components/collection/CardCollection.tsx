@@ -7,12 +7,17 @@ import { Ionicons } from "@expo/vector-icons"
 import CardGrid from "../grid/CardGrid"
 import { Colors } from "@/constants/Colors"
 import { AppStyle } from "@/style/AppStyle"
-import { hp } from "@/helpers/util"
+import { deckToString, hp } from "@/helpers/util"
 import { AppConstants } from "@/constants/AppConstants"
 import { Card } from "@/helpers/types"
 
 
-const CardCollection = () => {
+interface CardCollectionProps {
+  height?: number | string | null
+}
+
+
+const CardCollection = ({height}: CardCollectionProps) => {
 
   const [loading, setLoading] = useState(false)
   const [cards, setCards] = useState<Card[]>([])
@@ -22,8 +27,7 @@ const CardCollection = () => {
   const showLoading = cards.length == 0 && loading
 
   const update = async () => {
-    setLoading(true)
-    console.log("update")
+    setLoading(true)    
     await fetchUserCards().then(values => setCards([...values]))
     setLoading(false)
   }
@@ -34,6 +38,7 @@ const CardCollection = () => {
     }, [])
   )
 
+  const sty = height != null ? {height} : {}
 
   return (
     <View style={styles.container} >
@@ -44,7 +49,7 @@ const CardCollection = () => {
           </Pressable>
       </View>
       
-      <View style={{width: '100%', flex: 1, padding: 10}} >
+      <View style={[{width: '100%', flex: 1, padding: 10}, sty as any]}>
         <CardGrid
           cards={cards}
           hasResults={true}

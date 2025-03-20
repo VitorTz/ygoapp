@@ -25,10 +25,7 @@ interface EditDeckFormProps {
     onSubmit: (formData: EditDeckFormData) => void
 }
 
-const EditDeckForm = ({
-    deck,
-    onSubmit
-}: EditDeckFormProps) => {    
+const EditDeckForm = ({deck, onSubmit}: EditDeckFormProps) => {    
 
     const [loading, setLoading] = useState(false)
     const [name, setName] = useState('')
@@ -38,13 +35,11 @@ const EditDeckForm = ({
     const init = () => {
         setName(deck.name)
         setDescr(deck.descr as any)
-        setIsPublic(deck.is_public == 'true' || deck.is_public == true)
+        setIsPublic(deck.is_public as any == 'true' || deck.is_public == true)
     }
 
     useEffect(
-        () => {
-            init()
-        },
+        () => { init() },
         []
     )
 
@@ -61,12 +56,12 @@ const EditDeckForm = ({
                 type: "info",
                 okBtnTest: "Delete",
                 onPress: async () => {
-                    const success = await supaDeleteDeck(deck.deck_id)
-                    if (!success) {
-                        Toast.show({title: "Error", message: "Could not delete deck", type: "error"})
-                    } else {
-                        router.back()
-                    }
+                    await supaDeleteDeck(deck.deck_id)
+                        .then(success => {
+                            success ? 
+                                router.back() :    
+                                Toast.show({title: "Error", message: "Could not delete deck", type: "error"})
+                        })                    
                 }
             }
         )

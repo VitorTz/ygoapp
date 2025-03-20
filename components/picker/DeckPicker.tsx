@@ -7,7 +7,6 @@ import {
     RACES    
 } from '@/constants/AppConstants';
 import MultipleDropDownPicker from './MultiplePicker';
-import UniqueDropDownPicker from './UniquePicker';
 import {View} from 'react-native';
 import React from 'react';
 
@@ -24,31 +23,72 @@ const DeckPicker = ({options, applyFilter}: CardCustomPickerProps) => {
         <View style={{rowGap: 10, width: '100%', marginBottom: 10}} >
             <View style={{width: '100%', flexDirection: "row", gap: 10}} >
                 <View style={{flex: 1}} >
-                    <MultipleDropDownPicker options={options} optionKey='archetypes' applyPicker={applyFilter} title='Archetype' data={ARCHETYPES} zindex={7} searchable={true} />
+                    <MultipleDropDownPicker 
+                        options={options}
+                        optionKey='archetypes'
+                        applyPicker={applyFilter}
+                        title='Archetype'
+                        data={ARCHETYPES}
+                        zindex={7}
+                        searchable={true}/>
                 </View>
 
                 <View style={{flex: 1}}>
-                    <MultipleDropDownPicker options={options} optionKey='attributes' applyPicker={applyFilter} title='Attribute' data={ATTRIBUTES} zindex={6} />                
+                    <MultipleDropDownPicker 
+                        options={options} 
+                        optionKey='attributes' 
+                        applyPicker={applyFilter} 
+                        title='Attribute' 
+                        data={ATTRIBUTES} 
+                        zindex={6}/>
                 </View>
             </View>
 
             <View style={{width: '100%', flexDirection: "row", gap: 10}} >
                 <View style={{flex: 1}} >
-                    <MultipleDropDownPicker options={options} optionKey='frametypes' applyPicker={applyFilter} title='Frametype' data={FRAMETYPES} zindex={5} />
+                    <MultipleDropDownPicker 
+                        options={options} 
+                        optionKey='frametypes' 
+                        applyPicker={applyFilter} 
+                        title='Frametype' 
+                        data={FRAMETYPES} 
+                        zindex={5}/>
                 </View>
 
                 <View style={{flex: 1}}>
-                    <MultipleDropDownPicker options={options} optionKey='races' applyPicker={applyFilter} title='Race' data={RACES} zindex={4} searchable={true} />
+                    <MultipleDropDownPicker 
+                        options={options} 
+                        optionKey='races' 
+                        applyPicker={applyFilter} 
+                        title='Race' 
+                        data={RACES} 
+                        zindex={4} 
+                        searchable={true}/>
                 </View>
             </View>
 
             <View style={{width: '100%', flexDirection: "row", gap: 10}} >
                 <View style={{flex: 1}} >
-                    <MultipleDropDownPicker options={options} optionKey='types' applyPicker={applyFilter} title='Type' data={CARD_TYPES} zindex={3} searchable={true} />
+                    <MultipleDropDownPicker 
+                        options={options} 
+                        optionKey='types' 
+                        applyPicker={applyFilter} 
+                        title='Type' 
+                        data={CARD_TYPES} 
+                        zindex={3}/>
                 </View>
 
                 <View style={{flex: 1}}>
-                    <UniqueDropDownPicker defaultValue='Any' options={options} optionKey='deckType' applyPicker={applyFilter} title='Deck Type' data={DECK_TYPES} zindex={2}/>
+                    <MultipleDropDownPicker 
+                        options={options} 
+                        optionKey='deckType' 
+                        allowEmptyValues={false} 
+                        applyPicker={applyFilter} 
+                        title='Deck Type' 
+                        data={DECK_TYPES} 
+                        zindex={2} 
+                        defaultValue={['Any']} 
+                        searchable={false}/>
                 </View>
             </View>
         </View>

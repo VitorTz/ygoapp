@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
 import { Card } from '@/helpers/types'
-import { debounce } from 'lodash'
+import { debounce, has } from 'lodash'
 import CardPicker from '@/components/picker/CardPicker'
 import BackButton from '@/components/BackButton'
 import CardGrid from '@/components/grid/CardGrid'
@@ -39,6 +39,7 @@ const CardDatabase = () => {
 
     const [cards, setCards] = useState<Card[]>([])
     const [loading, setLoading] = useState(false)
+    const [hasResults, setHasResults] = useState(true)
     const [filterIsOpened, setFilterOpened] = useState(false)
     const inputRef = useRef<TextInput>(null)
 
@@ -50,7 +51,10 @@ const CardDatabase = () => {
             searchTerm, 
             options, 
             page
-        ).then(value => setCards([...value]))
+        ).then(value => {
+            setHasResults(value.length > 0)
+            setCards([...value])
+        })
         setLoading(false)
     }
 
@@ -66,7 +70,10 @@ const CardDatabase = () => {
             searchTerm,
             options,
             page
-        ).then(value => append ? setCards(prev => [...prev, ...value]) : setCards([...value]))
+        ).then(value => {
+            setHasResults(value.length > 0)
+            append ? setCards(prev => [...prev, ...value]) : setCards([...value])
+        })
         setLoading(false)
     }
 
@@ -75,7 +82,8 @@ const CardDatabase = () => {
         []
     )
 
-    const onEndReached = async () => {        
+    const onEndReached = async () => {  
+        if (!hasResults) { return }
         debounceSearch(searchTerm, true)
     }
 
@@ -111,11 +119,11 @@ const CardDatabase = () => {
                 </Pressable>
             </View>
             <View style={{width: '100%', display: filterIsOpened ? "flex" : "none"}} >
-                <CardPicker options={options} applyPicker={applyFilter} accentColor={Colors.cardColor}/>
+                <CardPicker options={options} applyPicker={applyFilter}/>
             </View>
             <CardGrid 
                 cards={cards} 
-                hasResults={true} 
+                hasResults={hasResults} 
                 loading={loading} 
                 numColumns={4} 
                 gap={20}

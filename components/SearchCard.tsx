@@ -31,11 +31,11 @@ const resetOptions = () => {
 }
 
 interface SearchCardInterfaceProps {
-  openCardComponent: (card: Card) => void
+  onCardPress: (card: Card) => void
   color?: string
 }
 
-const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInterfaceProps) => {
+const SearchCard = ({ onCardPress, color = Colors.white }: SearchCardInterfaceProps) => {
     const [cards, setCards] = useState<Card[]>([])
     const [loading, setLoading] = useState(false)
     const [hasResult, setHasResults] = useState(true)
@@ -63,11 +63,15 @@ const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInter
       setLoading(true)
       searchTerm = input ? input.trimEnd() : null
       page = append ? page + 1 : 0
-      await supaFetchCards(
-          searchTerm,
-          options,
-          page
-      ).then(value => append ? setCards(prev => [...prev, ...value]) : setCards([...value]))
+        await supaFetchCards(
+            searchTerm,
+            options,
+            page
+        ).then(value => {
+            setHasResults(value.length > 0)
+            append ? setCards(prev => [...prev, ...value]) : setCards([...value])
+          }
+        )
       setLoading(false)
     }
   
@@ -77,6 +81,7 @@ const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInter
     )
     
     const onEndReached = async () => {
+      if (!hasResult) { return }
       debounceSearch(searchTerm, true)
     }
 
@@ -121,7 +126,7 @@ const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInter
           </Pressable>
         </View>
         <View style={{width: '100%', paddingHorizontal: 10, display: filterIsOpened ? "flex" : "none"}} >
-          <CardPicker listMode="MODAL" options={options} applyPicker={applyFilter} accentColor={Colors.deckColor}/>
+          <CardPicker listMode="MODAL" options={options} applyPicker={applyFilter}/>
         </View>
         <CardGrid
           cards={cards}
@@ -130,7 +135,7 @@ const SearchCard = ({ openCardComponent, color = Colors.white }: SearchCardInter
           numColumns={4}
           gap={20}
           onEndReached={onEndReached}
-          onCardPress={openCardComponent}/>
+          onCardPress={onCardPress}/>
   
       </View>
     )
