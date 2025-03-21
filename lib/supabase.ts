@@ -33,14 +33,14 @@ export const supabase = createClient(supabaseUrl, supabaseKey as any, {
 });
 
 
-export async function supaGetSession(): Promise<Session | null> {
+export async function supabaseGetSession(): Promise<Session | null> {
     const {data: {session} } = await supabase.auth.getSession()
     return session
 }
 
 
-export async function supaGetUser(): Promise<UserDB | null> {
-    const session = await supaGetSession()
+export async function supabaseGetUser(): Promise<UserDB | null> {
+    const session = await supabaseGetSession()
     if (!session) { return null }
     
     const { data } = await supabase
@@ -57,8 +57,8 @@ export async function supaGetUser(): Promise<UserDB | null> {
         }} : null
 }
 
-export async function supaUpdateUserIcon(image_id: number): Promise<boolean> {
-    const session = await supaGetSession()
+export async function supabaseUpdateUserIcon(image_id: number): Promise<boolean> {
+    const session = await supabaseGetSession()
     if (session) {
       const { error } = await supabase
         .from("users")
@@ -70,8 +70,8 @@ export async function supaUpdateUserIcon(image_id: number): Promise<boolean> {
 }
 
 
-export async function supaAddCardToCollection(card_id: number, total: number): Promise<boolean> {
-  const session = await supaGetSession()
+export async function supabaseAddCardToUserCollection(card_id: number, total: number): Promise<boolean> {
+  const session = await supabaseGetSession()
   if (!session) { return false }
 
   const { error } = await supabase.rpc('insert_user_card', {
@@ -88,8 +88,8 @@ export async function supaAddCardToCollection(card_id: number, total: number): P
 }
 
 
-export async function supaRmvCardFromCollection(card_id: number, total: number): Promise<boolean> {
-  const session = await supaGetSession()
+export async function supabaseRmvCardFromUserCollection(card_id: number, total: number): Promise<boolean> {
+  const session = await supabaseGetSession()
   if (!session) { return false }
   
   const { error } = await supabase.rpc('remove_user_card', {
@@ -106,13 +106,13 @@ export async function supaRmvCardFromCollection(card_id: number, total: number):
 }
   
 
-export async function supaCreateDeck(
+export async function supabaseCreateDeck(
   name: string, 
   description: string, 
   isPublic: boolean, 
   cards: Card[]
 ) {
-  const session = await supaGetSession()
+  const session = await supabaseGetSession()
 
   if (!session) {
     console.log("user has no session")
@@ -180,8 +180,8 @@ export async function supaCreateDeck(
         races: Array.from(races),
         types: Array.from(types)
       }
-    ]
-  ).select("deck_id").single()
+    ])
+    .select("deck_id").single()
 
   if (error) {
     console.log(error)
@@ -210,7 +210,7 @@ export async function supaCreateDeck(
   return true
 }
 
-export async function supaDeleteDeck(deck_id: number): Promise<boolean> {
+export async function supabaseDeleteDeck(deck_id: number): Promise<boolean> {
   const { error } = await supabase
     .from("decks")
     .delete()
@@ -225,7 +225,7 @@ export async function supaDeleteDeck(deck_id: number): Promise<boolean> {
 }
 
 
-export async function supaUpdateDeck(
+export async function supabaseUpdateDeck(
   deck_id: number, 
   deckName: string, 
   deckDescr: string | null, 
@@ -233,7 +233,7 @@ export async function supaUpdateDeck(
   cards: Card[]
 ): Promise<boolean> {
   
-  const descr = deckDescr ? removeTrailingNewlines(deckDescr.trim()) : null
+  const descr = deckDescr ? removeTrailingNewlines(deckDescr) : null
   const archetypes = new Set<string>()
   const attributes = new Set<string>()
   const frametypes = new Set<string>()
@@ -310,7 +310,7 @@ export async function supaUpdateDeck(
   return true
 }
 
-export async function fetchRandomTrivia(): Promise<string | null> {  
+export async function supabaseGetRandomTrivia(): Promise<string | null> {  
   const { data, error } = await supabase.rpc('get_random_trivia_descr')
   if (error) {
     console.error('Erro ao obter trivia:', error);
@@ -320,7 +320,7 @@ export async function fetchRandomTrivia(): Promise<string | null> {
 }
 
 
-export async function fetchProfileIcons(): Promise<ImageDB[]> {
+export async function supabaseGetProfileIcons(): Promise<ImageDB[]> {
   const { data } = await supabase
     .from("profile_icons")
     .select("image_id, images (image_url)")
@@ -336,7 +336,7 @@ export async function fetchProfileIcons(): Promise<ImageDB[]> {
 }
 
 
-export async function fetchDeck(deck_id: number | string): Promise<Deck | null> {
+export async function supabaseGetDeck(deck_id: number | string): Promise<Deck | null> {
   const {data, error} = await supabase
     .from("decks")
     .select(`
@@ -367,7 +367,7 @@ export async function fetchDeck(deck_id: number | string): Promise<Deck | null> 
 }
 
 
-export async function fetchDeckCards(deck_id: number | string): Promise<Card[]> {
+export async function supabaseGetDeckCards(deck_id: number | string): Promise<Card[]> {
   const { data } = await supabase
     .from("deck_cards")
     .select(`
@@ -403,7 +403,7 @@ export async function fetchDeckCards(deck_id: number | string): Promise<Card[]> 
 
 
 export async function fetchUserCards(): Promise<Card[]> {
-  const session = await supaGetSession()
+  const session = await supabaseGetSession()
   if (!session) { return [] }
 
   const { data, error } = await supabase
@@ -434,7 +434,7 @@ export async function fetchUserCards(): Promise<Card[]> {
 }
 
 export async function fetchUserDecks(): Promise<Deck[]> {
-  const session = await supaGetSession()
+  const session = await supabaseGetSession()
   if (!session) { return []}
 
   const { data } = await supabase
@@ -459,7 +459,7 @@ export async function fetchUserDecks(): Promise<Deck[]> {
   return data ? data as Deck[] : []
 }
 
-export async function supaFetchCards(
+export async function fetchCards(
   searchTxt: string | null, 
   optionsMap: Map<string, any>, 
   page: number
@@ -514,7 +514,7 @@ export async function supaFetchCards(
 }
 
 
-export const supaFetchDecks = async (
+export const fetchDecks = async (
   searchTxt: string | null,
   options: Map<any, any>, 
   page: number
@@ -612,12 +612,6 @@ export const supaFetchDecks = async (
 }
 
 
-export async function supaUserIsOwnerOfDeck(deck: Deck): Promise<boolean> {
-  const session = await supaGetSession()  
-  if (!session) { return false }
-  return deck.owner == session.user.id
-}
-
 export async function fetchRelatedCards(archetype: string | null): Promise<Card[]> {
   const { data } = await supabase
     .from("cards")
@@ -641,7 +635,7 @@ export async function fetchRelatedCards(archetype: string | null): Promise<Card[
 }
 
 export async function fetchLimitedCards(): Promise<LimitedCards> {
-  const {data, error} = await supabase
+  const { data } = await supabase
     .from("limited_cards")
     .select(`
       num_cards,
@@ -688,7 +682,7 @@ export async function fetchLimitedCards(): Promise<LimitedCards> {
   return r
 }
 
-export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
+export async function fetchCardsFromDeck(deck_id: number): Promise<Card[]> {
   const { data } = await supabase
     .from("deck_cards")
     .select(`
@@ -723,7 +717,7 @@ export async function supaFetchCardsFromDeck(deck_id: number): Promise<Card[]> {
 
 
 async function updateDeckCopyCounter(deck_id: number): Promise<boolean> {
-  const { error } = await supabase.rpc('increment_copied_counter', { p_deck_id: deck_id })
+  const { error } = await supabase.rpc('increment_deck_copy_count', { p_deck_id: deck_id })
   if (error) {
     console.error('Erro ao incrementar copied_counter:', error);
     return false
@@ -732,7 +726,7 @@ async function updateDeckCopyCounter(deck_id: number): Promise<boolean> {
 }
 
 export async function supaAddDeckToCollection(deck_id: number): Promise<boolean> {
-  const session = await supaGetSession()
+  const session = await supabaseGetSession()
   if (!session) { return false }  
   
   const { data: d1, error: e1 } = await supabase.rpc('copy_deck', {
@@ -756,14 +750,14 @@ export async function supaAddDeckToCollection(deck_id: number): Promise<boolean>
     console.log(error)
     return false
   }
-
+  
   await updateDeckCopyCounter(deck_id)
   return true
 }
 
 
 export async function supaRmvDeckFromCollection(deck_id: number) {
-  const session = await supaGetSession()  
+  const session = await supabaseGetSession()  
   if (!session) { return false }
 
   const { error } = await supabase
@@ -822,7 +816,7 @@ export async function fetchDeckComments(deck_id: number): Promise<DeckComment[]>
 
 
 export async function createDeckComment(deck_id: number, comment: string): Promise<number | null> {
-    const session = await supaGetSession()
+    const session = await supabaseGetSession()
     if (!session) {
       Toast.show({title: "Error", message: "You are not logged", type: "error"})
       return null

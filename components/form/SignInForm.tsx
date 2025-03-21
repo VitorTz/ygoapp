@@ -9,7 +9,7 @@ import {
     Text, 
     View 
 } from 'react-native'
-import { supabase, supaGetSession } from '@/lib/supabase';
+import { supabase, supabaseGetSession } from '@/lib/supabase';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Colors } from '../../constants/Colors';
@@ -56,7 +56,7 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
     
     const onSubmit = async (form_data: FormData) => {
         setLoading(true)        
-        const {data, error} = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email: form_data.email,
             password: form_data.password
         })
@@ -67,7 +67,7 @@ const SignInForm = ({onSignIn}: {onSignIn: () => void}) => {
             return
         }
             
-        const session = await supaGetSession()
+        const session = await supabaseGetSession()
         if (session) {                
             await onSignIn()
         } else {

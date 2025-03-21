@@ -14,7 +14,7 @@ import { useState } from 'react'
 import TopBar from '@/components/TopBar'
 import { Card, Deck } from '@/helpers/types'
 import CardPool from '@/components/CardsPool'
-import { fetchDeckCards, supabase, supaCreateDeck, supaUpdateDeck } from '@/lib/supabase'
+import { supabaseGetDeckCards, supabase, supabaseCreateDeck, supabaseUpdateDeck } from '@/lib/supabase'
 import CardComponent from '@/components/CardComponent'
 import { router, useLocalSearchParams } from 'expo-router'
 import SearchCard from '@/components/SearchCard'
@@ -37,10 +37,12 @@ const EditDeck = () => {
   const deck: any = useLocalSearchParams()
   const [cardsOnDeck, setCardsOnDeck] = useState<Card[]>([])
   const [cardToDisplay, setCardToDisplay] = useState<Card | null>(null)
+
+  console.log(deck.deck_id)
     
   const init = async () => {
     cardsMap.clear()
-    await fetchDeckCards(deck.deck_id as any)
+    await supabaseGetDeckCards(deck.deck_id as any)
       .then(
         values => {
             setCardsOnDeck([...values])
@@ -69,7 +71,7 @@ const EditDeck = () => {
     }    
 
     console.log(formData.name)
-    await supaUpdateDeck(
+    await supabaseUpdateDeck(
       deck.deck_id,
       formData.name,
       formData.description,
@@ -167,10 +169,7 @@ export default EditDeck
 
 const styles = StyleSheet.create({  
   container: {
-    width: '100%',         
-    borderRadius: 4, 
-    borderWidth: 1,
-    borderColor: Colors.deckColor,
+    width: '100%',
     flex: 1, 
     gap: 10,
     padding: wp(4),

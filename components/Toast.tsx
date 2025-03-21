@@ -69,7 +69,7 @@ const ToastComponent = forwardRef((_, ref) => {
   );
 });
 
-// Criamos um objeto `Toast` que expõe um método estático.
+
 const Toast = {
   show: (options: ToastOptions) => {
     toastRef.current?.show(options);

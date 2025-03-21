@@ -1,11 +1,16 @@
-import { StyleSheet, ScrollView, Text, View, TextInput, Pressable, ActivityIndicator } from 'react-native'
-import DeckInfo from '../DeckInfo';
+import { 
+    StyleSheet, 
+    Text, 
+    View, 
+    TextInput, 
+    Pressable, 
+    ActivityIndicator 
+} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Deck } from '@/helpers/types';
 import { AppStyle } from '@/style/AppStyle';
 import { Colors } from '@/constants/Colors';
-import { wp, hp } from '@/helpers/util';
-import { supaDeleteDeck } from '@/lib/supabase';
+import { supabaseDeleteDeck } from '@/lib/supabase';
 import { router } from 'expo-router';
 import DialogMessage from '../DialogMessage';
 import Toast from '../Toast';
@@ -56,7 +61,7 @@ const EditDeckForm = ({deck, onSubmit}: EditDeckFormProps) => {
                 type: "info",
                 okBtnTest: "Delete",
                 onPress: async () => {
-                    await supaDeleteDeck(deck.deck_id)
+                    await supabaseDeleteDeck(deck.deck_id)
                         .then(success => {
                             success ? 
                                 router.back() :    
@@ -79,7 +84,7 @@ const EditDeckForm = ({deck, onSubmit}: EditDeckFormProps) => {
                 <Text style={[AppStyle.textRegular, {fontSize: 20}]}>Description</Text>
                 <TextInput
                     value={descr}
-                    style={[styles.input, {height: 180, textAlignVertical: "top"}]}
+                    style={[styles.input, {height: 200, textAlignVertical: "top"}]}
                     multiline={true}
                     numberOfLines={10}
                     onChangeText={text => setDescr(text)}/>
@@ -119,13 +124,9 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.gray
     },
     container: {
-        width: '100%',         
-        borderRadius: 4, 
-        borderWidth: 1,
-        borderColor: Colors.deckColor,
+        width: '100%',
         flex: 1, 
-        gap: 10,
-        padding: wp(4)        
+        gap: 10        
     },
     button: {
         flex: 1, 

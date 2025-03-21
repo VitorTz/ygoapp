@@ -9,7 +9,7 @@ import {
     Text, 
     View 
 } from 'react-native'
-import { supabase, supaGetSession } from '@/lib/supabase';
+import { supabase, supabaseGetSession } from '@/lib/supabase';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Colors } from '../../constants/Colors';
@@ -85,7 +85,7 @@ const SignUpForm = ({onSignUp}: {onSignUp: () => void}) => {
             return
         }
             
-        const session = await supaGetSession()
+        const session = await supabaseGetSession()
         if (session) {                
             await onSignUp()
         } else {

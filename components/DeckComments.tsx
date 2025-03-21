@@ -65,7 +65,8 @@ const DeckComments = ({deck}: DeckCommentsProps) => {
                         user_image_url: context.user!.image.image_url,
                         username: context.user!.name
                     }
-                    setComments(prev => [...prev, ...[newCommment]])
+                    setComments(prev => [...[newCommment], ...prev])
+                    setText('')
                 }
             )
         setLoading(false)
@@ -123,7 +124,8 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 4,
         backgroundColor: Colors.gray,
-        padding: 10
+        padding: 10,
+        marginBottom: 10
     },
     input: {
         width: '100%', 
@@ -135,8 +137,8 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     button: {
-        padding: 6, 
-        borderRadius: 6, 
+        padding: 8, 
+        borderRadius: 4, 
         backgroundColor: Colors.gray, 
         alignSelf: "flex-end", 
         alignItems: "center", 

@@ -1,12 +1,12 @@
-import { FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import AddDeckToUserCollection from '@/components/AddDeckToUserCollection'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated'
 import { getImageHeightCropped, hp, wp } from '@/helpers/util'
 import { Deck } from '@/helpers/types'
 import { AppConstants } from '@/constants/AppConstants'
-import { supaFetchCardsFromDeck, supaUserIsOwnerOfDeck } from '@/lib/supabase'
-import { router, useLocalSearchParams } from 'expo-router'
-import React, { useEffect, useRef, useState } from 'react'
+import { fetchCardsFromDeck } from '@/lib/supabase'
+import { useLocalSearchParams } from 'expo-router'
+import React, { useEffect, useState } from 'react'
 import BackButton from '@/components/BackButton'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors' 
@@ -63,9 +63,9 @@ const DeckPage = () => {
 
     const deck = useLocalSearchParams() as any    
     const [cards, setCards] = useState<Card[]>([])        
-
+    
     const init = async () => {                
-        await supaFetchCardsFromDeck(deck.deck_id)
+        await fetchCardsFromDeck(deck.deck_id)
             .then(values => setCards([...values]))
     }
 

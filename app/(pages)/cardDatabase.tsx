@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
-import { supaFetchCards } from '@/lib/supabase'
+import { fetchCards } from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
@@ -47,7 +47,7 @@ const CardDatabase = () => {
         setLoading(true)
         inputRef.current?.clear()
         resetOptions()
-        await supaFetchCards(searchTerm, options, page)
+        await fetchCards(searchTerm, options, page)
             .then(value => {
                 setHasResults(value.length > 0)
                 setCards([...value])
@@ -63,7 +63,7 @@ const CardDatabase = () => {
         setLoading(true)
         searchTerm = input ? input.trimEnd() : null
         page = append ? page + 1 : 0
-        await supaFetchCards(searchTerm, options, page)
+        await fetchCards(searchTerm, options, page)
             .then(value => {
                 setHasResults(value.length > 0)
                 append ? setCards(prev => [...prev, ...value]) : setCards([...value])

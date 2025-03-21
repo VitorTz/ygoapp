@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { AppStyle } from '@/style/AppStyle'
 import { Deck } from '@/helpers/types'
-import { supaFetchDecks } from '@/lib/supabase'
+import { fetchDecks } from '@/lib/supabase'
 import BackButton from '@/components/BackButton'
 import { useCallback } from 'react'
 import { debounce } from 'lodash'
@@ -51,7 +51,7 @@ const DeckDatabase = () => {
   const init = async () => {
     setLoading(true)
     resetOptions()
-    await supaFetchDecks(
+    await fetchDecks(
       searchTerm, 
       options, 
       page
@@ -67,7 +67,7 @@ const DeckDatabase = () => {
     setLoading(true)
     searchTerm = input ? input.trimEnd() : null
     page = append ? page + 1 : 0
-    await supaFetchDecks(searchTerm, options, page)
+    await fetchDecks(searchTerm, options, page)
       .then(
         value => append ? setDecks(prev => [...prev, ...value]) : setDecks([...value])
     )

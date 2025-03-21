@@ -1,7 +1,7 @@
 import { StyleSheet, ScrollView, Text, View, Pressable } from 'react-native'
 import { useState } from 'react'
 import { useFocusEffect } from 'expo-router'
-import { fetchRandomTrivia } from '@/lib/supabase'
+import { supabaseGetRandomTrivia } from '@/lib/supabase'
 import { Colors } from '@/constants/Colors'
 import { useCallback } from 'react'
 import { AppStyle } from '@/style/AppStyle'
@@ -13,7 +13,7 @@ const RandomTrivia = () => {
     const [text, setText] = useState<string | null>('')
   
     const update = async () => {
-        const data = await fetchRandomTrivia()
+        const data = await supabaseGetRandomTrivia()
         setText(data)
     }
 

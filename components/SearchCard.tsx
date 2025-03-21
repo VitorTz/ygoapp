@@ -13,7 +13,7 @@ import { useState } from 'react'
 import CardGrid from './grid/CardGrid'
 import React from 'react'
 import { Card } from '@/helpers/types'
-import { supaFetchCards } from '@/lib/supabase'
+import { fetchCards } from '@/lib/supabase'
 
 
 var searchTerm: string | null = null
@@ -47,7 +47,7 @@ const SearchCard = ({ onCardPress, color = Colors.white }: SearchCardInterfacePr
         resetOptions()
         inputRef.current?.clear()
         resetOptions()
-        await supaFetchCards(
+        await fetchCards(
             searchTerm, 
             options, 
             page
@@ -63,7 +63,7 @@ const SearchCard = ({ onCardPress, color = Colors.white }: SearchCardInterfacePr
       setLoading(true)
       searchTerm = input ? input.trimEnd() : null
       page = append ? page + 1 : 0
-        await supaFetchCards(
+        await fetchCards(
             searchTerm,
             options,
             page

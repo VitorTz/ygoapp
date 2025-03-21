@@ -1,6 +1,6 @@
 import { ActivityIndicator, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { supabase, supaGetSession, supaGetUser, fetchRandomTrivia } from '../../lib/supabase'
-import React, { useCallback, useEffect, useState } from 'react'
+import { supabase, supabaseGetSession, supabaseGetUser, supabaseGetRandomTrivia } from '../../lib/supabase'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { AppConstants } from '../../constants/AppConstants'
 import { router } from 'expo-router'
@@ -12,6 +12,7 @@ import { Session } from '@supabase/supabase-js'
 import { UserDB } from '@/helpers/types'
 import RandomTrivia from '@/components/RandomTrivia'
 import Toast from '@/components/Toast'
+import { GlobalContext } from '@/helpers/context'
 
 
 interface OptionProps {
@@ -56,7 +57,7 @@ const ProfileIcon = () => {
     const [user, setUser] = useState<UserDB | null>(null)
 
     const update = async () => {
-        await supaGetUser().then(user => setUser(user))
+        await supabaseGetUser().then(user => setUser(user))
     }
 
     useFocusEffect(
@@ -95,15 +96,11 @@ const ProfileIcon = () => {
 
 const Profile = () => {
     
+    const context = useContext(GlobalContext)
     const [session, setSession] = useState<Session | null>(null)    
 
-    const initPage = async () => {        
-        const s = await supaGetSession()
-        if (s == null) {
-            router.replace("/(auth)/signin")
-        } else {            
-            setSession(s)
-        }
+    const initPage = async () => {
+        setSession(context.session)        
     }
 
     useEffect(
@@ -133,7 +130,9 @@ const Profile = () => {
         if (error) {
             Toast.show({title: "Error", message: error.message, type: "error"})            
         } else {
-            setSession(null)            
+            setSession(null)
+            context.user = null
+            context.session = null
             router.replace("/(auth)/signin")
         }
     }

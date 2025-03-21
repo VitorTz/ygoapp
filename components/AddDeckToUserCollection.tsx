@@ -13,17 +13,18 @@ const AddDeckToUserCollection = ({deck}: {deck: Deck}) => {
     
     const context = useContext(GlobalContext)
     const [loading, setLoading] = useState(false)
-
+    
     const userIsOwner = context.session != null && context.session.user.id == deck.created_by
     const txt = userIsOwner ? "Edit deck" : "Copy to collection"
 
     const addDeck = async () => {
         setLoading(true)
         await supaAddDeckToCollection(deck.deck_id)
-            .then(success => 
+            .then(success => {
                 success ?
-                Toast.show({title: "Success", message: "Deck copied to your collection", type: "success"}) :        
-                Toast.show({title: "Error", message: "Could not add to your collection", type: "error"})
+                    Toast.show({title: "Success", message: "Deck copied to your collection", type: "success"}) :
+                    Toast.show({title: "Error", message: "Could not add to your collection", type: "error"})
+                }                
             )        
         setLoading(false)
     }

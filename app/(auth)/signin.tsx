@@ -1,15 +1,21 @@
 import { SafeAreaView, StyleSheet, View  } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { AppStyle } from '../../style/AppStyle'
 import { router } from 'expo-router';
 import Logo from '../../components/Logo'
 import SignInForm from '../../components/form/SignInForm'
 import SkipButton from '../../components/SkipButton'
+import { GlobalContext } from '@/helpers/context';
+import { supabase, supabaseGetSession, supabaseGetUser } from '@/lib/supabase';
 
 
 const SignIn = () => {
 
-  const onSign = () => {
+  const context = useContext(GlobalContext)
+
+  const onSign = async () => {
+    await supabaseGetUser().then(value => context.user = value)    
+    await supabaseGetSession().then(value => context.session = value)
     router.replace("/(tabs)/database")
   }
 

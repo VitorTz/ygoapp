@@ -1,7 +1,7 @@
 import { ActivityIndicator, AppState, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import { Colors } from '../constants/Colors'
-import { fetchProfileIcons, supabase, supaGetSession, supaGetUser } from '../lib/supabase';
+import { supabaseGetProfileIcons, supabase, supabaseGetSession, supabaseGetUser } from '../lib/supabase';
 import {
   useFonts,
   LeagueSpartan_100Thin,
@@ -47,13 +47,12 @@ const index = () => {
   });
 
   const initPage = async () => {
-    const session = await supaGetSession()
+    const session = await supabaseGetSession()
     if (session) {
-      await supaGetUser()
-        .then(value => globalContext.user = value)
+      await supabaseGetUser().then(value => globalContext.user = value)
       globalContext.session = session      
       await initUserCards(session.user.id, globalContext.userCards)
-      await fetchProfileIcons().then(values => globalContext.profileIcons = values)
+      await supabaseGetProfileIcons().then(values => globalContext.profileIcons = values)
       router.replace("/database")
       return
     }

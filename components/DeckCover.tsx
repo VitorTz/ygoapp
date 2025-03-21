@@ -46,7 +46,7 @@ const ImageComponent = ({
       <Pressable onPress={() => setTempImageUrl(item)} >
         <Image 
           source={item} 
-          style={{width, height, marginTop: index >= 2 ? 10 : 0, marginRight: 10}}
+          style={{width, height, marginBottom: 6}}
           placeholder={AppConstants.blurhash}          
           />
       </Pressable>
@@ -105,7 +105,7 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
       entering={FadeInUp.delay(100).duration(600)} >
             <Image 
                 source={tempUrlImage} 
-                style={{alignSelf: "center", width: deckWidth, height: deckHeight, marginVertical: 10}} 
+                style={styles.mainImage} 
                 placeholder={AppConstants.blurhash}
                 contentFit='cover' />
             
@@ -129,8 +129,8 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
             {
               showGrid &&
               <View style={{width: '100%', marginBottom: 10}} >
-                <View style={{width: '100%', height: deckHeight - 100, borderRadius: 4, marginBottom: 10, borderWidth: 1, borderColor: Colors.deckColor}} >
-                  <View style={{width: deckWidth, height: deckHeight - 100}} >
+                <View style={{width: '100%', height: deckHeight - 20, borderRadius: 4, marginBottom: 10, borderWidth: 1, borderColor: Colors.deckColor}} >
+                  <View style={{width: deckWidth, height: deckHeight - 20}} >
                     <FlashList                      
                       data={images}
                       nestedScrollEnabled={true}                        
@@ -140,15 +140,15 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
                       renderItem={({item, index}: {item: string, index: number}) => <ImageComponent item={item} index={index} setTempImageUrl={setTempImageUrl} />}/>
                   </View>                  
                 </View>
-                <View style={{width: '100%', height: 40, flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
+                <View style={{width: '100%', height: 50, flexDirection: 'row', gap: 10, alignItems: "center", justifyContent: "center"}} >
                   {
                     isSaving ? 
                       <ActivityIndicator size={28} color={Colors.deckColor} /> :
                     <>
-                      <Pressable onPress={cancelChanges} style={{flex: 1, height: 40, borderRadius: 4, backgroundColor: Colors.red, alignItems: "center", justifyContent: "center"}} >
+                      <Pressable onPress={cancelChanges} style={{flex: 1, height: 50, borderRadius: 4, backgroundColor: Colors.red, alignItems: "center", justifyContent: "center"}} >
                         <Text style={AppStyle.textRegular}>Cancel</Text>
                       </Pressable>
-                      <Pressable onPress={saveChanges} style={{flex: 1, height: 40, borderRadius: 4, backgroundColor: Colors.deckColor, alignItems: "center", justifyContent: "center"}} >
+                      <Pressable onPress={saveChanges} style={{flex: 1, height: 50, borderRadius: 4, backgroundColor: Colors.deckColor, alignItems: "center", justifyContent: "center"}} >
                         <Text style={AppStyle.textRegular}>Save</Text>
                       </Pressable>
                     </>
@@ -162,4 +162,11 @@ const DeckCover = ({deck, cards}: {deck: Deck, cards: Card[]}) => {
 
 export default DeckCover
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  mainImage: {
+    alignSelf: "center", 
+    width: deckWidth, 
+    height: deckHeight, 
+    marginVertical: 10
+  }
+})

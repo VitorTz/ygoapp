@@ -1,4 +1,4 @@
-import { supabase, fetchRelatedCards, supaGetSession } from "@/lib/supabase";
+import { supabase, fetchRelatedCards, supabaseGetSession } from "@/lib/supabase";
 import { orderCards } from "./util";
 import { Card } from "./types";
 
@@ -52,7 +52,7 @@ export async function initUserCards(user_id: string, cards: Map<number, Card>) {
 }
 
 export async function supabaseAddUserCard(card_id: number, num_copies: number = 1): Promise<boolean> {
-    const session = await supaGetSession()
+    const session = await supabaseGetSession()
     if (!session) { return false }
 
     const { error } = await supabase.rpc('insert_user_card', {
@@ -69,7 +69,7 @@ export async function supabaseAddUserCard(card_id: number, num_copies: number = 
 }
 
 export async function rmvCardFromUser(card: Card, total: number = 1): Promise<boolean> {
-    const session = await supaGetSession()
+    const session = await supabaseGetSession()
     if (!session) { return false }
 
     const { error } = await supabase.rpc('remove_user_card', {

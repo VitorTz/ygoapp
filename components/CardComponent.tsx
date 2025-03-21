@@ -104,11 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background
   },
   infoContainer: {
-    width: '100%', 
-    padding: wp(5),     
-    borderRadius: 4, 
-    borderWidth: 1, 
-    borderColor: Colors.red, 
+    width: '100%',     
     gap: 10
   }
 })

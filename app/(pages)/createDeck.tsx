@@ -13,7 +13,7 @@ import { useState } from 'react'
 import TopBar from '@/components/TopBar'
 import { Card } from '@/helpers/types'
 import CardPool from '@/components/CardsPool'
-import { supaCreateDeck } from '@/lib/supabase'
+import { supabaseCreateDeck } from '@/lib/supabase'
 import CardComponent from '@/components/CardComponent'
 import { router } from 'expo-router'
 import SearchCard from '@/components/SearchCard'
@@ -46,7 +46,7 @@ const CreateDeck = () => {
       Toast.show({title: "Error", message: "Your deck has 0 cards", type: 'error'})      
       return
     }    
-    const success = await supaCreateDeck(
+    const success = await supabaseCreateDeck(
       formData.name, 
       formData.description, 
       formData.isPublic, 
@@ -117,7 +117,7 @@ const CreateDeck = () => {
             cards={cardsOnDeck}
             onCardPress={openCardComponent}
             color={Colors.deckColor}/>
-          <SearchCard onCardPress={openCardComponent}/>
+          <SearchCard onCardPress={openCardComponent} color={Colors.deckColor}/>
         </View>
       </ScrollView>
       {

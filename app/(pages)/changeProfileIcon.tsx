@@ -10,7 +10,7 @@ import {
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Animated, { FadeInDown, FadeInUp} from 'react-native-reanimated'
 import { AppConstants } from '../../constants/AppConstants'
-import { fetchProfileIcons, supaUpdateUserIcon } from '../../lib/supabase'
+import { supabaseGetProfileIcons, supabaseUpdateUserIcon } from '../../lib/supabase'
 import { ImageDB, UserDB } from '@/helpers/types'
 import { GlobalContext } from '@/helpers/context'
 import BackButton from '@/components/BackButton'
@@ -44,7 +44,7 @@ const ChangeProfileIcon = () => {
   const saveChanges = async () => {
     if (profileIcon!.image_id != null) {
       setIsSaving(true)
-      await supaUpdateUserIcon(profileIcon!.image_id)
+      await supabaseUpdateUserIcon(profileIcon!.image_id)
       setIsSaving(false)
     }
   }

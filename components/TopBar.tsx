@@ -2,7 +2,6 @@ import { View, Text, StyleSheet } from "react-native"
 import { AppStyle } from "@/style/AppStyle"
 import { Colors } from "@/constants/Colors"
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
-import BackButton from "./BackButton"
 
 
 interface TopBarProps {
