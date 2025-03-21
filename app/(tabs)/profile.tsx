@@ -99,17 +99,14 @@ const Profile = () => {
     const context = useContext(GlobalContext)
     const [session, setSession] = useState<Session | null>(null)    
 
-    const initPage = async () => {
+    const initPage = async () => {        
         setSession(context.session)        
     }
 
     useEffect(
-        useCallback(
-            () => {
-                initPage()
-            },
-            []
-        ),
+        () => {
+            initPage()
+        },
         []
     )    
 
@@ -133,6 +130,7 @@ const Profile = () => {
             setSession(null)
             context.user = null
             context.session = null
+            context.userCards = new Map()
             router.replace("/(auth)/signin")
         }
     }
@@ -167,9 +165,7 @@ export default Profile
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20, 
-        borderRadius: 4, 
-        backgroundColor: Colors.gray, 
+        padding: 20,        
         alignItems: "center",
         gap: 16,
         justifyContent: "center", 
@@ -179,10 +175,11 @@ const styles = StyleSheet.create({
         width: 128, 
         height: 128, 
         borderRadius: 128, 
-        backgroundColor: Colors.background
+        borderWidth: 1,
+        borderColor: Colors.white        
     },
     brush: {
-        backgroundColor: Colors.background, 
+        backgroundColor: Colors.gray1, 
         borderRadius: 32, 
         position: 'absolute', 
         padding: 8, 

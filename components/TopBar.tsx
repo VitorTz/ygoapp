@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native"
 import { AppStyle } from "@/style/AppStyle"
 import { Colors } from "@/constants/Colors"
-import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
 
 
 interface TopBarProps {
@@ -17,17 +16,15 @@ const TopBar = ({
     textColor = Colors.white, 
     children,
     marginBottom = 10
-  }: TopBarProps) => {
+  }: TopBarProps) => {    
     return (
       <View style={[styles.container, {marginBottom}]} >
-        <Animated.Text 
-          entering={FadeInLeft.delay(50).duration(600)}
+        <Text
           style={[AppStyle.textRegular, {color: textColor, fontSize: 32}]}>{title}
-        </Animated.Text>
-        <Animated.View
-          entering={FadeInRight.delay(50).duration(600)}>
+        </Text>
+        <View>
           {children}
-        </Animated.View>
+        </View>
       </View>
     )
   }

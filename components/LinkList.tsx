@@ -1,5 +1,4 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated'
 import { wp, hp } from '@/helpers/util'
 import { Colors } from '@/constants/Colors'
 import { AppStyle } from '@/style/AppStyle'
@@ -33,16 +32,12 @@ const ContainerItem = ({
     imageKey, 
     side,
     index
-}: ContainerItem) => {  
+}: ContainerItem) => {
     const txtBgStyle = side == "right" ? { left: -wp(2.6) } : { right: -wp(2.6) }
     const imageStyle = side == "right" ? { left: wp(45) } : { left : -wp(5) }
-    const fade = side == "left" ? 
-        FadeInLeft.delay((index + 1)* 50).duration(600) : 
-        FadeInRight.delay((index + 1)* 50).duration(600)
   
-    return (
-    <Pressable onPress={onPress} style={[styles.container, {borderColor: color}]} >
-        <Animated.View entering={fade}>
+    return (        
+        <Pressable onPress={onPress} style={[styles.container, {borderColor: color}]} >        
             <Image
                 source={IMAGE_ICON.get(imageKey)} 
                 style={[styles.image, imageStyle]}
@@ -59,8 +54,7 @@ const ContainerItem = ({
                     <Text style={[AppStyle.textRegular, {color: Colors.white, fontSize: 22}]} >{title}</Text>
                 </View>
             </View>
-        </Animated.View>
-    </Pressable>
+        </Pressable>    
   )
 }
 

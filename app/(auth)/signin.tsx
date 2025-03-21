@@ -6,6 +6,7 @@ import Logo from '../../components/Logo'
 import SignInForm from '../../components/form/SignInForm'
 import SkipButton from '../../components/SkipButton'
 import { GlobalContext } from '@/helpers/context';
+import { initUserCards } from '@/helpers/globals';
 import { supabase, supabaseGetSession, supabaseGetUser } from '@/lib/supabase';
 
 
@@ -14,9 +15,12 @@ const SignIn = () => {
   const context = useContext(GlobalContext)
 
   const onSign = async () => {
-    await supabaseGetUser().then(value => context.user = value)    
-    await supabaseGetSession().then(value => context.session = value)
-    router.replace("/(tabs)/database")
+    const session = await supabaseGetSession()
+    context.session = session
+    await supabaseGetUser().then(value => context.user = value)
+    await initUserCards(session!.user.id, context.userCards)
+    router.replace("/database")
+
   }
 
   const onSkip = () => {

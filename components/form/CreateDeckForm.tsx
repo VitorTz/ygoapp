@@ -15,6 +15,7 @@ const schema = yup.object().shape({
     name: yup
         .string()
         .min(3, 'Name must be at least 3 characters')
+        .max(64, 'Max 30 characters')
         .required('Email is required'),
     description: yup
         .string()
@@ -60,7 +61,7 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
 
     return (
         <View style={{width: '100%', gap: 10}} >
-            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Name</Text>                    
+            <Text style={AppStyle.textRegularLarge} >Name</Text>                    
             <Controller
                 control={control}
                 name="name"
@@ -73,7 +74,7 @@ const CreateDeckForm = ({onSubmit}: {onSubmit: (formData: CreateDeckFormData) =>
                 )}
             />
             {errors.name && (<Text style={AppStyle.errorMsg}>{errors.name.message}</Text>)}
-            <Text style={[AppStyle.textHeader, {color: Colors.white}]} >Description</Text>
+            <Text style={AppStyle.textRegularLarge} >Description</Text>
             <Controller
                 control={control}
                 name="description"

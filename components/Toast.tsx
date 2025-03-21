@@ -55,7 +55,7 @@ const ToastComponent = forwardRef((_, ref) => {
   return (
     <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>        
         <View style={{marginLeft: 20, paddingVertical: 10}} >
-            <Text style={[AppStyle.textRegular, {fontSize: 18, color: Colors.white}]} >
+            <Text style={[AppStyle.textRegular, {fontSize: 16, color: Colors.white}]} >
                 {title}
             </Text>
             {message && 

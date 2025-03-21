@@ -14,6 +14,11 @@ export const AppStyle = StyleSheet.create({
         color: Colors.white,
         fontSize: 16
     },
+    textRegularLarge: {
+        fontFamily: "LeagueSpartan_400Regular",
+        color: Colors.white,
+        fontSize: 24
+    },
     textHeader: {
         fontFamily: "LeagueSpartan_600SemiBold",
         color: Colors.orange,

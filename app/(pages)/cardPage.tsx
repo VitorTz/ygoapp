@@ -44,20 +44,21 @@ const CardPage = () => {
 
     return (
         <SafeAreaView style={[AppStyle.safeArea, {padding: 20}]} >
-            <ScrollView>
-                <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "space-between"}} >
-                    <View style={{flexDirection: 'row', gap: 20}} >                        
-                        <ShareImage color={Colors.red} image_url={card.image_url} />
-                        <CopyStringButton color={Colors.red} text={card.name} />
-                    </View>
-                    <BackButton color={Colors.cardColor} />
+            <View style={styles.topBar} >
+                <View style={{flexDirection: 'row', gap: 20}} >                        
+                    <ShareImage color={Colors.red} image_url={card.image_url} />
+                    <CopyStringButton color={Colors.red} text={card.name} />
                 </View>
+                <BackButton color={Colors.cardColor} />
+            </View>
+            <ScrollView>
                 <Image source={card.image_url} style={{alignSelf: "center", width: cardWidth, height: cardHeight, marginVertical: 20}} contentFit='cover' />
 
                 <View style={styles.container} >
                     <CardInfoFlatList card={card} />
                     <AddCardToUserCollection card={card} />
                 </View>
+                
                 {
                     card.archetype &&
                     <CardPool 
@@ -80,8 +81,14 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',        
         flex: 1,        
-        gap: 10,        
-        borderWidth: 1,
+        gap: 10,
+        marginBottom: 10
+    },
+    topBar: {
+        width: '100%', 
+        flexDirection: 'row', 
+        alignItems: "center", 
+        justifyContent: "space-between",
         marginBottom: 10
     }
 })

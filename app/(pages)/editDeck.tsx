@@ -23,6 +23,7 @@ import BackButton from '@/components/BackButton'
 import DeckInfo from '@/components/DeckInfo'
 import DeckCover from '@/components/DeckCover'
 import Toast from '@/components/Toast'
+import CreateDeckForm from '@/components/form/CreateDeckForm'
 
 
 const cardsMap = new Map<number, number>()
@@ -140,9 +141,7 @@ const EditDeck = () => {
         <DeckCover deck={deck as any} cards={cardsOnDeck} />
             
         <View style={{width: '100%', gap: 10}} >
-          <EditDeckForm 
-            deck={deck}
-            onSubmit={onSubmit}/>
+          <EditDeckForm deck={deck} onSubmit={onSubmit} />
           <CardPool
             cards={cardsOnDeck}
             onCardPress={openCardComponent}

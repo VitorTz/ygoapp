@@ -782,36 +782,67 @@ export async function supabaseUpdateDeckCoverImage(deck_id: number, image_url: s
   return { error }
 }
 
-export async function fetchDeckComments(deck_id: number): Promise<DeckComment[]> {
-  const { data, error } = await supabase
-    .from("deck_comments")
-    .select(
-      `
-        comment_id,
-        deck_id,
-        comment,
-        users (
-          name,
-          images (
-            image_url
-          )
-        )
-      `)
-    .eq("deck_id", deck_id)
-  
+export async function fetchDeckComments(deck_id: number, user_id: string | null): Promise<DeckComment[]> {
+  const { data, error } = await supabase.rpc('get_deck_comments_with_votes', {
+    p_deck_id: deck_id,
+    p_user_id: user_id
+  });
+
+  if (error) {
+    console.log(error)
+    return []
+  }
+
+  return data
+}
+
+
+export async function voteDeckComment(comment_id: number, user_id: string, vote_delta: 1 | -1 | 0): Promise<boolean> {
+  const { error } = await supabase.rpc('update_comment_vote', {
+    p_comment_id: comment_id,
+    p_user_id: user_id,
+    p_vote_delta: vote_delta
+  });
+
+  if (error) {
+    console.log(error)
+    return false
+  }
+  return true
+}
+
+
+export async function deleteDeckCommentVote(comment_id: number, user_id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from("deck_comments_votes")
+    .delete()
+    .eq("comment_id", comment_id)
+    .eq("user_id", user_id)
+  if (error) {
+    console.log(error)
+    return false
+  }
+  return true
+}
+
+
+export async function replyToDeckComment(
+  parent_comment_id: number, 
+  deck_id: number, 
+  user_id: string, 
+  comment: string
+): Promise<number | null> {
+    const { data, error } = await supabase
+      .from("deck_comments")
+      .insert({parent_comment_id, user_id, comment, deck_id})
+      .select("comment_id")
+      .single()
+    
     if (error) {
       console.log(error)
-      return []
+      return null
     }
-    return data!.map(
-      item => {
-        return {
-          ...item,
-          username: (item.users as any).name,
-          user_image_url: (item.users as any).images.image_url
-        }
-      }
-    )
+    return data.comment_id
 }
 
 

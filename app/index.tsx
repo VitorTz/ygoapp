@@ -48,11 +48,11 @@ const index = () => {
 
   const initPage = async () => {
     const session = await supabaseGetSession()
+    await supabaseGetProfileIcons().then(values => globalContext.profileIcons = values)
     if (session) {
       await supabaseGetUser().then(value => globalContext.user = value)
       globalContext.session = session      
       await initUserCards(session.user.id, globalContext.userCards)
-      await supabaseGetProfileIcons().then(values => globalContext.profileIcons = values)
       router.replace("/database")
       return
     }

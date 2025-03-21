@@ -1,11 +1,13 @@
 import LinkList, { ContainerData } from '@/components/LinkList'
 import { View } from 'react-native'
 import { SafeAreaView } from 'react-native'
+import { useEffect } from 'react'
 import { AppStyle } from '@/style/AppStyle'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
-import React from 'react'
+import React, { useState } from 'react'
 import TopBar from '@/components/TopBar'
+import { useIsFocused } from '@react-navigation/native'
 
 
 const DATA: ContainerData[] = [
@@ -42,6 +44,8 @@ const DATA: ContainerData[] = [
 ]
 
 const Database = () => {
+  const isFocused = useIsFocused();
+
   return (
     <SafeAreaView style={AppStyle.safeArea}>
       <View style={{flex: 1, alignItems: "center", justifyContent: "center"}} >
