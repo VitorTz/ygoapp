@@ -1,5 +1,5 @@
-import { ActivityIndicator, Linking, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { supabase, supabaseGetSession, supabaseGetUser, supabaseGetRandomTrivia } from '../../lib/supabase'
+import { ActivityIndicator, Linking, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { supabase, supabaseGetUser } from '../../lib/supabase'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { AppConstants } from '../../constants/AppConstants'
@@ -63,7 +63,8 @@ const ProfileIcon = () => {
     useFocusEffect(
         useCallback(() => {
             update()
-    },[]))
+        }, [])
+    )
 
     const changeIcon = () => {
         router.push("/(pages)/changeProfileIcon")
@@ -111,7 +112,7 @@ const Profile = () => {
     )    
 
     const profile = async () => {
-
+        router.navigate("/changeProfileInfo")
     }
 
     const settings = async () => {
@@ -148,7 +149,7 @@ const Profile = () => {
                             <ProfileIcon/>
                         </View>
                         <View style={{gap: 16}} >
-                            <Option title='Profile' subTitle='Name, email, password...' iconName='person-circle-outline' onPress={() => console.log("profile")} />
+                            <Option title='Profile' subTitle='Name, email, password...' iconName='person-circle-outline' onPress={profile} />
                             <Option title='Settings' subTitle='color theme' iconName='settings-outline' onPress={() => console.log("settings")} />
                             <Option title='Github' subTitle='source code' iconName='logo-github' onPress={github} />
                             <Option title='Logout' subTitle='' iconName='log-out-outline' onPress={logout} />
@@ -174,9 +175,7 @@ const styles = StyleSheet.create({
     image: {
         width: 128, 
         height: 128, 
-        borderRadius: 128, 
-        borderWidth: 1,
-        borderColor: Colors.white        
+        borderRadius: 128        
     },
     brush: {
         backgroundColor: Colors.gray1, 

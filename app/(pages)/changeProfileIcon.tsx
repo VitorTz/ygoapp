@@ -7,10 +7,10 @@ import {
   Text, 
   View 
 } from 'react-native'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Animated, { FadeInDown, FadeInUp} from 'react-native-reanimated'
 import { AppConstants } from '../../constants/AppConstants'
-import { supabaseGetProfileIcons, supabaseUpdateUserIcon } from '../../lib/supabase'
+import { supabaseUpdateUserIcon } from '../../lib/supabase'
 import { ImageDB, UserDB } from '@/helpers/types'
 import { GlobalContext } from '@/helpers/context'
 import BackButton from '@/components/BackButton'
@@ -26,20 +26,16 @@ const ChangeProfileIcon = () => {
   const [user, setUser] = useState<UserDB | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [profileIcon, setProfileIcon] = useState<ImageDB | null | undefined>(null)
-  const loading = user == null || profileIcon == null  
+  const loading = user == null || profileIcon == null
 
   const init = async () => {    
     setUser(context.user)
     setProfileIcon(context.user?.image)
   }
 
-  useEffect(
-    useCallback(() => {
-      init()
-    },
-    []),
-    []
-  )
+  useEffect(() => {
+    init()
+  }, [])
 
   const saveChanges = async () => {
     if (profileIcon!.image_id != null) {
@@ -52,33 +48,19 @@ const ChangeProfileIcon = () => {
   return (
     <SafeAreaView style={AppStyle.safeArea} >
       <TopBar title='Profile Icon' >
-        <BackButton/>
+          <BackButton color={Colors.white} />
       </TopBar>
-      <View style={{flex: 1, gap: 20, alignItems: "center", justifyContent: "center", backgroundColor: Colors.gray, padding: 20, borderRadius: 4}} >
+      <View style={{gap: 20, alignItems: "center", justifyContent: "center"}} >
         {
           loading ?
-          <ActivityIndicator size={64} color={Colors.orange} /> :
+          <ActivityIndicator size={64} color={Colors.white} /> :
           <>
-
-            <View style={{width: '100%', flexDirection: 'row', alignItems: "center", justifyContent: "flex-end"}} >
-              <Pressable onPress={saveChanges} style={{width: 60, height: 40, alignItems: "center", justifyContent: "center", backgroundColor: Colors.accentColor, borderRadius: 4}} hitSlop={AppConstants.hitSlopLarge} >
-                {
-                  isSaving ?
-                  <ActivityIndicator size={20} color={Colors.white} /> :
-                  <Text style={AppStyle.textRegular}>save</Text>
-                }            
-              </Pressable>
-            </View>
-
             <Animated.View entering={FadeInUp.delay(10).duration(500)} >
-              <Image 
-                source={profileIcon.image_url} 
-                style={styles.mainImage}
-              />
+              <Image source={profileIcon.image_url} style={styles.mainImage}/>
             </Animated.View>
 
-            <ScrollView style={{width: '100%'}} >
-              <View style={{flexDirection: 'row', gap: 10, flexWrap: 'wrap', alignItems: "center", justifyContent: "center"}} >
+            <ScrollView style={{width: '100%', maxHeight: 420}} >
+              <View style={styles.scrollViewContainer} >
                 {
                   context.profileIcons.map(
                     (item, index) => {
@@ -95,6 +77,13 @@ const ChangeProfileIcon = () => {
                 }
               </View>
             </ScrollView>
+            <Pressable onPress={saveChanges} style={styles.button} hitSlop={AppConstants.hitSlopLarge} >
+                {
+                  isSaving ?
+                  <ActivityIndicator size={20} color={Colors.background} /> :
+                  <Text style={[AppStyle.textRegularLarge, {color: Colors.background}]}>Save</Text>
+                }            
+            </Pressable>
           </>
         }  
       </View>
@@ -108,12 +97,27 @@ const styles = StyleSheet.create({
   mainImage: {
     width: 128,
     height: 128,
-    borderRadius: 128,
-    backgroundColor: Colors.background
+    borderRadius: 128    
   },
   image: {
     width: 64,
     height: 64,
     borderRadius: 64
+  },
+  button: {
+    width: '100%',
+    height: 50,
+    alignItems: "center", 
+    justifyContent: "center",     
+    backgroundColor: Colors.white, 
+    borderRadius: 4    
+  },
+  scrollViewContainer: {
+    flexDirection: 'row', 
+    rowGap: 4,
+    columnGap: 8,
+    flexWrap: 'wrap', 
+    alignItems: "center", 
+    justifyContent: "center"
   }
 })

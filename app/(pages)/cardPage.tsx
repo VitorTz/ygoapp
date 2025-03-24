@@ -52,8 +52,7 @@ const CardPage = () => {
                 <BackButton color={Colors.cardColor} />
             </View>
             <ScrollView>
-                <Image source={card.image_url} style={{alignSelf: "center", width: cardWidth, height: cardHeight, marginVertical: 20}} contentFit='cover' />
-
+                <Image source={card.image_url} style={styles.image} contentFit='cover' />
                 <View style={styles.container} >
                     <CardInfoFlatList card={card} />
                     <AddCardToUserCollection card={card} />
@@ -90,5 +89,11 @@ const styles = StyleSheet.create({
         alignItems: "center", 
         justifyContent: "space-between",
         marginBottom: 10
+    },
+    image: {
+        alignSelf: "center", 
+        width: cardWidth, 
+        height: cardHeight, 
+        marginVertical: 20
     }
 })

@@ -9,8 +9,8 @@ const CardInfo = ({title, value}: {title: string, value: any}) => {
         <>
             {
                 value &&                 
-                <View style={{marginRight: 10}} >
-                    <Text style={[AppStyle.textHeader, {color: Colors.red}]} >{title}</Text>
+                <View style={styles.container} >
+                    <Text style={[AppStyle.textHeader, {color: Colors.red, fontSize: 22}]} >{title}</Text>
                     <Text style={AppStyle.textRegular} >{value}</Text>
                 </View>                
             }
@@ -20,4 +20,8 @@ const CardInfo = ({title, value}: {title: string, value: any}) => {
 
 export default CardInfo
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {        
+        marginRight: 10        
+    }
+})

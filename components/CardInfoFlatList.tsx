@@ -30,8 +30,7 @@ const CardInfoFlatList = ({card}: CardInfoFlatListProps) => {
                 keyExtractor={(item) => item.title}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
-                renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}
-            />
+                renderItem={({item}) => <CardInfo title={item.title} value={item.value} />}/>
             <View>
                 <Text style={[AppStyle.textRegular, {fontSize: 18}]} >{card.descr}</Text>
             </View>

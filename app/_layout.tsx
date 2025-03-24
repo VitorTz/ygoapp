@@ -25,6 +25,7 @@ const _layout = () => {
               <Stack.Screen name='(auth)/signin' options={{headerShown: false}} />
               <Stack.Screen name='(auth)/signup' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/changeProfileIcon' options={{headerShown: false}} />
+              <Stack.Screen name='(pages)/changeProfileInfo' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/cardPage' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/deckPage' options={{headerShown: false}} />
               <Stack.Screen name='(pages)/deckDatabase' options={{headerShown: false}} />

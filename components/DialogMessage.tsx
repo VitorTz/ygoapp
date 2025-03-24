@@ -12,9 +12,9 @@ export type DialogMessageTypes = "success" | "info" | "error"
 type DialogMessageOptions = {  
   message: string
   type: DialogMessageTypes
-  onPress: () => void
-  cancelBtnTest?: string
-  okBtnTest?: string
+  onPress?: () => void
+  cancelBtnText?: string
+  okBtnText?: string
 };
 
 const dialogMessageRef = React.createRef<{ show: (options: DialogMessageOptions) => void }>();
@@ -23,8 +23,8 @@ const DialogMessageComponent = forwardRef((_, ref) => {
   const [visible, setVisible] = useState(false)  
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState<DialogMessageTypes>('info')
-  const [cancelBtnTest, setCancelBtnText] = useState("Cancel")
-  const [okBtnTest, setOkBtnText] = useState("OK")
+  const [cancelBtnText, setCancelBtnText] = useState("Cancel")
+  const [okBtnText, setOkBtnText] = useState("OK")
   const [message, setMessage] = useState('')
   const funcRef = useRef<() => void>()
 
@@ -35,13 +35,13 @@ const DialogMessageComponent = forwardRef((_, ref) => {
     "alert-circle-outline"
 
   useImperativeHandle(ref, () => ({
-    show: ({ message, type, onPress, cancelBtnTest = "Cancel", okBtnTest = "OK" }: DialogMessageOptions) => {        
+    show: ({ message, type, onPress, cancelBtnText = "Cancel", okBtnText = "OK" }: DialogMessageOptions) => {        
       setMessage(message)
       setVisible(true);
       setType(type)
-      setCancelBtnText(cancelBtnTest)
-      setOkBtnText(okBtnTest)
-      funcRef.current = onPress
+      setCancelBtnText(cancelBtnText)
+      setOkBtnText(okBtnText)
+      funcRef.current = onPress ? onPress : () => { }
     },
   }));
 
@@ -63,13 +63,13 @@ const DialogMessageComponent = forwardRef((_, ref) => {
           </View>
           <View style={{width: '100%', gap: 10, flexDirection: 'row'}} >
             <Pressable onPress={() => setVisible(false)} style={[styles.button, {backgroundColor: Colors.red}]}>
-                <Text style={AppStyle.textRegular}>{cancelBtnTest}</Text>
+                <Text style={AppStyle.textRegular}>{cancelBtnText}</Text>
             </Pressable>
             <Pressable onPress={onPress} style={[styles.button, {backgroundColor: Colors.deckColor}]}>
               {
                 loading ? 
                 <ActivityIndicator size={32} color={Colors.white} /> :
-                <Text style={AppStyle.textRegular}>{okBtnTest}</Text>
+                <Text style={AppStyle.textRegular}>{okBtnText}</Text>
               }
             </Pressable>
           </View>

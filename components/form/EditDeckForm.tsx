@@ -87,7 +87,7 @@ const EditDeckForm = ({deck, onSubmit}: EditDeckFormProps) => {
         DialogMessage.show({                
                 message: `Delete ${deck.name} deck?`,
                 type: "info",
-                okBtnTest: "Delete",
+                okBtnText: "Delete",
                 onPress: async () => {
                     await supabaseDeleteDeck(deck.deck_id)
                         .then(success => {
