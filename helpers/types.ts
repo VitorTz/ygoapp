@@ -89,7 +89,7 @@ export type DeckComment = {
     user_name: string,
     user_image_url: string,
     comment: string,    
-    parent_comment_id: number,
+    parent_comment_id: number | null,
     vote_sum: number
     replies: DeckComment[]
 }

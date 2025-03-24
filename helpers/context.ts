@@ -3,7 +3,7 @@ import { ImageDB, Card, UserDB, LimitedCards } from './types';
 import { Session } from '@supabase/supabase-js';
 
 
-interface GlobalContextProps {
+export interface GlobalContextProps {
     user: UserDB | null
     session: Session | null
     profileIcons: ImageDB[]

@@ -15,7 +15,7 @@ import { Image } from 'expo-image'
 import TopBar from '@/components/TopBar'
 import CardPool from '@/components/CardsPool'
 import DeckInfo from '@/components/DeckInfo'
-import DeckComments from '@/components/DeckComments'
+import DeckCommentArea from '@/components/comment/deck/DeckCommentArea'
 
 
 const deckWidth = wp(90)
@@ -105,7 +105,7 @@ const DeckPage = () => {
                     </Animated.View>
 
                     <CardPool cards={cards} height={hp(100)}/>
-                    <DeckComments deck={deck} />
+                    <DeckCommentArea deck={deck} />
                 </View>
             </ScrollView>
         </SafeAreaView>

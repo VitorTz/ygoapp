@@ -18,21 +18,12 @@ import { router } from 'expo-router';
 import { AppStyle } from '@/style/AppStyle';
 import { initUserCards } from '@/helpers/globals';
 import { GlobalContext } from '@/helpers/context';
-import { UserDB } from '@/helpers/types';
+import { resetGlobalContext } from '@/helpers/util';
 
-
-
-AppState.addEventListener('change', (state) => {
-  if (state === 'active') {
-      supabase.auth.startAutoRefresh()
-  } else {
-      supabase.auth.stopAutoRefresh()
-  }
-})  
 
 
 const index = () => {
-  const globalContext = useContext(GlobalContext)
+  const context = useContext(GlobalContext)
   
   let [fontsLoaded] = useFonts({
     LeagueSpartan_100Thin,
@@ -41,22 +32,28 @@ const index = () => {
     LeagueSpartan_400Regular,
     LeagueSpartan_500Medium,
     LeagueSpartan_600SemiBold,
-    LeagueSpartan_700Bold,
+    LeagueSpartan_700Bold,  
     LeagueSpartan_800ExtraBold,
     LeagueSpartan_900Black,
   });
 
   const initPage = async () => {
+
+    resetGlobalContext(context)
+
     const session = await supabaseGetSession()
-    await supabaseGetProfileIcons().then(values => globalContext.profileIcons = values)
+
+    context.session = session
+    await supabaseGetProfileIcons().then(values => context.profileIcons = values)
+    
     if (session) {
-      await supabaseGetUser().then(value => globalContext.user = value)
-      globalContext.session = session      
-      await initUserCards(session.user.id, globalContext.userCards)
-      router.replace("/database")
-      return
+      await supabaseGetUser().then(value => context.user = value)
+      await initUserCards(session.user.id, context.userCards)
+      router.replace("/database")      
+    } else {
+      router.replace("/(auth)/signin")
     }
-    router.replace("/(auth)/signin")
+
   }
 
   useEffect(

@@ -81,13 +81,12 @@ const DeckPicker = ({options, applyFilter}: CardCustomPickerProps) => {
                 <View style={{flex: 1}}>
                     <MultipleDropDownPicker 
                         options={options} 
-                        optionKey='deckType' 
-                        allowEmptyValues={false} 
+                        optionKey='deckType'
+                        allowEmptyValues={true} 
                         applyPicker={applyFilter} 
                         title='Deck Type' 
                         data={DECK_TYPES} 
-                        zindex={2} 
-                        defaultValue={['Any']} 
+                        zindex={2}
                         searchable={false}/>
                 </View>
             </View>

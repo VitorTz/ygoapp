@@ -2,6 +2,8 @@ import * as FileSystem from 'expo-file-system'
 import { API_CARD_WIDTH, API_CARD_HEIGHT, API_CARD_CROPPED_HEIGHT, API_CARD_CROPPED_WIDTH } from "@/constants/AppConstants";
 import { Dimensions } from "react-native";
 import { Card } from "./types";
+import { GlobalContextProps } from './context';
+import { DeckComment } from './types';
 
 
 export function sleep(ms: number) {
@@ -198,4 +200,32 @@ export function deckToString(cards: Card[]): string {
         ${side.join('\n')}
     `
     return r
+}
+
+export function resetGlobalContext(context: GlobalContextProps) {
+    context.session = null   
+    context.user = null
+}
+
+export function nestComments(comments: DeckComment[]): DeckComment[] {
+    const commentMap: Map<number, DeckComment> = new Map();
+    const nestedComments: DeckComment[] = [];
+    
+    comments.forEach(comment => {
+        comment.replies = [];
+        commentMap.set(comment.comment_id, comment);
+    });
+    
+    comments.forEach(comment => {
+        if (comment.parent_comment_id !== null) {
+            const parent = commentMap.get(comment.parent_comment_id);
+            if (parent) {
+                parent.replies.push(comment);
+            }
+        } else {
+            nestedComments.push(comment);
+        }
+    });
+
+    return nestedComments;
 }

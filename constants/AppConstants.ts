@@ -63,8 +63,7 @@ export const AppConstants = {
 export const DECK_TYPES = [
   "Structure",  
   "Community",
-  "TCG",
-  "Any"
+  "TCG"  
 ].sort()
 
 export const ARCHETYPES = [

@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card, Deck, DeckComment, ImageDB, LimitedCards, UserDB } from '@/helpers/types';
 import { createClient, PostgrestError, Session } from '@supabase/supabase-js'
 import { orderCards, removeTrailingNewlines, } from '@/helpers/util';
+import { AppState } from 'react-native';
 import Toast from '@/components/Toast';
 
 
@@ -32,6 +33,15 @@ export const supabase = createClient(supabaseUrl, supabaseKey as any, {
   },
 });
 
+AppState.addEventListener(
+  'change', (state) => {  
+    if (state === 'active') {    
+      supabase.auth.startAutoRefresh()  
+    } else {    
+      supabase.auth.stopAutoRefresh()  
+    }
+  }
+)
 
 export async function supabaseGetSession(): Promise<Session | null> {
     const {data: {session} } = await supabase.auth.getSession()
